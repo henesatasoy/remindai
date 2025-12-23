@@ -26,6 +26,20 @@ import q4Opt2 from "@/assets/questions/practice/q4-opt2.jpeg";
 import q4Opt3 from "@/assets/questions/practice/q4-opt3.jpeg";
 import q4Opt4 from "@/assets/questions/practice/q4-opt4.jpeg";
 
+// Practice Question 5 images
+import q5Grid from "@/assets/questions/practice/q5-grid.jpeg";
+import q5Opt1 from "@/assets/questions/practice/q5-opt1.jpeg";
+import q5Opt2 from "@/assets/questions/practice/q5-opt2.jpeg";
+import q5Opt3 from "@/assets/questions/practice/q5-opt3.jpeg";
+import q5Opt4 from "@/assets/questions/practice/q5-opt4.jpeg";
+
+// Practice Question 6 images
+import q6Grid from "@/assets/questions/practice/q6-grid.jpeg";
+import q6Opt1 from "@/assets/questions/practice/q6-opt1.jpeg";
+import q6Opt2 from "@/assets/questions/practice/q6-opt2.jpeg";
+import q6Opt3 from "@/assets/questions/practice/q6-opt3.jpeg";
+import q6Opt4 from "@/assets/questions/practice/q6-opt4.jpeg";
+
 export interface Question {
   id: string;
   gridImage: string;
@@ -40,7 +54,7 @@ export interface Answer {
   isCorrect: boolean;
 }
 
-// 10 Practice questions - first 4 with real images, rest with placeholders
+// 10 Practice questions - first 6 with real images, rest with placeholders
 export const PRACTICE_QUESTIONS: Question[] = [
   {
     id: "practice-1",
@@ -66,10 +80,22 @@ export const PRACTICE_QUESTIONS: Question[] = [
     options: [q4Opt1, q4Opt2, q4Opt3, q4Opt4],
     correctOptionIndex: 0,
   },
+  {
+    id: "practice-5",
+    gridImage: q5Grid,
+    options: [q5Opt1, q5Opt2, q5Opt3, q5Opt4],
+    correctOptionIndex: 0,
+  },
+  {
+    id: "practice-6",
+    gridImage: q6Grid,
+    options: [q6Opt1, q6Opt2, q6Opt3, q6Opt4],
+    correctOptionIndex: 0,
+  },
   // Remaining practice questions with placeholders
-  ...Array.from({ length: 6 }, (_, i) => ({
-    id: `practice-${i + 5}`,
-    gridImage: `https://placehold.co/400x300/1a1a1a/666666?text=Alıştırma+${i + 5}`,
+  ...Array.from({ length: 4 }, (_, i) => ({
+    id: `practice-${i + 7}`,
+    gridImage: `https://placehold.co/400x300/1a1a1a/666666?text=Alıştırma+${i + 7}`,
     options: [
       "https://placehold.co/150x100/1a1a1a/666666?text=A",
       "https://placehold.co/150x100/1a1a1a/666666?text=B",
