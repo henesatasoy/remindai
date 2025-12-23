@@ -12,6 +12,20 @@ import q2Opt2 from "@/assets/questions/practice/q2-opt2.jpeg";
 import q2Opt3 from "@/assets/questions/practice/q2-opt3.jpeg";
 import q2Opt4 from "@/assets/questions/practice/q2-opt4.jpeg";
 
+// Practice Question 3 images
+import q3Grid from "@/assets/questions/practice/q3-grid.jpeg";
+import q3Opt1 from "@/assets/questions/practice/q3-opt1.jpeg";
+import q3Opt2 from "@/assets/questions/practice/q3-opt2.jpeg";
+import q3Opt3 from "@/assets/questions/practice/q3-opt3.jpeg";
+import q3Opt4 from "@/assets/questions/practice/q3-opt4.jpeg";
+
+// Practice Question 4 images
+import q4Grid from "@/assets/questions/practice/q4-grid.jpeg";
+import q4Opt1 from "@/assets/questions/practice/q4-opt1.jpeg";
+import q4Opt2 from "@/assets/questions/practice/q4-opt2.jpeg";
+import q4Opt3 from "@/assets/questions/practice/q4-opt3.jpeg";
+import q4Opt4 from "@/assets/questions/practice/q4-opt4.jpeg";
+
 export interface Question {
   id: string;
   gridImage: string;
@@ -26,24 +40,36 @@ export interface Answer {
   isCorrect: boolean;
 }
 
-// 10 Practice questions - first 2 with real images, rest with placeholders
+// 10 Practice questions - first 4 with real images, rest with placeholders
 export const PRACTICE_QUESTIONS: Question[] = [
   {
     id: "practice-1",
     gridImage: q1Grid,
     options: [q1Opt1, q1Opt2, q1Opt3, q1Opt4],
-    correctOptionIndex: 0, // Small purple circle - update if different
+    correctOptionIndex: 0,
   },
   {
     id: "practice-2",
     gridImage: q2Grid,
     options: [q2Opt1, q2Opt2, q2Opt3, q2Opt4],
-    correctOptionIndex: 0, // Star with purple square - update if different
+    correctOptionIndex: 0,
+  },
+  {
+    id: "practice-3",
+    gridImage: q3Grid,
+    options: [q3Opt1, q3Opt2, q3Opt3, q3Opt4],
+    correctOptionIndex: 0,
+  },
+  {
+    id: "practice-4",
+    gridImage: q4Grid,
+    options: [q4Opt1, q4Opt2, q4Opt3, q4Opt4],
+    correctOptionIndex: 0,
   },
   // Remaining practice questions with placeholders
-  ...Array.from({ length: 8 }, (_, i) => ({
-    id: `practice-${i + 3}`,
-    gridImage: `https://placehold.co/400x300/1a1a1a/666666?text=Alıştırma+${i + 3}`,
+  ...Array.from({ length: 6 }, (_, i) => ({
+    id: `practice-${i + 5}`,
+    gridImage: `https://placehold.co/400x300/1a1a1a/666666?text=Alıştırma+${i + 5}`,
     options: [
       "https://placehold.co/150x100/1a1a1a/666666?text=A",
       "https://placehold.co/150x100/1a1a1a/666666?text=B",
