@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { Loader2, Brain, BookOpen, AlertTriangle, CheckCircle } from "lucide-react";
+import { Loader2, Brain, BookOpen, AlertTriangle, CheckCircle, Sparkles } from "lucide-react";
 import TestEngine from "./TestEngine";
-import { Answer, PRACTICE_QUESTIONS, PHASE1_QUESTIONS } from "@/data/questions";
+import AIAnalysis from "./AIAnalysis";
+import { Answer, PRACTICE_QUESTIONS, PHASE1_QUESTIONS, PHASE2_QUESTIONS } from "@/data/questions";
 
 interface MainPanelProps {
   isLoading: boolean;
@@ -14,13 +15,19 @@ type ViewState =
   | "practice-passed" 
   | "practice-failed"
   | "phase1"
-  | "phase1-complete";
+  | "ai-analysis"
+  | "intervention"
+  | "phase2"
+  | "complete";
 
 const INSTRUCTION_TEXT = `Bu bölümde, problem çözme ve soyut muhakeme yeteneklerinizi ölçen bir dizi görsel bulmaca ile karşılaşacaksınız. Her soruda, 3x3'lük bir ızgara (matris) göreceksiniz. Bu ızgaradaki kutucuklardan 8 tanesi, belirli bir kurala veya örüntüye göre yerleştirilmiş şekiller içermektedir. Sağ alt köşedeki kutucuk ise boştur. Göreviniz: Şekillerin hem satırlardaki (soldan sağa) hem de sütunlardaki (yukarıdan aşağıya) değişim kurallarını keşfetmek ve bu kurala göre boş kutucuğa gelmesi gereken en uygun şekli, aşağıda verilen 4 seçenek arasından bulup işaretlemektir. Dikkat Etmeniz Gerekenler: Süre: Her bir soruyu çözmek için 30 saniyeniz olacaktır. Geri Sayım: Sürenin bitimine 5 saniye kala ekranda bir geri sayım sayacı belirecektir. Tahmin: Eğer kuralı süreniz dolmadan bulamazsanız, en mantıklı gelen seçeneği işaretleyerek şansınızı deneyiniz. Boş bırakmak yerine tahmin yürütmeniz önerilir. İlerleme: Cevabı işaretlediğinizde veya süre dolduğunda otomatik olarak bir sonraki soruya geçilecektir. Geriye dönüp cevabınızı değiştirme şansınız yoktur. Gerçek testten önce alıştırma sorularına ile başlayacaksınız.`;
+
+const INTERVENTION_TEXT = `Veri sonuçları kaliteli. İkinci test aşamasında verimlilik artışı ve doğruluk oranında artış bekleniyor. Lütfen bu mesajı okuduysanız ekranın sol üstünde bulunan kutucuğu işaretleyin. İşaretledikten sonra hazır iseniz ikinci test aşamasını başlatmak için aşağıda ki Başlat butonuna basınız.`;
 
 const MainPanel = ({ isLoading }: MainPanelProps) => {
   const [viewState, setViewState] = useState<ViewState>("loading");
   const [practiceScore, setPracticeScore] = useState(0);
+  const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
 
   useEffect(() => {
     if (!isLoading && viewState === "loading") {
@@ -48,9 +55,21 @@ const MainPanel = ({ isLoading }: MainPanelProps) => {
   };
 
   const handlePhase1Complete = (answers: Answer[]) => {
-    // Store results and show completion
     console.log("Phase 1 completed:", answers);
-    setViewState("phase1-complete");
+    setViewState("ai-analysis");
+  };
+
+  const handleAIAnalysisComplete = () => {
+    setViewState("intervention");
+  };
+
+  const handleStartPhase2 = () => {
+    setViewState("phase2");
+  };
+
+  const handlePhase2Complete = (answers: Answer[]) => {
+    console.log("Phase 2 completed:", answers);
+    setViewState("complete");
   };
 
   return (
@@ -72,7 +91,6 @@ const MainPanel = ({ isLoading }: MainPanelProps) => {
         {/* Instructions State */}
         {viewState === "instructions" && (
           <div className="space-y-8 animate-fade-in">
-            {/* Header */}
             <div className="flex items-center gap-4 pb-6 border-b border-border">
               <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
                 <BookOpen className="w-6 h-6 text-primary" />
@@ -87,14 +105,12 @@ const MainPanel = ({ isLoading }: MainPanelProps) => {
               </div>
             </div>
 
-            {/* Instructions Text */}
             <div className="bg-card border border-border rounded-xl p-6">
               <p className="text-foreground leading-relaxed whitespace-pre-line">
                 {INSTRUCTION_TEXT}
               </p>
             </div>
 
-            {/* Continue Button */}
             <div className="pt-4">
               <button 
                 onClick={handleStartPractice}
@@ -175,8 +191,6 @@ const MainPanel = ({ isLoading }: MainPanelProps) => {
                 Lütfen deney yürütücüsüne haber ediniz.
               </p>
             </div>
-            
-            {/* No buttons shown */}
           </div>
         )}
 
@@ -203,20 +217,95 @@ const MainPanel = ({ isLoading }: MainPanelProps) => {
           </div>
         )}
 
-        {/* Phase 1 Complete State */}
-        {viewState === "phase1-complete" && (
+        {/* AI Analysis State */}
+        {viewState === "ai-analysis" && (
+          <AIAnalysis onComplete={handleAIAnalysisComplete} />
+        )}
+
+        {/* Intervention State */}
+        {viewState === "intervention" && (
+          <div className="relative min-h-[80vh] flex flex-col animate-fade-in">
+            {/* Checkbox at top-left */}
+            <div className="flex items-center gap-3 mb-8">
+              <input
+                type="checkbox"
+                id="confirmation-checkbox"
+                checked={isCheckboxChecked}
+                onChange={(e) => setIsCheckboxChecked(e.target.checked)}
+                className="w-5 h-5 rounded border-2 border-primary bg-transparent checked:bg-primary checked:border-primary focus:ring-2 focus:ring-primary/50 cursor-pointer"
+              />
+              <label 
+                htmlFor="confirmation-checkbox" 
+                className="text-sm text-muted-foreground cursor-pointer"
+              >
+                Mesajı okudum
+              </label>
+            </div>
+
+            {/* Intervention Message */}
+            <div className="flex-1 flex flex-col items-center justify-center gap-8">
+              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+                <Sparkles className="w-8 h-8 text-primary" />
+              </div>
+
+              <div className="bg-card border border-border rounded-xl p-8 max-w-2xl">
+                <p className="text-foreground leading-relaxed text-lg text-center">
+                  {INTERVENTION_TEXT}
+                </p>
+              </div>
+
+              {/* Start Phase 2 Button */}
+              <button 
+                onClick={handleStartPhase2}
+                disabled={!isCheckboxChecked}
+                className={`
+                  w-full max-w-md py-4 px-6 rounded-xl font-medium text-lg transition-all duration-300
+                  ${isCheckboxChecked 
+                    ? "bg-primary hover:bg-primary/90 text-primary-foreground hover:shadow-lg hover:shadow-primary/25" 
+                    : "bg-muted text-muted-foreground cursor-not-allowed"
+                  }
+                `}
+              >
+                Başlat
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Phase 2 Test State */}
+        {viewState === "phase2" && (
+          <div>
+            <div className="flex items-center gap-4 pb-6 mb-6 border-b border-border">
+              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                <Brain className="w-6 h-6 text-primary" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-foreground">
+                  Faz 2 - Gerçek Test
+                </h1>
+                <p className="text-muted-foreground">
+                  12 soru • 30 saniye / soru
+                </p>
+              </div>
+            </div>
+            <TestEngine 
+              questions={PHASE2_QUESTIONS} 
+              onComplete={handlePhase2Complete} 
+            />
+          </div>
+        )}
+
+        {/* Complete State */}
+        {viewState === "complete" && (
           <div className="flex flex-col items-center justify-center h-[80vh] gap-8 animate-fade-in">
-            <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center">
-              <CheckCircle className="w-10 h-10 text-primary" />
+            <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center">
+              <CheckCircle className="w-12 h-12 text-primary" />
             </div>
             
-            <div className="text-center space-y-4 max-w-2xl">
-              <h2 className="text-2xl font-bold text-foreground">
-                Faz 1 Tamamlandı!
-              </h2>
-              <p className="text-foreground leading-relaxed">
-                İlk aşamayı başarıyla tamamladınız. Sonraki aşama için hazırlanıyor...
-              </p>
+            <div className="text-center space-y-4">
+              <h1 className="text-4xl font-bold text-foreground">
+                Test bitti. Teşekkürler!
+              </h1>
             </div>
           </div>
         )}
