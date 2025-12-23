@@ -54,6 +54,20 @@ import q8Opt2 from "@/assets/questions/practice/q8-opt2.jpeg";
 import q8Opt3 from "@/assets/questions/practice/q8-opt3.jpeg";
 import q8Opt4 from "@/assets/questions/practice/q8-opt4.jpeg";
 
+// Practice Question 9 images
+import q9Grid from "@/assets/questions/practice/q9-grid.jpeg";
+import q9Opt1 from "@/assets/questions/practice/q9-opt1.jpeg";
+import q9Opt2 from "@/assets/questions/practice/q9-opt2.jpeg";
+import q9Opt3 from "@/assets/questions/practice/q9-opt3.jpeg";
+import q9Opt4 from "@/assets/questions/practice/q9-opt4.jpeg";
+
+// Practice Question 10 images
+import q10Grid from "@/assets/questions/practice/q10-grid.jpeg";
+import q10Opt1 from "@/assets/questions/practice/q10-opt1.jpeg";
+import q10Opt2 from "@/assets/questions/practice/q10-opt2.jpeg";
+import q10Opt3 from "@/assets/questions/practice/q10-opt3.jpeg";
+import q10Opt4 from "@/assets/questions/practice/q10-opt4.jpeg";
+
 export interface Question {
   id: string;
   gridImage: string;
@@ -68,7 +82,7 @@ export interface Answer {
   isCorrect: boolean;
 }
 
-// 10 Practice questions - first 8 with real images, rest with placeholders
+// 10 Practice questions - all with real images
 export const PRACTICE_QUESTIONS: Question[] = [
   {
     id: "practice-1",
@@ -118,18 +132,18 @@ export const PRACTICE_QUESTIONS: Question[] = [
     options: [q8Opt1, q8Opt2, q8Opt3, q8Opt4],
     correctOptionIndex: 0,
   },
-  // Remaining practice questions with placeholders
-  ...Array.from({ length: 2 }, (_, i) => ({
-    id: `practice-${i + 9}`,
-    gridImage: `https://placehold.co/400x300/1a1a1a/666666?text=Alıştırma+${i + 9}`,
-    options: [
-      "https://placehold.co/150x100/1a1a1a/666666?text=A",
-      "https://placehold.co/150x100/1a1a1a/666666?text=B",
-      "https://placehold.co/150x100/1a1a1a/666666?text=C",
-      "https://placehold.co/150x100/1a1a1a/666666?text=D",
-    ],
-    correctOptionIndex: i % 4,
-  })),
+  {
+    id: "practice-9",
+    gridImage: q9Grid,
+    options: [q9Opt1, q9Opt2, q9Opt3, q9Opt4],
+    correctOptionIndex: 0,
+  },
+  {
+    id: "practice-10",
+    gridImage: q10Grid,
+    options: [q10Opt1, q10Opt2, q10Opt3, q10Opt4],
+    correctOptionIndex: 0,
+  },
 ];
 
 // 12 Phase 1 questions (first half of actual test)
