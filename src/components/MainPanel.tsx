@@ -128,7 +128,7 @@ const MainPanel = ({
                 Alıştırma Tamamlandı
               </h2>
               <p className="text-foreground leading-relaxed">
-                Alıştırma soruları bitti. Hazır iseniz 24 soruluk gerçek testin 12 soruluk ilk aşamasına başlamak için lütfen aşağıda ki Başlat butonuna basınız.
+                Asıl testin ilk aşamasına devam etmek için lütfen Başlat butonuna basınız.
               </p>
             </div>
 
