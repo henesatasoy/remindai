@@ -1,20 +1,25 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Clock } from "lucide-react";
 import { Question, Answer, PRACTICE_QUESTIONS } from "@/data/questions";
+import { saveExperimentResult } from "@/lib/experimentService";
 
 type TestPhase = "fixation" | "blank" | "question" | "complete";
 
 interface TestEngineProps {
   questions?: Question[];
   onComplete?: (answers: Answer[]) => void;
+  sessionId: string;
+  phase: 'practice' | 'phase1' | 'phase2';
 }
 
 const TestEngine = ({ 
   questions = PRACTICE_QUESTIONS, 
-  onComplete 
+  onComplete,
+  sessionId,
+  phase,
 }: TestEngineProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [phase, setPhase] = useState<TestPhase>("fixation");
+  const [testPhase, setTestPhase] = useState<TestPhase>("fixation");
   const [timeLeft, setTimeLeft] = useState(30);
   const [showWarning, setShowWarning] = useState(false);
   const [answers, setAnswers] = useState<Answer[]>([]);
@@ -27,6 +32,7 @@ const TestEngine = ({
   // Handle answer submission
   const submitAnswer = useCallback((selectedIndex: number | null) => {
     const responseTime = Date.now() - questionStartTime.current;
+    const isTimedOut = selectedIndex === null;
     
     const answer: Answer = {
       questionId: currentQuestion.id,
@@ -34,6 +40,16 @@ const TestEngine = ({
       responseTimeMs: responseTime,
       isCorrect: selectedIndex === currentQuestion.correctOptionIndex,
     };
+
+    // Save to database asynchronously (non-blocking)
+    saveExperimentResult({
+      session_id: sessionId,
+      phase: phase,
+      question_index: currentIndex,
+      is_correct: answer.isCorrect,
+      reaction_time_ms: responseTime,
+      timed_out: isTimedOut,
+    });
 
     setAnswers((prev) => [...prev, answer]);
 
@@ -46,33 +62,33 @@ const TestEngine = ({
     // Move to next question or complete
     if (currentIndex < questions.length - 1) {
       setCurrentIndex((prev) => prev + 1);
-      setPhase("fixation");
+      setTestPhase("fixation");
       setTimeLeft(30);
       setShowWarning(false);
     } else {
-      setPhase("complete");
+      setTestPhase("complete");
     }
-  }, [currentIndex, currentQuestion, questions.length]);
+  }, [currentIndex, currentQuestion, questions.length, sessionId, phase]);
 
   // Psychometric timing sequence: fixation (500ms) -> blank (100ms) -> question
   useEffect(() => {
-    if (phase === "fixation") {
-      const timer = setTimeout(() => setPhase("blank"), 500);
+    if (testPhase === "fixation") {
+      const timer = setTimeout(() => setTestPhase("blank"), 500);
       return () => clearTimeout(timer);
     }
     
-    if (phase === "blank") {
+    if (testPhase === "blank") {
       const timer = setTimeout(() => {
-        setPhase("question");
+        setTestPhase("question");
         questionStartTime.current = Date.now();
       }, 100);
       return () => clearTimeout(timer);
     }
-  }, [phase, currentIndex]);
+  }, [testPhase, currentIndex]);
 
   // Question timer (30 seconds)
   useEffect(() => {
-    if (phase !== "question") return;
+    if (testPhase !== "question") return;
 
     timerRef.current = setInterval(() => {
       setTimeLeft((prev) => {
@@ -90,26 +106,26 @@ const TestEngine = ({
         clearInterval(timerRef.current);
       }
     };
-  }, [phase, submitAnswer]);
+  }, [testPhase, submitAnswer]);
 
   // 5-second warning
   useEffect(() => {
-    if (timeLeft === 5 && phase === "question") {
+    if (timeLeft === 5 && testPhase === "question") {
       setShowWarning(true);
       const timer = setTimeout(() => setShowWarning(false), 1000);
       return () => clearTimeout(timer);
     }
-  }, [timeLeft, phase]);
+  }, [timeLeft, testPhase]);
 
   // Handle test completion
   useEffect(() => {
-    if (phase === "complete" && onComplete) {
+    if (testPhase === "complete" && onComplete) {
       onComplete(answers);
     }
-  }, [phase, answers, onComplete]);
+  }, [testPhase, answers, onComplete]);
 
   // Render Fixation Cross
-  if (phase === "fixation") {
+  if (testPhase === "fixation") {
     return (
       <div className="flex items-center justify-center h-[70vh]">
         <span className="text-7xl font-light text-foreground select-none">+</span>
@@ -118,12 +134,12 @@ const TestEngine = ({
   }
 
   // Render Blank Screen
-  if (phase === "blank") {
+  if (testPhase === "blank") {
     return <div className="h-[70vh]" />;
   }
 
   // Render Complete Screen
-  if (phase === "complete") {
+  if (testPhase === "complete") {
     const correctCount = answers.filter((a) => a.isCorrect).length;
     const avgTime = Math.round(
       answers.reduce((sum, a) => sum + a.responseTimeMs, 0) / answers.length / 1000

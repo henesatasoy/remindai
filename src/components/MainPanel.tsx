@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Loader2, Brain, BookOpen, AlertTriangle, CheckCircle, Sparkles } from "lucide-react";
 import TestEngine from "./TestEngine";
 import AIAnalysis from "./AIAnalysis";
 import { Answer, PRACTICE_QUESTIONS, PHASE1_QUESTIONS, PHASE2_QUESTIONS } from "@/data/questions";
+import { generateSessionId, saveExperimentResult } from "@/lib/experimentService";
 
 interface MainPanelProps {
   isLoading: boolean;
@@ -28,6 +29,9 @@ const MainPanel = ({ isLoading }: MainPanelProps) => {
   const [viewState, setViewState] = useState<ViewState>("loading");
   const [practiceScore, setPracticeScore] = useState(0);
   const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
+  
+  // Generate a unique session ID for this experiment session
+  const sessionId = useMemo(() => generateSessionId(), []);
 
   useEffect(() => {
     if (!isLoading && viewState === "loading") {
@@ -64,6 +68,16 @@ const MainPanel = ({ isLoading }: MainPanelProps) => {
   };
 
   const handleStartPhase2 = () => {
+    // Save the attention check result
+    saveExperimentResult({
+      session_id: sessionId,
+      phase: 'phase2',
+      question_index: -1, // Special index for attention check
+      is_correct: true,
+      reaction_time_ms: 0,
+      timed_out: false,
+      attention_check_click: isCheckboxChecked,
+    });
     setViewState("phase2");
   };
 
@@ -140,7 +154,9 @@ const MainPanel = ({ isLoading }: MainPanelProps) => {
             </div>
             <TestEngine 
               questions={PRACTICE_QUESTIONS} 
-              onComplete={handlePracticeComplete} 
+              onComplete={handlePracticeComplete}
+              sessionId={sessionId}
+              phase="practice"
             />
           </div>
         )}
@@ -212,7 +228,9 @@ const MainPanel = ({ isLoading }: MainPanelProps) => {
             </div>
             <TestEngine 
               questions={PHASE1_QUESTIONS} 
-              onComplete={handlePhase1Complete} 
+              onComplete={handlePhase1Complete}
+              sessionId={sessionId}
+              phase="phase1"
             />
           </div>
         )}
@@ -290,7 +308,9 @@ const MainPanel = ({ isLoading }: MainPanelProps) => {
             </div>
             <TestEngine 
               questions={PHASE2_QUESTIONS} 
-              onComplete={handlePhase2Complete} 
+              onComplete={handlePhase2Complete}
+              sessionId={sessionId}
+              phase="phase2"
             />
           </div>
         )}
