@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
-import { RefreshCw, Filter, Database, Download, ChevronDown, ChevronRight } from "lucide-react";
+import { RefreshCw, Filter, Database, Download, ChevronDown, ChevronRight, CalendarIcon, X } from "lucide-react";
+import { format } from "date-fns";
+import { tr } from "date-fns/locale";
 import { fetchSessionSummaries, fetchSessionDetails, fetchAllResults } from "@/lib/experimentService";
 import {
   Table,
@@ -22,6 +24,13 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { cn } from "@/lib/utils";
 
 interface SessionSummary {
   session_id: string;
@@ -51,17 +60,19 @@ const AdminPanel = () => {
   const [expandedSessions, setExpandedSessions] = useState<Set<string>>(new Set());
   const [sessionDetails, setSessionDetails] = useState<Record<string, SessionDetail[]>>({});
   const [isExporting, setIsExporting] = useState(false);
+  const [startDate, setStartDate] = useState<Date | undefined>(undefined);
+  const [endDate, setEndDate] = useState<Date | undefined>(undefined);
 
   const loadData = async () => {
     setIsLoading(true);
-    const data = await fetchSessionSummaries(phaseFilter);
+    const data = await fetchSessionSummaries(phaseFilter, startDate, endDate);
     setSessions(data);
     setIsLoading(false);
   };
 
   useEffect(() => {
     loadData();
-  }, [phaseFilter]);
+  }, [phaseFilter, startDate, endDate]);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleString('tr-TR', {
@@ -107,8 +118,8 @@ const AdminPanel = () => {
     setIsExporting(true);
     
     try {
-      // Fetch all detailed results
-      const allResults = await fetchAllResults();
+      // Fetch all detailed results with date filter
+      const allResults = await fetchAllResults(startDate, endDate);
       
       const headers = [
         "Session ID",
@@ -170,6 +181,70 @@ const AdminPanel = () => {
           </div>
 
           <div className="flex items-center gap-4">
+            {/* Date Range Filter */}
+            <div className="flex items-center gap-2">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "w-[140px] justify-start text-left font-normal",
+                      !startDate && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {startDate ? format(startDate, "dd/MM/yyyy") : "Başlangıç"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={startDate}
+                    onSelect={setStartDate}
+                    locale={tr}
+                    className="pointer-events-auto"
+                  />
+                </PopoverContent>
+              </Popover>
+              <span className="text-muted-foreground">-</span>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "w-[140px] justify-start text-left font-normal",
+                      !endDate && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {endDate ? format(endDate, "dd/MM/yyyy") : "Bitiş"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={endDate}
+                    onSelect={setEndDate}
+                    locale={tr}
+                    className="pointer-events-auto"
+                  />
+                </PopoverContent>
+              </Popover>
+              {(startDate || endDate) && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => {
+                    setStartDate(undefined);
+                    setEndDate(undefined);
+                  }}
+                  className="h-9 w-9"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
+
             {/* Phase Filter */}
             <div className="flex items-center gap-2">
               <Filter className="w-4 h-4 text-muted-foreground" />
