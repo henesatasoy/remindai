@@ -9,6 +9,7 @@ interface PsyCogSidebarProps {
   viewState: ViewState;
   isAttentionCheckClicked: boolean;
   onAttentionCheckClick: () => void;
+  onStartPhase2?: () => void;
 }
 
 const INTERVENTION_TEXT = `Veri sonuçları kaliteli. İkinci test aşamasında verimlilik artışı ve doğruluk oranında artış bekleniyor. Lütfen bu mesajı okuduysanız sol üstte ki PsyCog yazısının solunda bulunan logoya tıklayın. İşaretledikten sonra hazır iseniz ikinci test aşamasını başlatmak için aşağıda ki Başlat butonuna basınız.`;
@@ -19,7 +20,8 @@ const PsyCogSidebar = ({
   promptHistory, 
   viewState, 
   isAttentionCheckClicked, 
-  onAttentionCheckClick 
+  onAttentionCheckClick,
+  onStartPhase2
 }: PsyCogSidebarProps) => {
   const isIntervention = viewState === "intervention";
 
@@ -29,7 +31,7 @@ const PsyCogSidebar = ({
         h-screen bg-sidebar border-r border-sidebar-border
         transition-all duration-500 ease-in-out
         flex flex-col relative
-        ${isCollapsed ? "w-16" : "w-72"}
+        ${isIntervention ? "flex-1" : isCollapsed ? "w-16" : "w-72"}
       `}
     >
       {/* Toggle Button - hide during intervention */}
@@ -67,7 +69,7 @@ const PsyCogSidebar = ({
           <h1
             className={`
               font-semibold text-foreground transition-all duration-300
-              ${isCollapsed ? "hidden" : "text-xl"}
+              ${isCollapsed && !isIntervention ? "hidden" : "text-xl"}
             `}
           >
             PsyCog
@@ -78,10 +80,10 @@ const PsyCogSidebar = ({
       {/* Chat Content Area */}
       <div className="flex-1 overflow-y-auto p-2">
         {/* Show intervention message as chat during intervention state */}
-        {isIntervention && !isCollapsed ? (
-          <div className="p-3">
+        {isIntervention ? (
+          <div className="p-3 flex flex-col items-center justify-center h-full">
             {/* AI Message Bubble */}
-            <div className="flex items-start gap-3">
+            <div className="flex items-start gap-3 max-w-2xl w-full">
               <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                 <Sparkles className="w-4 h-4 text-primary" />
               </div>
@@ -91,6 +93,14 @@ const PsyCogSidebar = ({
                 </p>
               </div>
             </div>
+
+            {/* Start Phase 2 Button */}
+            <button 
+              onClick={onStartPhase2}
+              className="mt-8 w-full max-w-md py-4 px-6 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-medium text-lg transition-all duration-300 hover:shadow-lg hover:shadow-primary/25"
+            >
+              Başlat
+            </button>
           </div>
         ) : (
           /* Regular prompt history */
@@ -115,7 +125,7 @@ const PsyCogSidebar = ({
       </div>
 
       {/* Footer */}
-      {!isCollapsed && (
+      {(!isCollapsed || isIntervention) && (
         <div className="p-4 border-t border-sidebar-border">
           <p className="text-xs text-muted-foreground text-center">
             {isIntervention ? "Mesajı okuyup logoyu işaretleyin" : "Geçmiş sorgularınız burada görünür"}
