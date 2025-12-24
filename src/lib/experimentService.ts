@@ -165,3 +165,26 @@ export const fetchSessionDetails = async (sessionId: string) => {
 
   return data || [];
 };
+
+/**
+ * Deletes all results for a specific session
+ */
+export const deleteSession = async (sessionId: string): Promise<boolean> => {
+  try {
+    const { error } = await supabase
+      .from('experiment_results')
+      .delete()
+      .eq('session_id', sessionId);
+
+    if (error) {
+      console.error('Failed to delete session:', error);
+      return false;
+    }
+
+    console.log(`Deleted session: ${sessionId}`);
+    return true;
+  } catch (err) {
+    console.error('Error deleting session:', err);
+    return false;
+  }
+};
