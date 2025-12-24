@@ -190,6 +190,9 @@ const MainPanel = ({
               <h1 className="text-4xl font-bold text-foreground">
                 Test bitti. Teşekkürler!
               </h1>
+              <p className="text-lg text-muted-foreground">
+                Lütfen deney yürütücüsüne haber veriniz.
+              </p>
             </div>
           </div>}
       </div>
