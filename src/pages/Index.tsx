@@ -179,9 +179,13 @@ const Index = () => {
     setViewState("phase2");
   };
 
+  const handleStartPractice = () => {
+    setViewState("practice");
+  };
+
   // Transformed view with sidebar and main panel
-  // During intervention, sidebar takes full screen
-  const isIntervention = viewState === "intervention";
+  // During intervention or instructions, sidebar takes full screen
+  const isFullscreenChat = viewState === "intervention" || viewState === "instructions";
 
   return <div className="min-h-screen bg-background flex w-full">
       <PsyCogSidebar 
@@ -192,9 +196,10 @@ const Index = () => {
         isAttentionCheckClicked={isAttentionCheckClicked}
         onAttentionCheckClick={() => setIsAttentionCheckClicked(!isAttentionCheckClicked)}
         onStartPhase2={handleStartPhase2}
+        onStartPractice={handleStartPractice}
         userFirstMessage={promptHistory[promptHistory.length - 1] || ""}
       />
-      {!isIntervention && (
+      {!isFullscreenChat && (
         <MainPanel 
           isLoading={isLoading} 
           viewState={viewState}
