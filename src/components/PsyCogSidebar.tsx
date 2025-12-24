@@ -260,12 +260,6 @@ const PsyCogSidebar = ({
           </div>)}
       </div>
 
-      {/* Footer - hide during fullscreen chat states */}
-      {!isCollapsed && !isFullscreenChat && <div className="p-4 border-t border-sidebar-border">
-          <p className="text-xs text-muted-foreground text-center">
-            Geçmiş sorgularınız burada görünür
-          </p>
-        </div>}
       {/* Message Detail Modal */}
       <Dialog open={modalContent !== null} onOpenChange={() => setModalContent(null)}>
         <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
