@@ -138,6 +138,20 @@ import p1q10Opt2 from "@/assets/questions/phase1/q10-opt2.jpeg";
 import p1q10Opt3 from "@/assets/questions/phase1/q10-opt3.jpeg";
 import p1q10Opt4 from "@/assets/questions/phase1/q10-opt4.jpeg";
 
+// Phase 1 Question 11 images
+import p1q11Grid from "@/assets/questions/phase1/q11-grid.jpeg";
+import p1q11Opt1 from "@/assets/questions/phase1/q11-opt1.jpeg";
+import p1q11Opt2 from "@/assets/questions/phase1/q11-opt2.jpeg";
+import p1q11Opt3 from "@/assets/questions/phase1/q11-opt3.jpeg";
+import p1q11Opt4 from "@/assets/questions/phase1/q11-opt4.jpeg";
+
+// Phase 1 Question 12 images
+import p1q12Grid from "@/assets/questions/phase1/q12-grid.jpeg";
+import p1q12Opt1 from "@/assets/questions/phase1/q12-opt1.jpeg";
+import p1q12Opt2 from "@/assets/questions/phase1/q12-opt2.jpeg";
+import p1q12Opt3 from "@/assets/questions/phase1/q12-opt3.jpeg";
+import p1q12Opt4 from "@/assets/questions/phase1/q12-opt4.jpeg";
+
 export interface Question {
   id: string;
   gridImage: string;
@@ -216,7 +230,7 @@ export const PRACTICE_QUESTIONS: Question[] = [
   },
 ];
 
-// 12 Phase 1 questions (first half of actual test) - first 10 with real images
+// 12 Phase 1 questions (first half of actual test) - all with real images
 export const PHASE1_QUESTIONS: Question[] = [
   {
     id: "phase1-1",
@@ -278,18 +292,18 @@ export const PHASE1_QUESTIONS: Question[] = [
     options: [p1q10Opt1, p1q10Opt2, p1q10Opt3, p1q10Opt4],
     correctOptionIndex: 0,
   },
-  // Remaining Phase 1 questions with placeholders
-  ...Array.from({ length: 2 }, (_, i) => ({
-    id: `phase1-${i + 11}`,
-    gridImage: `https://placehold.co/400x300/1a1a1a/666666?text=Faz1+Soru+${i + 11}`,
-    options: [
-      "https://placehold.co/150x100/1a1a1a/666666?text=A",
-      "https://placehold.co/150x100/1a1a1a/666666?text=B",
-      "https://placehold.co/150x100/1a1a1a/666666?text=C",
-      "https://placehold.co/150x100/1a1a1a/666666?text=D",
-    ],
-    correctOptionIndex: (i + 10) % 4,
-  })),
+  {
+    id: "phase1-11",
+    gridImage: p1q11Grid,
+    options: [p1q11Opt1, p1q11Opt2, p1q11Opt3, p1q11Opt4],
+    correctOptionIndex: 0,
+  },
+  {
+    id: "phase1-12",
+    gridImage: p1q12Grid,
+    options: [p1q12Opt1, p1q12Opt2, p1q12Opt3, p1q12Opt4],
+    correctOptionIndex: 0,
+  },
 ];
 
 // 12 Phase 2 questions (second half of actual test)
