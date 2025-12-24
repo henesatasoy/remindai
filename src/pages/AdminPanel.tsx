@@ -56,6 +56,7 @@ interface SessionDetail {
 const AdminPanel = () => {
   const [sessions, setSessions] = useState<SessionSummary[]>([]);
   const [phaseFilter, setPhaseFilter] = useState<string>("all");
+  const [attentionFilter, setAttentionFilter] = useState<string>("all");
   const [isLoading, setIsLoading] = useState(true);
   const [expandedSessions, setExpandedSessions] = useState<Set<string>>(new Set());
   const [sessionDetails, setSessionDetails] = useState<Record<string, SessionDetail[]>>({});
@@ -69,6 +70,15 @@ const AdminPanel = () => {
     setSessions(data);
     setIsLoading(false);
   };
+
+  // Filter sessions by attention check
+  const filteredSessions = sessions.filter((session) => {
+    if (attentionFilter === "all") return true;
+    if (attentionFilter === "clicked") return session.attention_check_click === true;
+    if (attentionFilter === "not_clicked") return session.attention_check_click === false;
+    if (attentionFilter === "no_data") return session.attention_check_click === null;
+    return true;
+  });
 
   useEffect(() => {
     loadData();
@@ -261,6 +271,21 @@ const AdminPanel = () => {
               </Select>
             </div>
 
+            {/* Attention Check Filter */}
+            <div className="flex items-center gap-2">
+              <Select value={attentionFilter} onValueChange={setAttentionFilter}>
+                <SelectTrigger className="w-44">
+                  <SelectValue placeholder="Attention Check" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Attention</SelectItem>
+                  <SelectItem value="clicked">Clicked ✓</SelectItem>
+                  <SelectItem value="not_clicked">Not Clicked ✗</SelectItem>
+                  <SelectItem value="no_data">No Data</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
             {/* Export Button */}
             <Button
               onClick={exportToCSV}
@@ -293,15 +318,15 @@ const AdminPanel = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
           <div className="bg-card border border-border rounded-xl p-4">
             <p className="text-sm text-muted-foreground">Total Sessions</p>
-            <p className="text-2xl font-bold text-foreground">{sessions.length}</p>
+            <p className="text-2xl font-bold text-foreground">{filteredSessions.length}</p>
           </div>
           <div className="bg-card border border-border rounded-xl p-4">
             <p className="text-sm text-muted-foreground">Avg Correct Rate</p>
             <p className="text-2xl font-bold text-primary">
-              {sessions.length > 0
+              {filteredSessions.length > 0
                 ? `${Math.round(
-                    (sessions.reduce((sum, s) => sum + s.total_correct, 0) /
-                      sessions.reduce((sum, s) => sum + s.total_questions, 0)) *
+                    (filteredSessions.reduce((sum, s) => sum + s.total_correct, 0) /
+                      filteredSessions.reduce((sum, s) => sum + s.total_questions, 0)) *
                       100
                   )}%`
                 : '0%'}
@@ -310,10 +335,10 @@ const AdminPanel = () => {
           <div className="bg-card border border-border rounded-xl p-4">
             <p className="text-sm text-muted-foreground">Avg Reaction Time</p>
             <p className="text-2xl font-bold text-foreground">
-              {sessions.length > 0
+              {filteredSessions.length > 0
                 ? formatReactionTime(
-                    sessions.reduce((sum, s) => sum + s.avg_reaction_time, 0) /
-                      sessions.length
+                    filteredSessions.reduce((sum, s) => sum + s.avg_reaction_time, 0) /
+                      filteredSessions.length
                   )
                 : '0s'}
             </p>
@@ -321,8 +346,8 @@ const AdminPanel = () => {
           <div className="bg-card border border-border rounded-xl p-4">
             <p className="text-sm text-muted-foreground">Attention Check Pass</p>
             <p className="text-2xl font-bold text-foreground">
-              {sessions.filter((s) => s.attention_check_click === true).length}/
-              {sessions.filter((s) => s.attention_check_click !== null).length}
+              {filteredSessions.filter((s) => s.attention_check_click === true).length}/
+              {filteredSessions.filter((s) => s.attention_check_click !== null).length}
             </p>
           </div>
         </div>
@@ -348,14 +373,14 @@ const AdminPanel = () => {
                     <RefreshCw className="w-6 h-6 animate-spin mx-auto text-muted-foreground" />
                   </TableCell>
                 </TableRow>
-              ) : sessions.length === 0 ? (
+              ) : filteredSessions.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
                     No data found
                   </TableCell>
                 </TableRow>
               ) : (
-                sessions.map((session) => (
+                filteredSessions.map((session) => (
                   <Collapsible
                     key={session.session_id}
                     open={expandedSessions.has(session.session_id)}
