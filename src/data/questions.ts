@@ -166,6 +166,20 @@ import p2q2Opt2 from "@/assets/questions/phase2/q2-opt2.jpeg";
 import p2q2Opt3 from "@/assets/questions/phase2/q2-opt3.jpeg";
 import p2q2Opt4 from "@/assets/questions/phase2/q2-opt4.jpeg";
 
+// Phase 2 Question 3 images
+import p2q3Grid from "@/assets/questions/phase2/q3-grid.jpeg";
+import p2q3Opt1 from "@/assets/questions/phase2/q3-opt1.jpeg";
+import p2q3Opt2 from "@/assets/questions/phase2/q3-opt2.jpeg";
+import p2q3Opt3 from "@/assets/questions/phase2/q3-opt3.jpeg";
+import p2q3Opt4 from "@/assets/questions/phase2/q3-opt4.jpeg";
+
+// Phase 2 Question 4 images
+import p2q4Grid from "@/assets/questions/phase2/q4-grid.jpeg";
+import p2q4Opt1 from "@/assets/questions/phase2/q4-opt1.jpeg";
+import p2q4Opt2 from "@/assets/questions/phase2/q4-opt2.jpeg";
+import p2q4Opt3 from "@/assets/questions/phase2/q4-opt3.jpeg";
+import p2q4Opt4 from "@/assets/questions/phase2/q4-opt4.jpeg";
+
 export interface Question {
   id: string;
   gridImage: string;
@@ -320,7 +334,7 @@ export const PHASE1_QUESTIONS: Question[] = [
   },
 ];
 
-// 12 Phase 2 questions (second half of actual test) - first 2 with real images
+// 12 Phase 2 questions (second half of actual test) - first 4 with real images
 export const PHASE2_QUESTIONS: Question[] = [
   {
     id: "phase2-1",
@@ -334,16 +348,28 @@ export const PHASE2_QUESTIONS: Question[] = [
     options: [p2q2Opt1, p2q2Opt2, p2q2Opt3, p2q2Opt4],
     correctOptionIndex: 0,
   },
+  {
+    id: "phase2-3",
+    gridImage: p2q3Grid,
+    options: [p2q3Opt1, p2q3Opt2, p2q3Opt3, p2q3Opt4],
+    correctOptionIndex: 0,
+  },
+  {
+    id: "phase2-4",
+    gridImage: p2q4Grid,
+    options: [p2q4Opt1, p2q4Opt2, p2q4Opt3, p2q4Opt4],
+    correctOptionIndex: 0,
+  },
   // Remaining Phase 2 questions with placeholders
-  ...Array.from({ length: 10 }, (_, i) => ({
-    id: `phase2-${i + 3}`,
-    gridImage: `https://placehold.co/400x300/1a1a1a/666666?text=Faz2+Soru+${i + 3}`,
+  ...Array.from({ length: 8 }, (_, i) => ({
+    id: `phase2-${i + 5}`,
+    gridImage: `https://placehold.co/400x300/1a1a1a/666666?text=Faz2+Soru+${i + 5}`,
     options: [
       "https://placehold.co/150x100/1a1a1a/666666?text=A",
       "https://placehold.co/150x100/1a1a1a/666666?text=B",
       "https://placehold.co/150x100/1a1a1a/666666?text=C",
       "https://placehold.co/150x100/1a1a1a/666666?text=D",
     ],
-    correctOptionIndex: (i + 2) % 4,
+    correctOptionIndex: (i + 4) % 4,
   })),
 ];
