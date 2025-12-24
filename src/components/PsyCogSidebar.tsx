@@ -136,18 +136,6 @@ const PsyCogSidebar = ({
       <div className="flex-1 overflow-y-auto p-2">
         {/* Show full chat during fullscreen states */}
         {isFullscreenChat ? <div className="max-w-3xl mx-auto p-4 space-y-6">
-            {/* User's First Message */}
-            {userFirstMessage && <div className="flex items-start gap-3 justify-end">
-                <div className="bg-primary/10 border border-primary/20 rounded-xl p-4 max-w-[80%]">
-                  <p className="text-foreground text-sm leading-relaxed">
-                    {userFirstMessage}
-                  </p>
-                </div>
-                <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center shrink-0">
-                  <User className="w-4 h-4 text-muted-foreground" />
-                </div>
-              </div>}
-
             {/* Instructions History - show on practice results and intervention */}
             {(isPracticePassed || isPracticeFailed || isIntervention) && <button onClick={openInstructionsModal} className="flex items-start gap-3 w-full text-left hover:opacity-80 transition-opacity">
                 <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
