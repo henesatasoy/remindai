@@ -177,18 +177,9 @@ const MainPanel = ({
 
         {/* Intervention State */}
         {viewState === "intervention" && <div className="relative min-h-[80vh] flex flex-col animate-fade-in">
-            {/* Clickable Logo at top-left */}
+            {/* Checkbox at top-left */}
             <div className="flex items-center gap-3 mb-8">
-              <button
-                onClick={() => setIsCheckboxChecked(!isCheckboxChecked)}
-                className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${
-                  isCheckboxChecked 
-                    ? "bg-green-500 text-white" 
-                    : "bg-primary/10 text-primary hover:bg-primary/20"
-                }`}
-              >
-                <Sparkles className="w-5 h-5" />
-              </button>
+              <input type="checkbox" id="confirmation-checkbox" checked={isCheckboxChecked} onChange={e => setIsCheckboxChecked(e.target.checked)} className="w-5 h-5 rounded border-2 border-primary bg-transparent checked:bg-primary checked:border-primary focus:ring-2 focus:ring-primary/50 cursor-pointer" />
             </div>
 
             {/* Intervention Message */}
