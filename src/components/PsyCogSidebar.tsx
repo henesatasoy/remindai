@@ -115,7 +115,6 @@ const PsyCogSidebar = ({
             <div className="flex justify-center pt-6">
               <Button
                 onClick={onStartPhase2}
-                disabled={!isAttentionCheckClicked}
                 className="px-8 py-3"
               >
                 Başlat
