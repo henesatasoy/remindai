@@ -35,6 +35,7 @@ const MainPanel = ({
     const score = answers.filter(a => a.isCorrect).length;
     setPracticeScore(score);
     onPracticeScoreChange?.(score);
+    // Practice passes if user got 3+ correct (early exit or all 10 questions)
     if (score >= 3) {
       onViewStateChange("practice-passed");
     } else {
@@ -126,9 +127,6 @@ const MainPanel = ({
               <h2 className="text-2xl font-bold text-foreground">
                 Alıştırma Tamamlandı
               </h2>
-              <p className="text-lg text-muted-foreground">
-                Puan: <span className="text-primary font-semibold">{practiceScore}/10</span>
-              </p>
               <p className="text-foreground leading-relaxed">
                 Alıştırma soruları bitti. Hazır iseniz 24 soruluk gerçek testin 12 soruluk ilk aşamasına başlamak için lütfen aşağıda ki Başlat butonuna basınız.
               </p>
@@ -149,11 +147,8 @@ const MainPanel = ({
               <h2 className="text-2xl font-bold text-foreground">
                 Alıştırma Tamamlandı
               </h2>
-              <p className="text-lg text-muted-foreground">
-                Puan: <span className="text-destructive font-semibold">{practiceScore}/10</span>
-              </p>
               <p className="text-foreground leading-relaxed text-lg">
-                Lütfen deney yürütücüsüne haber ediniz.
+                Lütfen deney yürütücüsüne danışın.
               </p>
             </div>
           </div>}

@@ -20,6 +20,7 @@ const TestEngine = ({
   const [timeLeft, setTimeLeft] = useState(30);
   const [showWarning, setShowWarning] = useState(false);
   const [answers, setAnswers] = useState<Answer[]>([]);
+  const [correctCount, setCorrectCount] = useState(0);
   const questionStartTime = useRef<number>(0);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const currentQuestion = questions[currentIndex];
@@ -44,12 +45,26 @@ const TestEngine = ({
       reaction_time_ms: responseTime,
       timed_out: isTimedOut
     });
-    setAnswers(prev => [...prev, answer]);
+    
+    const newAnswers = [...answers, answer];
+    setAnswers(newAnswers);
+    
+    // Track correct count for practice
+    const newCorrectCount = answer.isCorrect ? correctCount + 1 : correctCount;
+    if (answer.isCorrect) {
+      setCorrectCount(newCorrectCount);
+    }
 
     // Clear timer
     if (timerRef.current) {
       clearInterval(timerRef.current);
       timerRef.current = null;
+    }
+
+    // Practice-specific logic: pass with 3 correct answers
+    if (phase === 'practice' && newCorrectCount >= 3) {
+      setTestPhase("complete");
+      return;
     }
 
     // Move to next question or complete
@@ -61,7 +76,7 @@ const TestEngine = ({
     } else {
       setTestPhase("complete");
     }
-  }, [currentIndex, currentQuestion, questions.length, sessionId, phase]);
+  }, [currentIndex, currentQuestion, questions.length, sessionId, phase, answers, correctCount]);
 
   // Psychometric timing sequence: fixation (500ms) -> blank (100ms) -> question
   useEffect(() => {
