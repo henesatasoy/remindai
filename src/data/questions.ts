@@ -124,6 +124,20 @@ import p1q8Opt2 from "@/assets/questions/phase1/q8-opt2.jpeg";
 import p1q8Opt3 from "@/assets/questions/phase1/q8-opt3.jpeg";
 import p1q8Opt4 from "@/assets/questions/phase1/q8-opt4.jpeg";
 
+// Phase 1 Question 9 images
+import p1q9Grid from "@/assets/questions/phase1/q9-grid.jpeg";
+import p1q9Opt1 from "@/assets/questions/phase1/q9-opt1.jpeg";
+import p1q9Opt2 from "@/assets/questions/phase1/q9-opt2.jpeg";
+import p1q9Opt3 from "@/assets/questions/phase1/q9-opt3.jpeg";
+import p1q9Opt4 from "@/assets/questions/phase1/q9-opt4.jpeg";
+
+// Phase 1 Question 10 images
+import p1q10Grid from "@/assets/questions/phase1/q10-grid.jpeg";
+import p1q10Opt1 from "@/assets/questions/phase1/q10-opt1.jpeg";
+import p1q10Opt2 from "@/assets/questions/phase1/q10-opt2.jpeg";
+import p1q10Opt3 from "@/assets/questions/phase1/q10-opt3.jpeg";
+import p1q10Opt4 from "@/assets/questions/phase1/q10-opt4.jpeg";
+
 export interface Question {
   id: string;
   gridImage: string;
@@ -202,7 +216,7 @@ export const PRACTICE_QUESTIONS: Question[] = [
   },
 ];
 
-// 12 Phase 1 questions (first half of actual test) - first 8 with real images
+// 12 Phase 1 questions (first half of actual test) - first 10 with real images
 export const PHASE1_QUESTIONS: Question[] = [
   {
     id: "phase1-1",
@@ -252,17 +266,29 @@ export const PHASE1_QUESTIONS: Question[] = [
     options: [p1q8Opt1, p1q8Opt2, p1q8Opt3, p1q8Opt4],
     correctOptionIndex: 0,
   },
+  {
+    id: "phase1-9",
+    gridImage: p1q9Grid,
+    options: [p1q9Opt1, p1q9Opt2, p1q9Opt3, p1q9Opt4],
+    correctOptionIndex: 0,
+  },
+  {
+    id: "phase1-10",
+    gridImage: p1q10Grid,
+    options: [p1q10Opt1, p1q10Opt2, p1q10Opt3, p1q10Opt4],
+    correctOptionIndex: 0,
+  },
   // Remaining Phase 1 questions with placeholders
-  ...Array.from({ length: 4 }, (_, i) => ({
-    id: `phase1-${i + 9}`,
-    gridImage: `https://placehold.co/400x300/1a1a1a/666666?text=Faz1+Soru+${i + 9}`,
+  ...Array.from({ length: 2 }, (_, i) => ({
+    id: `phase1-${i + 11}`,
+    gridImage: `https://placehold.co/400x300/1a1a1a/666666?text=Faz1+Soru+${i + 11}`,
     options: [
       "https://placehold.co/150x100/1a1a1a/666666?text=A",
       "https://placehold.co/150x100/1a1a1a/666666?text=B",
       "https://placehold.co/150x100/1a1a1a/666666?text=C",
       "https://placehold.co/150x100/1a1a1a/666666?text=D",
     ],
-    correctOptionIndex: (i + 8) % 4,
+    correctOptionIndex: (i + 10) % 4,
   })),
 ];
 
