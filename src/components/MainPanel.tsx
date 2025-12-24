@@ -164,18 +164,8 @@ const MainPanel = ({
         {/* AI Analysis State */}
         {viewState === "ai-analysis" && <AIAnalysis onComplete={handleAIAnalysisComplete} />}
 
-        {/* Intervention State - Only show the button, message is in sidebar */}
-        {viewState === "intervention" && <div className="flex flex-col items-center justify-center h-[80vh] gap-8 animate-fade-in">
-            <div className="text-center space-y-4 max-w-2xl">
-              
-              
-            </div>
-
-            {/* Start Phase 2 Button */}
-            <button onClick={handleStartPhase2} className="w-full max-w-md py-4 px-6 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-medium text-lg transition-all duration-300 hover:shadow-lg hover:shadow-primary/25">
-              Başlat
-            </button>
-          </div>}
+        {/* Intervention State - Content is now in sidebar, hide main panel */}
+        {viewState === "intervention" && <div className="hidden" />}
 
         {/* Phase 2 Test State */}
         {viewState === "phase2" && <div>
