@@ -167,12 +167,8 @@ const MainPanel = ({
         {/* Intervention State - Only show the button, message is in sidebar */}
         {viewState === "intervention" && <div className="flex flex-col items-center justify-center h-[80vh] gap-8 animate-fade-in">
             <div className="text-center space-y-4 max-w-2xl">
-              <h2 className="text-2xl font-bold text-foreground">
-                AI Analiz Sonuçları
-              </h2>
-              <p className="text-muted-foreground">
-                Lütfen soldaki mesajı okuyun ve talimatları takip edin.
-              </p>
+              
+              
             </div>
 
             {/* Start Phase 2 Button */}
