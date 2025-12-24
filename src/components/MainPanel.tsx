@@ -252,12 +252,6 @@ const MainPanel = ({ isLoading }: MainPanelProps) => {
                 onChange={(e) => setIsCheckboxChecked(e.target.checked)}
                 className="w-5 h-5 rounded border-2 border-primary bg-transparent checked:bg-primary checked:border-primary focus:ring-2 focus:ring-primary/50 cursor-pointer"
               />
-              <label 
-                htmlFor="confirmation-checkbox" 
-                className="text-sm text-muted-foreground cursor-pointer"
-              >
-                Mesajı okudum
-              </label>
             </div>
 
             {/* Intervention Message */}
@@ -275,14 +269,7 @@ const MainPanel = ({ isLoading }: MainPanelProps) => {
               {/* Start Phase 2 Button */}
               <button 
                 onClick={handleStartPhase2}
-                disabled={!isCheckboxChecked}
-                className={`
-                  w-full max-w-md py-4 px-6 rounded-xl font-medium text-lg transition-all duration-300
-                  ${isCheckboxChecked 
-                    ? "bg-primary hover:bg-primary/90 text-primary-foreground hover:shadow-lg hover:shadow-primary/25" 
-                    : "bg-muted text-muted-foreground cursor-not-allowed"
-                  }
-                `}
+                className="w-full max-w-md py-4 px-6 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-medium text-lg transition-all duration-300 hover:shadow-lg hover:shadow-primary/25"
               >
                 Başlat
               </button>
