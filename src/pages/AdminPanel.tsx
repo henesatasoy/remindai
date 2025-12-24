@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { RefreshCw, Filter, Database, Download } from "lucide-react";
-import { fetchSessionSummaries } from "@/lib/experimentService";
+import { RefreshCw, Filter, Database, Download, ChevronDown, ChevronRight } from "lucide-react";
+import { fetchSessionSummaries, fetchSessionDetails } from "@/lib/experimentService";
 import {
   Table,
   TableBody,
@@ -17,6 +17,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 interface SessionSummary {
   session_id: string;
@@ -28,10 +33,23 @@ interface SessionSummary {
   attention_check_click: boolean | null;
 }
 
+interface SessionDetail {
+  id: string;
+  session_id: string;
+  phase: string;
+  question_index: number;
+  is_correct: boolean;
+  reaction_time_ms: number;
+  timed_out: boolean;
+  created_at: string;
+}
+
 const AdminPanel = () => {
   const [sessions, setSessions] = useState<SessionSummary[]>([]);
   const [phaseFilter, setPhaseFilter] = useState<string>("all");
   const [isLoading, setIsLoading] = useState(true);
+  const [expandedSessions, setExpandedSessions] = useState<Set<string>>(new Set());
+  const [sessionDetails, setSessionDetails] = useState<Record<string, SessionDetail[]>>({});
 
   const loadData = async () => {
     setIsLoading(true);
@@ -56,6 +74,30 @@ const AdminPanel = () => {
 
   const formatReactionTime = (ms: number) => {
     return `${(ms / 1000).toFixed(2)}s`;
+  };
+
+  const toggleSession = async (sessionId: string) => {
+    const newExpanded = new Set(expandedSessions);
+    if (newExpanded.has(sessionId)) {
+      newExpanded.delete(sessionId);
+    } else {
+      newExpanded.add(sessionId);
+      // Load details if not already loaded
+      if (!sessionDetails[sessionId]) {
+        const details = await fetchSessionDetails(sessionId);
+        setSessionDetails((prev) => ({ ...prev, [sessionId]: details }));
+      }
+    }
+    setExpandedSessions(newExpanded);
+  };
+
+  const getPhaseLabel = (phase: string) => {
+    switch (phase) {
+      case 'practice': return 'Alıştırma';
+      case 'phase1': return 'Faz 1';
+      case 'phase2': return 'Faz 2';
+      default: return phase;
+    }
   };
 
   const exportToCSV = () => {
@@ -199,6 +241,7 @@ const AdminPanel = () => {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-10"></TableHead>
                 <TableHead>Session ID</TableHead>
                 <TableHead>Phases</TableHead>
                 <TableHead className="text-center">Total Correct</TableHead>
@@ -210,60 +253,148 @@ const AdminPanel = () => {
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-8">
+                  <TableCell colSpan={7} className="text-center py-8">
                     <RefreshCw className="w-6 h-6 animate-spin mx-auto text-muted-foreground" />
                   </TableCell>
                 </TableRow>
               ) : sessions.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                  <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
                     No data found
                   </TableCell>
                 </TableRow>
               ) : (
                 sessions.map((session) => (
-                  <TableRow key={session.session_id}>
-                    <TableCell className="font-mono text-xs">
-                      {session.session_id.slice(0, 8)}...
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex gap-1">
-                        {session.phases.split(', ').map((phase) => (
-                          <span
-                            key={phase}
-                            className={`
-                              px-2 py-0.5 rounded text-xs font-medium
-                              ${phase === 'practice' ? 'bg-blue-500/10 text-blue-500' : ''}
-                              ${phase === 'phase1' ? 'bg-green-500/10 text-green-500' : ''}
-                              ${phase === 'phase2' ? 'bg-purple-500/10 text-purple-500' : ''}
-                            `}
-                          >
-                            {phase}
+                  <Collapsible
+                    key={session.session_id}
+                    open={expandedSessions.has(session.session_id)}
+                    onOpenChange={() => toggleSession(session.session_id)}
+                    asChild
+                  >
+                    <>
+                      <TableRow className="cursor-pointer hover:bg-muted/50">
+                        <TableCell>
+                          <CollapsibleTrigger asChild>
+                            <button className="p-1 hover:bg-muted rounded">
+                              {expandedSessions.has(session.session_id) ? (
+                                <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                              ) : (
+                                <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                              )}
+                            </button>
+                          </CollapsibleTrigger>
+                        </TableCell>
+                        <TableCell className="font-mono text-xs">
+                          {session.session_id.slice(0, 8)}...
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex gap-1">
+                            {session.phases.split(', ').map((phase) => (
+                              <span
+                                key={phase}
+                                className={`
+                                  px-2 py-0.5 rounded text-xs font-medium
+                                  ${phase === 'practice' ? 'bg-blue-500/10 text-blue-500' : ''}
+                                  ${phase === 'phase1' ? 'bg-green-500/10 text-green-500' : ''}
+                                  ${phase === 'phase2' ? 'bg-purple-500/10 text-purple-500' : ''}
+                                `}
+                              >
+                                {phase}
+                              </span>
+                            ))}
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <span className="font-medium">
+                            {session.total_correct}/{session.total_questions}
                           </span>
-                        ))}
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-center">
-                      <span className="font-medium">
-                        {session.total_correct}/{session.total_questions}
-                      </span>
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {formatReactionTime(session.avg_reaction_time)}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {session.attention_check_click === null ? (
-                        <span className="text-muted-foreground">-</span>
-                      ) : session.attention_check_click ? (
-                        <span className="text-green-500">✓</span>
-                      ) : (
-                        <span className="text-destructive">✗</span>
-                      )}
-                    </TableCell>
-                    <TableCell className="text-sm text-muted-foreground">
-                      {formatDate(session.created_at)}
-                    </TableCell>
-                  </TableRow>
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {formatReactionTime(session.avg_reaction_time)}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {session.attention_check_click === null ? (
+                            <span className="text-muted-foreground">-</span>
+                          ) : session.attention_check_click ? (
+                            <span className="text-green-500">✓</span>
+                          ) : (
+                            <span className="text-destructive">✗</span>
+                          )}
+                        </TableCell>
+                        <TableCell className="text-sm text-muted-foreground">
+                          {formatDate(session.created_at)}
+                        </TableCell>
+                      </TableRow>
+                      <CollapsibleContent asChild>
+                        <TableRow className="bg-muted/30">
+                          <TableCell colSpan={7} className="p-0">
+                            <div className="p-4">
+                              <h4 className="text-sm font-medium text-foreground mb-3">
+                                Soru Detayları
+                              </h4>
+                              {sessionDetails[session.session_id] ? (
+                                <div className="rounded-lg border border-border overflow-hidden">
+                                  <Table>
+                                    <TableHeader>
+                                      <TableRow className="bg-muted/50">
+                                        <TableHead className="py-2">Faz</TableHead>
+                                        <TableHead className="py-2">Soru #</TableHead>
+                                        <TableHead className="py-2 text-center">Sonuç</TableHead>
+                                        <TableHead className="py-2 text-center">Tepki Süresi</TableHead>
+                                        <TableHead className="py-2 text-center">Zaman Aşımı</TableHead>
+                                      </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                      {sessionDetails[session.session_id].map((detail, idx) => (
+                                        <TableRow key={detail.id || idx} className="text-sm">
+                                          <TableCell className="py-2">
+                                            <span
+                                              className={`
+                                                px-2 py-0.5 rounded text-xs font-medium
+                                                ${detail.phase === 'practice' ? 'bg-blue-500/10 text-blue-500' : ''}
+                                                ${detail.phase === 'phase1' ? 'bg-green-500/10 text-green-500' : ''}
+                                                ${detail.phase === 'phase2' ? 'bg-purple-500/10 text-purple-500' : ''}
+                                              `}
+                                            >
+                                              {getPhaseLabel(detail.phase)}
+                                            </span>
+                                          </TableCell>
+                                          <TableCell className="py-2">
+                                            Soru {detail.question_index + 1}
+                                          </TableCell>
+                                          <TableCell className="py-2 text-center">
+                                            {detail.is_correct ? (
+                                              <span className="text-green-500 font-medium">Doğru</span>
+                                            ) : (
+                                              <span className="text-destructive font-medium">Yanlış</span>
+                                            )}
+                                          </TableCell>
+                                          <TableCell className="py-2 text-center">
+                                            {formatReactionTime(detail.reaction_time_ms)}
+                                          </TableCell>
+                                          <TableCell className="py-2 text-center">
+                                            {detail.timed_out ? (
+                                              <span className="text-amber-500">Evet</span>
+                                            ) : (
+                                              <span className="text-muted-foreground">Hayır</span>
+                                            )}
+                                          </TableCell>
+                                        </TableRow>
+                                      ))}
+                                    </TableBody>
+                                  </Table>
+                                </div>
+                              ) : (
+                                <div className="flex items-center justify-center py-4">
+                                  <RefreshCw className="w-4 h-4 animate-spin text-muted-foreground" />
+                                </div>
+                              )}
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      </CollapsibleContent>
+                    </>
+                  </Collapsible>
                 ))
               )}
             </TableBody>
