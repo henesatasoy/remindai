@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { RefreshCw, Filter, Database } from "lucide-react";
+import { RefreshCw, Filter, Database, Download } from "lucide-react";
 import { fetchSessionSummaries } from "@/lib/experimentService";
 import {
   Table,
@@ -58,6 +58,48 @@ const AdminPanel = () => {
     return `${(ms / 1000).toFixed(2)}s`;
   };
 
+  const exportToCSV = () => {
+    if (sessions.length === 0) return;
+
+    const headers = [
+      "Session ID",
+      "Phases",
+      "Total Correct",
+      "Total Questions",
+      "Correct Rate (%)",
+      "Avg Reaction Time (ms)",
+      "Attention Check",
+      "Created At",
+    ];
+
+    const rows = sessions.map((session) => [
+      session.session_id,
+      session.phases,
+      session.total_correct,
+      session.total_questions,
+      Math.round((session.total_correct / session.total_questions) * 100),
+      Math.round(session.avg_reaction_time),
+      session.attention_check_click === null
+        ? "N/A"
+        : session.attention_check_click
+        ? "Yes"
+        : "No",
+      session.created_at,
+    ]);
+
+    const csvContent = [
+      headers.join(","),
+      ...rows.map((row) => row.map((cell) => `"${cell}"`).join(",")),
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `experiment_results_${new Date().toISOString().split("T")[0]}.csv`;
+    link.click();
+    URL.revokeObjectURL(link.href);
+  };
+
   return (
     <div className="min-h-screen bg-background p-8">
       <div className="max-w-7xl mx-auto">
@@ -89,6 +131,17 @@ const AdminPanel = () => {
                 </SelectContent>
               </Select>
             </div>
+
+            {/* Export Button */}
+            <Button
+              onClick={exportToCSV}
+              variant="outline"
+              disabled={sessions.length === 0}
+              className="flex items-center gap-2"
+            >
+              <Download className="w-4 h-4" />
+              Export CSV
+            </Button>
 
             {/* Refresh Button */}
             <Button
