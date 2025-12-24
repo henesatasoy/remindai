@@ -1,5 +1,12 @@
-import { ChevronLeft, ChevronRight, MessageSquare, Sparkles, User } from "lucide-react";
+import { useState } from "react";
+import { ChevronLeft, ChevronRight, MessageSquare, Sparkles, User, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 type ViewState = "loading" | "instructions" | "practice" | "practice-passed" | "practice-failed" | "phase1" | "ai-analysis" | "intervention" | "phase2" | "complete";
 
@@ -45,6 +52,8 @@ const PsyCogSidebar = ({
   practiceScore = 0,
   userFirstMessage
 }: PsyCogSidebarProps) => {
+  const [modalContent, setModalContent] = useState<{ title: string; content: React.ReactNode } | null>(null);
+  
   const isIntervention = viewState === "intervention";
   const isInstructions = viewState === "instructions";
   const isPracticePassed = viewState === "practice-passed";
@@ -60,6 +69,51 @@ const PsyCogSidebar = ({
   
   // Determine if we should show intervention in history (after intervention, during phase2 or complete)
   const showInterventionInHistory = (viewState === "phase2" || viewState === "complete") && !isCollapsed;
+
+  const openInstructionsModal = () => {
+    setModalContent({
+      title: "Test Talimatları",
+      content: (
+        <div className="space-y-4">
+          <p className="whitespace-pre-line">{INSTRUCTION_INTRO}</p>
+          <div>
+            <p className="font-semibold mb-2">Dikkat Etmeniz Gerekenler:</p>
+            <ul className="space-y-2 ml-1">
+              {INSTRUCTION_ITEMS.map((item, index) => (
+                <li key={index} className="flex gap-2">
+                  <span className="text-primary">•</span>
+                  <span><strong>{item.title}:</strong> {item.description}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <p>{INSTRUCTION_FOOTER}</p>
+        </div>
+      )
+    });
+  };
+
+  const openPracticeResultModal = () => {
+    setModalContent({
+      title: "Alıştırma Sonucu",
+      content: (
+        <div className="space-y-3">
+          <p className="text-lg font-semibold">Alıştırma Tamamlandı</p>
+          <p>Puan: <span className="text-primary font-semibold">{practiceScore}/10</span></p>
+          <p>Alıştırma soruları bitti. Hazır iseniz 24 soruluk gerçek testin 12 soruluk ilk aşamasına başlamak için Başlat butonuna basınız.</p>
+        </div>
+      )
+    });
+  };
+
+  const openInterventionModal = () => {
+    setModalContent({
+      title: "AI Analiz Sonucu",
+      content: (
+        <p className="whitespace-pre-line">{INTERVENTION_TEXT}</p>
+      )
+    });
+  };
 
   return (
     <aside
@@ -134,7 +188,10 @@ const PsyCogSidebar = ({
 
             {/* Instructions History - show on practice results and intervention */}
             {(isPracticePassed || isPracticeFailed || isIntervention) && (
-              <div className="flex items-start gap-3">
+              <button 
+                onClick={openInstructionsModal}
+                className="flex items-start gap-3 w-full text-left hover:opacity-80 transition-opacity"
+              >
                 <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                   <Sparkles className="w-4 h-4 text-primary" />
                 </div>
@@ -142,12 +199,15 @@ const PsyCogSidebar = ({
                   <p className="text-muted-foreground text-xs line-clamp-3">{INSTRUCTION_INTRO.slice(0, 150)}...</p>
                   <span className="text-primary/70 text-[10px] mt-1 block">Devam Et ✓</span>
                 </div>
-              </div>
+              </button>
             )}
 
             {/* Practice Result History - show on intervention */}
             {isIntervention && (
-              <div className="flex items-start gap-3">
+              <button 
+                onClick={openPracticeResultModal}
+                className="flex items-start gap-3 w-full text-left hover:opacity-80 transition-opacity"
+              >
                 <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                   <Sparkles className="w-4 h-4 text-primary" />
                 </div>
@@ -155,7 +215,7 @@ const PsyCogSidebar = ({
                   <p className="text-muted-foreground text-xs">Alıştırma Tamamlandı - Puan: {practiceScore}/10</p>
                   <span className="text-primary/70 text-[10px] mt-1 block">Başlat ✓</span>
                 </div>
-              </div>
+              </button>
             )}
             
             {/* AI Message Bubble */}
@@ -227,34 +287,43 @@ const PsyCogSidebar = ({
             
             {/* Instructions in History */}
             {showInstructionsInHistory && (
-              <div className="flex items-start gap-2">
+              <button 
+                onClick={openInstructionsModal}
+                className="flex items-start gap-2 w-full text-left hover:bg-sidebar-accent rounded-lg p-2 transition-colors"
+              >
                 <Sparkles className="w-4 h-4 text-primary shrink-0 mt-1" />
                 <div className="text-xs text-muted-foreground">
                   <p className="line-clamp-2 mb-1">{INSTRUCTION_INTRO.slice(0, 100)}...</p>
                   <span className="text-primary/70 text-[10px]">Devam Et ✓</span>
                 </div>
-              </div>
+              </button>
             )}
             
             {/* Practice Result in History */}
             {showPracticeResultInHistory && (
-              <div className="flex items-start gap-2">
+              <button 
+                onClick={openPracticeResultModal}
+                className="flex items-start gap-2 w-full text-left hover:bg-sidebar-accent rounded-lg p-2 transition-colors"
+              >
                 <Sparkles className="w-4 h-4 text-primary shrink-0 mt-1" />
                 <div className="text-xs text-muted-foreground">
                   <p className="line-clamp-2 mb-1">Alıştırma Tamamlandı - Puan: {practiceScore}/10</p>
                   <span className="text-primary/70 text-[10px]">Başlat ✓</span>
                 </div>
-              </div>
+              </button>
             )}
             
             {showInterventionInHistory && (
-              <div className="flex items-start gap-2">
+              <button 
+                onClick={openInterventionModal}
+                className="flex items-start gap-2 w-full text-left hover:bg-sidebar-accent rounded-lg p-2 transition-colors"
+              >
                 <Sparkles className="w-4 h-4 text-primary shrink-0 mt-1" />
                 <div className="text-xs text-muted-foreground">
                   <p className="line-clamp-2 mb-1">{INTERVENTION_TEXT.slice(0, 80)}...</p>
                   <span className="text-primary/70 text-[10px]">Başlat ✓</span>
                 </div>
-              </div>
+              </button>
             )}
             
             {/* Regular prompt history */}
@@ -287,6 +356,17 @@ const PsyCogSidebar = ({
           </p>
         </div>
       )}
+      {/* Message Detail Modal */}
+      <Dialog open={modalContent !== null} onOpenChange={() => setModalContent(null)}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{modalContent?.title}</DialogTitle>
+          </DialogHeader>
+          <div className="text-foreground text-sm leading-relaxed">
+            {modalContent?.content}
+          </div>
+        </DialogContent>
+      </Dialog>
     </aside>
   );
 };
