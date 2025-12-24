@@ -12,6 +12,8 @@ interface PsyCogSidebarProps {
   onAttentionCheckClick: () => void;
   onStartPhase2?: () => void;
   onStartPractice?: () => void;
+  onStartPhase1?: () => void;
+  practiceScore?: number;
   userFirstMessage?: string;
 }
 
@@ -39,14 +41,22 @@ const PsyCogSidebar = ({
   onAttentionCheckClick,
   onStartPhase2,
   onStartPractice,
+  onStartPhase1,
+  practiceScore = 0,
   userFirstMessage
 }: PsyCogSidebarProps) => {
   const isIntervention = viewState === "intervention";
   const isInstructions = viewState === "instructions";
-  const isFullscreenChat = isIntervention || isInstructions;
+  const isPracticePassed = viewState === "practice-passed";
+  const isPracticeFailed = viewState === "practice-failed";
+  const isFullscreenChat = isIntervention || isInstructions || isPracticePassed || isPracticeFailed;
   
   // Determine if we should show instructions in history (after instructions phase)
   const showInstructionsInHistory = !isInstructions && viewState !== "loading" && !isCollapsed;
+  
+  // Determine if we should show practice result in history
+  const showPracticeResultInHistory = !isPracticePassed && !isPracticeFailed && 
+    (viewState === "phase1" || viewState === "ai-analysis" || viewState === "intervention" || viewState === "phase2" || viewState === "complete") && !isCollapsed;
   
   // Determine if we should show intervention in history (after intervention, during phase2 or complete)
   const showInterventionInHistory = (viewState === "phase2" || viewState === "complete") && !isCollapsed;
@@ -132,6 +142,18 @@ const PsyCogSidebar = ({
                   <p className="text-foreground text-sm leading-relaxed whitespace-pre-line">
                     {INTERVENTION_TEXT}
                   </p>
+                ) : isPracticePassed ? (
+                  <div className="text-foreground text-sm leading-relaxed space-y-3">
+                    <p className="font-semibold text-base">Alıştırma Tamamlandı</p>
+                    <p>Puan: <span className="text-primary font-semibold">{practiceScore}/10</span></p>
+                    <p>Alıştırma soruları bitti. Hazır iseniz 24 soruluk gerçek testin 12 soruluk ilk aşamasına başlamak için lütfen aşağıdaki Başlat butonuna basınız.</p>
+                  </div>
+                ) : isPracticeFailed ? (
+                  <div className="text-foreground text-sm leading-relaxed space-y-3">
+                    <p className="font-semibold text-base">Alıştırma Tamamlandı</p>
+                    <p>Puan: <span className="text-destructive font-semibold">{practiceScore}/10</span></p>
+                    <p className="text-lg">Lütfen deney yürütücüsüne haber ediniz.</p>
+                  </div>
                 ) : (
                   <div className="text-foreground text-sm leading-relaxed space-y-4">
                     <p className="whitespace-pre-line">{INSTRUCTION_INTRO}</p>
@@ -154,15 +176,17 @@ const PsyCogSidebar = ({
               </div>
             </div>
 
-            {/* Action Button */}
-            <div className="flex justify-center pt-6">
-              <Button
-                onClick={isIntervention ? onStartPhase2 : onStartPractice}
-                className="px-8 py-3"
-              >
-                {isIntervention ? "Başlat" : "Devam Et"}
-              </Button>
-            </div>
+            {/* Action Button - hide for practice-failed */}
+            {!isPracticeFailed && (
+              <div className="flex justify-center pt-6">
+                <Button
+                  onClick={isIntervention ? onStartPhase2 : isPracticePassed ? onStartPhase1 : onStartPractice}
+                  className="px-8 py-3"
+                >
+                  {isIntervention ? "Başlat" : isPracticePassed ? "Başlat" : "Devam Et"}
+                </Button>
+              </div>
+            )}
           </div>
         ) : (
           /* Chat history with instructions and intervention */
@@ -186,7 +210,17 @@ const PsyCogSidebar = ({
               </div>
             )}
             
-            {/* Intervention in History */}
+            {/* Practice Result in History */}
+            {showPracticeResultInHistory && (
+              <div className="flex items-start gap-2">
+                <Sparkles className="w-4 h-4 text-primary shrink-0 mt-1" />
+                <div className="text-xs text-muted-foreground">
+                  <p className="line-clamp-2 mb-1">Alıştırma Tamamlandı - Puan: {practiceScore}/10</p>
+                  <span className="text-primary/70 text-[10px]">Başlat ✓</span>
+                </div>
+              </div>
+            )}
+            
             {showInterventionInHistory && (
               <div className="flex items-start gap-2">
                 <Sparkles className="w-4 h-4 text-primary shrink-0 mt-1" />
