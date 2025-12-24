@@ -4,18 +4,14 @@ import TestEngine from "./TestEngine";
 import AIAnalysis from "./AIAnalysis";
 import { Answer, PRACTICE_QUESTIONS, PHASE1_QUESTIONS, PHASE2_QUESTIONS } from "@/data/questions";
 import { generateSessionId, saveExperimentResult } from "@/lib/experimentService";
-
 type ViewState = "loading" | "instructions" | "practice" | "practice-passed" | "practice-failed" | "phase1" | "ai-analysis" | "intervention" | "phase2" | "complete";
-
 interface MainPanelProps {
   isLoading: boolean;
   viewState: ViewState;
   onViewStateChange: (state: ViewState) => void;
   isAttentionCheckClicked: boolean;
 }
-
 const INSTRUCTION_TEXT = `Bu bölümde, problem çözme ve soyut muhakeme yeteneklerinizi ölçen bir dizi görsel bulmaca ile karşılaşacaksınız. Her soruda, 3x3'lük bir ızgara (matris) göreceksiniz. Bu ızgaradaki kutucuklardan 8 tanesi, belirli bir kurala veya örüntüye göre yerleştirilmiş şekiller içermektedir. Sağ alt köşedeki kutucuk ise boştur. Göreviniz: Şekillerin hem satırlardaki (soldan sağa) hem de sütunlardaki (yukarıdan aşağıya) değişim kurallarını keşfetmek ve bu kurala göre boş kutucuğa gelmesi gereken en uygun şekli, aşağıda verilen 4 seçenek arasından bulup işaretlemektir. Dikkat Etmeniz Gerekenler: Süre: Her bir soruyu çözmek için 30 saniyeniz olacaktır. Geri Sayım: Sürenin bitimine 5 saniye kala ekranda bir geri sayım sayacı belirecektir. Tahmin: Eğer kuralı süreniz dolmadan bulamazsanız, en mantıklı gelen seçeneği işaretleyerek şansınızı deneyiniz. Boş bırakmak yerine tahmin yürütmeniz önerilir. İlerleme: Cevabı işaretlediğinizde veya süre dolduğunda otomatik olarak bir sonraki soruya geçilecektir. Geriye dönüp cevabınızı değiştirme şansınız yoktur. Gerçek testten önce alıştırma sorularına ile başlayacaksınız.`;
-
 const MainPanel = ({
   isLoading,
   viewState,
@@ -26,17 +22,14 @@ const MainPanel = ({
 
   // Generate a unique session ID for this experiment session
   const sessionId = useMemo(() => generateSessionId(), []);
-
   useEffect(() => {
     if (!isLoading && viewState === "loading") {
       onViewStateChange("instructions");
     }
   }, [isLoading, viewState, onViewStateChange]);
-
   const handleStartPractice = () => {
     onViewStateChange("practice");
   };
-
   const handlePracticeComplete = (answers: Answer[]) => {
     const score = answers.filter(a => a.isCorrect).length;
     setPracticeScore(score);
@@ -46,20 +39,16 @@ const MainPanel = ({
       onViewStateChange("practice-failed");
     }
   };
-
   const handleStartPhase1 = () => {
     onViewStateChange("phase1");
   };
-
   const handlePhase1Complete = (answers: Answer[]) => {
     console.log("Phase 1 completed:", answers);
     onViewStateChange("ai-analysis");
   };
-
   const handleAIAnalysisComplete = () => {
     onViewStateChange("intervention");
   };
-
   const handleStartPhase2 = () => {
     // Save the attention check result
     saveExperimentResult({
@@ -73,12 +62,10 @@ const MainPanel = ({
     });
     onViewStateChange("phase2");
   };
-
   const handlePhase2Complete = (answers: Answer[]) => {
     console.log("Phase 2 completed:", answers);
     onViewStateChange("complete");
   };
-
   return <main className="flex-1 h-screen overflow-y-auto bg-background animate-slide-in-right">
       <div className="max-w-4xl mx-auto p-8">
         {/* Loading State */}
@@ -123,19 +110,7 @@ const MainPanel = ({
 
         {/* Practice Test State */}
         {viewState === "practice" && <div>
-            <div className="flex items-center gap-4 pb-6 mb-6 border-b border-border">
-              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                <Brain className="w-6 h-6 text-primary" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-foreground">
-                  Alıştırma Soruları
-                </h1>
-                <p className="text-muted-foreground">
-                  10 soru • 30 saniye / soru
-                </p>
-              </div>
-            </div>
+            
             <TestEngine questions={PRACTICE_QUESTIONS} onComplete={handlePracticeComplete} sessionId={sessionId} phase="practice" />
           </div>}
 
