@@ -94,7 +94,7 @@ const MainPanel = ({
             </div>
 
             <div className="bg-card border border-border rounded-xl p-6">
-              <p className="text-foreground leading-relaxed whitespace-pre-line text-right font-sans">
+              <p className="text-foreground leading-relaxed whitespace-pre-line font-sans text-left">
                 {INSTRUCTION_TEXT}
               </p>
             </div>
