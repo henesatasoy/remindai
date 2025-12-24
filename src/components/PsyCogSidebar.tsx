@@ -257,7 +257,9 @@ const PsyCogSidebar = ({
               </button>}
             
             {/* Regular prompt history */}
-            {promptHistory.map((prompt, index) => {})}
+            {promptHistory.map((prompt, index) => (
+              <div key={index} className="text-xs text-muted-foreground">{prompt}</div>
+            ))}
           </div>)}
       </div>
 

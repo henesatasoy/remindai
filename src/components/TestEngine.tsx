@@ -153,10 +153,6 @@ const TestEngine = ({
         </span>
       </div>
 
-      {/* Question Counter */}
-      <div className="absolute top-0 right-0 text-lg text-muted-foreground">
-        Soru {currentIndex + 1}/{questions.length}
-      </div>
 
       {/* Warning Flash */}
       {showWarning && <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
