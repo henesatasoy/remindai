@@ -44,6 +44,12 @@ const PsyCogSidebar = ({
   const isIntervention = viewState === "intervention";
   const isInstructions = viewState === "instructions";
   const isFullscreenChat = isIntervention || isInstructions;
+  
+  // Determine if we should show instructions in history (after instructions phase)
+  const showInstructionsInHistory = !isInstructions && viewState !== "loading" && !isCollapsed;
+  
+  // Determine if we should show intervention in history (after intervention, during phase2 or complete)
+  const showInterventionInHistory = (viewState === "phase2" || viewState === "complete") && !isCollapsed;
 
   return (
     <aside
@@ -159,24 +165,57 @@ const PsyCogSidebar = ({
             </div>
           </div>
         ) : (
-          /* Regular prompt history */
-          promptHistory.map((prompt, index) => (
-            <div
-              key={index}
-              className={`
-                flex items-start gap-3 p-3 rounded-lg
-                hover:bg-sidebar-accent transition-colors cursor-pointer
-                ${isCollapsed ? "justify-center" : ""}
-              `}
-            >
-              <MessageSquare className="w-5 h-5 text-muted-foreground shrink-0 mt-0.5" />
-              {!isCollapsed && (
-                <span className="text-sm text-foreground line-clamp-2">
-                  {prompt}
-                </span>
-              )}
-            </div>
-          ))
+          /* Chat history with instructions and intervention */
+          <div className="space-y-4 p-2">
+            {/* User's First Message in History */}
+            {userFirstMessage && !isCollapsed && (
+              <div className="flex items-start gap-2">
+                <User className="w-4 h-4 text-muted-foreground shrink-0 mt-1" />
+                <p className="text-xs text-muted-foreground line-clamp-2">{userFirstMessage}</p>
+              </div>
+            )}
+            
+            {/* Instructions in History */}
+            {showInstructionsInHistory && (
+              <div className="flex items-start gap-2">
+                <Sparkles className="w-4 h-4 text-primary shrink-0 mt-1" />
+                <div className="text-xs text-muted-foreground">
+                  <p className="line-clamp-2 mb-1">{INSTRUCTION_INTRO.slice(0, 100)}...</p>
+                  <span className="text-primary/70 text-[10px]">Devam Et ✓</span>
+                </div>
+              </div>
+            )}
+            
+            {/* Intervention in History */}
+            {showInterventionInHistory && (
+              <div className="flex items-start gap-2">
+                <Sparkles className="w-4 h-4 text-primary shrink-0 mt-1" />
+                <div className="text-xs text-muted-foreground">
+                  <p className="line-clamp-2 mb-1">{INTERVENTION_TEXT.slice(0, 80)}...</p>
+                  <span className="text-primary/70 text-[10px]">Başlat ✓</span>
+                </div>
+              </div>
+            )}
+            
+            {/* Regular prompt history */}
+            {promptHistory.map((prompt, index) => (
+              <div
+                key={index}
+                className={`
+                  flex items-start gap-3 p-3 rounded-lg
+                  hover:bg-sidebar-accent transition-colors cursor-pointer
+                  ${isCollapsed ? "justify-center" : ""}
+                `}
+              >
+                <MessageSquare className="w-5 h-5 text-muted-foreground shrink-0 mt-0.5" />
+                {!isCollapsed && (
+                  <span className="text-sm text-foreground line-clamp-2">
+                    {prompt}
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
         )}
       </div>
 
