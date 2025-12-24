@@ -29,6 +29,7 @@ const Index = () => {
   const [promptHistory, setPromptHistory] = useState<string[]>([]);
   const [viewState, setViewState] = useState<ViewState>("loading");
   const [isAttentionCheckClicked, setIsAttentionCheckClicked] = useState(false);
+  const [practiceScore, setPracticeScore] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Generate a unique session ID for this experiment session
@@ -197,9 +198,13 @@ const Index = () => {
     setViewState("practice");
   };
 
+  const handleStartPhase1 = () => {
+    setViewState("phase1");
+  };
+
   // Transformed view with sidebar and main panel
-  // During intervention or instructions, sidebar takes full screen
-  const isFullscreenChat = viewState === "intervention" || viewState === "instructions";
+  // During intervention, instructions, or practice results, sidebar takes full screen
+  const isFullscreenChat = viewState === "intervention" || viewState === "instructions" || viewState === "practice-passed" || viewState === "practice-failed";
 
   return <div className="min-h-screen bg-background flex w-full">
       <PsyCogSidebar 
@@ -211,6 +216,8 @@ const Index = () => {
         onAttentionCheckClick={() => setIsAttentionCheckClicked(!isAttentionCheckClicked)}
         onStartPhase2={handleStartPhase2}
         onStartPractice={handleStartPractice}
+        onStartPhase1={handleStartPhase1}
+        practiceScore={practiceScore}
         userFirstMessage={promptHistory[promptHistory.length - 1] || ""}
       />
       {!isFullscreenChat && (
@@ -220,6 +227,7 @@ const Index = () => {
           onViewStateChange={setViewState}
           isAttentionCheckClicked={isAttentionCheckClicked}
           sessionId={sessionId}
+          onPracticeScoreChange={setPracticeScore}
         />
       )}
     </div>;
