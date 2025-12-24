@@ -1,69 +1,84 @@
 import { useEffect, useState, useMemo } from "react";
-import { Loader2, Brain, BookOpen, AlertTriangle, CheckCircle, Sparkles } from "lucide-react";
+import { Loader2, Brain, BookOpen, AlertTriangle, CheckCircle } from "lucide-react";
 import TestEngine from "./TestEngine";
 import AIAnalysis from "./AIAnalysis";
 import { Answer, PRACTICE_QUESTIONS, PHASE1_QUESTIONS, PHASE2_QUESTIONS } from "@/data/questions";
 import { generateSessionId, saveExperimentResult } from "@/lib/experimentService";
+
+type ViewState = "loading" | "instructions" | "practice" | "practice-passed" | "practice-failed" | "phase1" | "ai-analysis" | "intervention" | "phase2" | "complete";
+
 interface MainPanelProps {
   isLoading: boolean;
+  viewState: ViewState;
+  onViewStateChange: (state: ViewState) => void;
+  isAttentionCheckClicked: boolean;
 }
-type ViewState = "loading" | "instructions" | "practice" | "practice-passed" | "practice-failed" | "phase1" | "ai-analysis" | "intervention" | "phase2" | "complete";
+
 const INSTRUCTION_TEXT = `Bu bölümde, problem çözme ve soyut muhakeme yeteneklerinizi ölçen bir dizi görsel bulmaca ile karşılaşacaksınız. Her soruda, 3x3'lük bir ızgara (matris) göreceksiniz. Bu ızgaradaki kutucuklardan 8 tanesi, belirli bir kurala veya örüntüye göre yerleştirilmiş şekiller içermektedir. Sağ alt köşedeki kutucuk ise boştur. Göreviniz: Şekillerin hem satırlardaki (soldan sağa) hem de sütunlardaki (yukarıdan aşağıya) değişim kurallarını keşfetmek ve bu kurala göre boş kutucuğa gelmesi gereken en uygun şekli, aşağıda verilen 4 seçenek arasından bulup işaretlemektir. Dikkat Etmeniz Gerekenler: Süre: Her bir soruyu çözmek için 30 saniyeniz olacaktır. Geri Sayım: Sürenin bitimine 5 saniye kala ekranda bir geri sayım sayacı belirecektir. Tahmin: Eğer kuralı süreniz dolmadan bulamazsanız, en mantıklı gelen seçeneği işaretleyerek şansınızı deneyiniz. Boş bırakmak yerine tahmin yürütmeniz önerilir. İlerleme: Cevabı işaretlediğinizde veya süre dolduğunda otomatik olarak bir sonraki soruya geçilecektir. Geriye dönüp cevabınızı değiştirme şansınız yoktur. Gerçek testten önce alıştırma sorularına ile başlayacaksınız.`;
-const INTERVENTION_TEXT = `Veri sonuçları kaliteli. İkinci test aşamasında verimlilik artışı ve doğruluk oranında artış bekleniyor. Lütfen bu mesajı okuduysanız ekranın sol üstünde bulunan kutucuğu işaretleyin. İşaretledikten sonra hazır iseniz ikinci test aşamasını başlatmak için aşağıda ki Başlat butonuna basınız.`;
+
 const MainPanel = ({
-  isLoading
+  isLoading,
+  viewState,
+  onViewStateChange,
+  isAttentionCheckClicked
 }: MainPanelProps) => {
-  const [viewState, setViewState] = useState<ViewState>("loading");
   const [practiceScore, setPracticeScore] = useState(0);
-  const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
 
   // Generate a unique session ID for this experiment session
   const sessionId = useMemo(() => generateSessionId(), []);
+
   useEffect(() => {
     if (!isLoading && viewState === "loading") {
-      setViewState("instructions");
+      onViewStateChange("instructions");
     }
-  }, [isLoading, viewState]);
+  }, [isLoading, viewState, onViewStateChange]);
+
   const handleStartPractice = () => {
-    setViewState("practice");
+    onViewStateChange("practice");
   };
+
   const handlePracticeComplete = (answers: Answer[]) => {
     const score = answers.filter(a => a.isCorrect).length;
     setPracticeScore(score);
     if (score >= 3) {
-      setViewState("practice-passed");
+      onViewStateChange("practice-passed");
     } else {
-      setViewState("practice-failed");
+      onViewStateChange("practice-failed");
     }
   };
+
   const handleStartPhase1 = () => {
-    setViewState("phase1");
+    onViewStateChange("phase1");
   };
+
   const handlePhase1Complete = (answers: Answer[]) => {
     console.log("Phase 1 completed:", answers);
-    setViewState("ai-analysis");
+    onViewStateChange("ai-analysis");
   };
+
   const handleAIAnalysisComplete = () => {
-    setViewState("intervention");
+    onViewStateChange("intervention");
   };
+
   const handleStartPhase2 = () => {
     // Save the attention check result
     saveExperimentResult({
       session_id: sessionId,
       phase: 'phase2',
       question_index: -1,
-      // Special index for attention check
       is_correct: true,
       reaction_time_ms: 0,
       timed_out: false,
-      attention_check_click: isCheckboxChecked
+      attention_check_click: isAttentionCheckClicked
     });
-    setViewState("phase2");
+    onViewStateChange("phase2");
   };
+
   const handlePhase2Complete = (answers: Answer[]) => {
     console.log("Phase 2 completed:", answers);
-    setViewState("complete");
+    onViewStateChange("complete");
   };
+
   return <main className="flex-1 h-screen overflow-y-auto bg-background animate-slide-in-right">
       <div className="max-w-4xl mx-auto p-8">
         {/* Loading State */}
@@ -168,38 +183,27 @@ const MainPanel = ({
 
         {/* Phase 1 Test State */}
         {viewState === "phase1" && <div>
-            
             <TestEngine questions={PHASE1_QUESTIONS} onComplete={handlePhase1Complete} sessionId={sessionId} phase="phase1" />
           </div>}
 
         {/* AI Analysis State */}
         {viewState === "ai-analysis" && <AIAnalysis onComplete={handleAIAnalysisComplete} />}
 
-        {/* Intervention State */}
-        {viewState === "intervention" && <div className="relative min-h-[80vh] flex flex-col animate-fade-in">
-            {/* Intervention Message */}
-            <div className="flex-1 flex flex-col items-center justify-center gap-8">
-              {/* Clickable Logo */}
-              <button
-                onClick={() => setIsCheckboxChecked(!isCheckboxChecked)}
-                className="w-16 h-16 rounded-full flex items-center justify-center bg-primary/10"
-              >
-                <Sparkles className={`w-8 h-8 transition-colors duration-300 ${
-                  isCheckboxChecked ? "text-green-500" : "text-primary"
-                }`} />
-              </button>
-
-              <div className="bg-card border border-border rounded-xl p-8 max-w-2xl">
-                <p className="text-foreground leading-relaxed text-lg text-center">
-                  {INTERVENTION_TEXT}
-                </p>
-              </div>
-
-              {/* Start Phase 2 Button */}
-              <button onClick={handleStartPhase2} className="w-full max-w-md py-4 px-6 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-medium text-lg transition-all duration-300 hover:shadow-lg hover:shadow-primary/25">
-                Başlat
-              </button>
+        {/* Intervention State - Only show the button, message is in sidebar */}
+        {viewState === "intervention" && <div className="flex flex-col items-center justify-center h-[80vh] gap-8 animate-fade-in">
+            <div className="text-center space-y-4 max-w-2xl">
+              <h2 className="text-2xl font-bold text-foreground">
+                AI Analiz Sonuçları
+              </h2>
+              <p className="text-muted-foreground">
+                Lütfen soldaki mesajı okuyun ve talimatları takip edin.
+              </p>
             </div>
+
+            {/* Start Phase 2 Button */}
+            <button onClick={handleStartPhase2} className="w-full max-w-md py-4 px-6 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-medium text-lg transition-all duration-300 hover:shadow-lg hover:shadow-primary/25">
+              Başlat
+            </button>
           </div>}
 
         {/* Phase 2 Test State */}
