@@ -175,7 +175,14 @@ const Index = () => {
       </div>;
   }
 
+  const handleStartPhase2 = () => {
+    setViewState("phase2");
+  };
+
   // Transformed view with sidebar and main panel
+  // During intervention, sidebar takes full screen
+  const isIntervention = viewState === "intervention";
+
   return <div className="min-h-screen bg-background flex w-full">
       <PsyCogSidebar 
         isCollapsed={isSidebarCollapsed} 
@@ -184,13 +191,17 @@ const Index = () => {
         viewState={viewState}
         isAttentionCheckClicked={isAttentionCheckClicked}
         onAttentionCheckClick={() => setIsAttentionCheckClicked(!isAttentionCheckClicked)}
+        onStartPhase2={handleStartPhase2}
+        userFirstMessage={promptHistory[promptHistory.length - 1] || ""}
       />
-      <MainPanel 
-        isLoading={isLoading} 
-        viewState={viewState}
-        onViewStateChange={setViewState}
-        isAttentionCheckClicked={isAttentionCheckClicked}
-      />
+      {!isIntervention && (
+        <MainPanel 
+          isLoading={isLoading} 
+          viewState={viewState}
+          onViewStateChange={setViewState}
+          isAttentionCheckClicked={isAttentionCheckClicked}
+        />
+      )}
     </div>;
 };
 export default Index;
