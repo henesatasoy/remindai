@@ -24,7 +24,9 @@ interface PsyCogSidebarProps {
   userFirstMessage?: string;
 }
 
-const INTERVENTION_TEXT = `Veri sonuçları kaliteli. İkinci test aşamasında verimlilik artışı ve doğruluk oranında artış bekleniyor. Lütfen bu mesajı okuduysanız sol üstte ki PsyCog yazısının solunda bulunan logoya tıklayın. İşaretledikten sonra hazır iseniz ikinci test aşamasını başlatmak için aşağıda ki Başlat butonuna basınız.`;
+const INTERVENTION_TEXT_1 = `Veri sonuçları kaliteli. İkinci test aşamasında verimlilik artışı ve doğruluk oranında artış bekleniyor.`;
+
+const INTERVENTION_TEXT_2 = `Lütfen bu mesajı okuduysanız sol üstte ki PsyCog yazısının solunda bulunan logoya tıklayın. İşaretledikten sonra hazır iseniz ikinci test aşamasını başlatmak için aşağıda ki Başlat butonuna basınız.`;
 
 const INSTRUCTION_INTRO = `Bu bölümde, problem çözme ve soyut muhakeme yeteneklerinizi ölçen bir dizi görsel bulmaca ile karşılaşacaksınız. Her soruda, 3x3'lük bir ızgara (matris) göreceksiniz. Bu ızgaradaki kutucuklardan 8 tanesi, belirli bir kurala veya örüntüye göre yerleştirilmiş şekiller içermektedir. Sağ alt köşedeki kutucuk ise boştur.
 
@@ -110,7 +112,10 @@ const PsyCogSidebar = ({
     setModalContent({
       title: "AI Analiz Sonucu",
       content: (
-        <p className="whitespace-pre-line">{INTERVENTION_TEXT}</p>
+        <div className="space-y-4">
+          <p className="whitespace-pre-line">{INTERVENTION_TEXT_1}</p>
+          <p className="whitespace-pre-line">{INTERVENTION_TEXT_2}</p>
+        </div>
       )
     });
   };
@@ -226,7 +231,7 @@ const PsyCogSidebar = ({
               <div className="flex-1 bg-card border border-border rounded-xl p-4 max-w-[80%]">
                 {isIntervention ? (
                   <p className="text-foreground text-sm leading-relaxed whitespace-pre-line">
-                    {INTERVENTION_TEXT}
+                    {INTERVENTION_TEXT_1}
                   </p>
                 ) : isPracticePassed ? (
                   <div className="text-foreground text-sm leading-relaxed space-y-3">
@@ -261,6 +266,20 @@ const PsyCogSidebar = ({
                 )}
               </div>
             </div>
+
+            {/* Second AI Message for Intervention */}
+            {isIntervention && (
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                  <Sparkles className="w-4 h-4 text-primary" />
+                </div>
+                <div className="flex-1 bg-card border border-border rounded-xl p-4 max-w-[80%]">
+                  <p className="text-foreground text-sm leading-relaxed whitespace-pre-line">
+                    {INTERVENTION_TEXT_2}
+                  </p>
+                </div>
+              </div>
+            )}
 
             {/* Action Button - hide for practice-failed */}
             {!isPracticeFailed && (
@@ -320,7 +339,7 @@ const PsyCogSidebar = ({
               >
                 <Sparkles className="w-4 h-4 text-primary shrink-0 mt-1" />
                 <div className="text-xs text-muted-foreground">
-                  <p className="line-clamp-2 mb-1">{INTERVENTION_TEXT.slice(0, 80)}...</p>
+                  <p className="line-clamp-2 mb-1">{INTERVENTION_TEXT_1.slice(0, 80)}...</p>
                   <span className="text-primary/70 text-[10px]">Başlat ✓</span>
                 </div>
               </button>
