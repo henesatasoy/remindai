@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { RefreshCw, Filter, Database, Download, ChevronDown, ChevronRight, CalendarIcon, X } from "lucide-react";
+import { RefreshCw, Filter, Database, Download, ChevronDown, ChevronRight, CalendarIcon, X, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import { tr } from "date-fns/locale";
-import { fetchSessionSummaries, fetchSessionDetails, fetchAllResults } from "@/lib/experimentService";
+import { fetchSessionSummaries, fetchSessionDetails, fetchAllResults, deleteSession } from "@/lib/experimentService";
+import { toast } from "sonner";
 import {
   Table,
   TableBody,
@@ -63,6 +64,34 @@ const AdminPanel = () => {
   const [isExporting, setIsExporting] = useState(false);
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
+  const [deletingSession, setDeletingSession] = useState<string | null>(null);
+
+  const handleDeleteSession = async (sessionId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (deletingSession) return;
+    
+    setDeletingSession(sessionId);
+    const success = await deleteSession(sessionId);
+    
+    if (success) {
+      setSessions(prev => prev.filter(s => s.session_id !== sessionId));
+      setSessionDetails(prev => {
+        const newDetails = { ...prev };
+        delete newDetails[sessionId];
+        return newDetails;
+      });
+      setExpandedSessions(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(sessionId);
+        return newSet;
+      });
+      toast.success("Session silindi");
+    } else {
+      toast.error("Session silinemedi");
+    }
+    
+    setDeletingSession(null);
+  };
 
   const loadData = async () => {
     setIsLoading(true);
@@ -364,18 +393,19 @@ const AdminPanel = () => {
                 <TableHead className="text-center">Avg Reaction Time</TableHead>
                 <TableHead className="text-center">Attention Check</TableHead>
                 <TableHead>Created At</TableHead>
+                <TableHead className="w-16 text-center">Sil</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center py-8">
+                  <TableCell colSpan={8} className="text-center py-8">
                     <RefreshCw className="w-6 h-6 animate-spin mx-auto text-muted-foreground" />
                   </TableCell>
                 </TableRow>
               ) : filteredSessions.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                  <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
                     No data found
                   </TableCell>
                 </TableRow>
@@ -439,6 +469,21 @@ const AdminPanel = () => {
                         </TableCell>
                         <TableCell className="text-sm text-muted-foreground">
                           {formatDate(session.created_at)}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
+                            onClick={(e) => handleDeleteSession(session.session_id, e)}
+                            disabled={deletingSession === session.session_id}
+                          >
+                            {deletingSession === session.session_id ? (
+                              <RefreshCw className="w-4 h-4 animate-spin" />
+                            ) : (
+                              <Trash2 className="w-4 h-4" />
+                            )}
+                          </Button>
                         </TableCell>
                       </TableRow>
                       <CollapsibleContent asChild>
