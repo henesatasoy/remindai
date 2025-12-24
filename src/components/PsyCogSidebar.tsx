@@ -1,5 +1,4 @@
 import { ChevronLeft, ChevronRight, MessageSquare, Sparkles } from "lucide-react";
-import { useState, useEffect } from "react";
 
 type ViewState = "loading" | "instructions" | "practice" | "practice-passed" | "practice-failed" | "phase1" | "ai-analysis" | "intervention" | "phase2" | "complete";
 
@@ -10,41 +9,9 @@ interface PsyCogSidebarProps {
   viewState: ViewState;
   isAttentionCheckClicked: boolean;
   onAttentionCheckClick: () => void;
-  onStartPhase2?: () => void;
 }
 
 const INTERVENTION_TEXT = `Veri sonuçları kaliteli. İkinci test aşamasında verimlilik artışı ve doğruluk oranında artış bekleniyor. Lütfen bu mesajı okuduysanız sol üstte ki PsyCog yazısının solunda bulunan logoya tıklayın. İşaretledikten sonra hazır iseniz ikinci test aşamasını başlatmak için aşağıda ki Başlat butonuna basınız.`;
-
-const useTypewriter = (text: string, speed: number = 20, enabled: boolean = true) => {
-  const [displayedText, setDisplayedText] = useState("");
-  const [isComplete, setIsComplete] = useState(false);
-
-  useEffect(() => {
-    if (!enabled) {
-      setDisplayedText(text);
-      setIsComplete(true);
-      return;
-    }
-
-    setDisplayedText("");
-    setIsComplete(false);
-    let index = 0;
-
-    const timer = setInterval(() => {
-      if (index < text.length) {
-        setDisplayedText(text.slice(0, index + 1));
-        index++;
-      } else {
-        setIsComplete(true);
-        clearInterval(timer);
-      }
-    }, speed);
-
-    return () => clearInterval(timer);
-  }, [text, speed, enabled]);
-
-  return { displayedText, isComplete };
-};
 
 const PsyCogSidebar = ({ 
   isCollapsed, 
@@ -52,11 +19,9 @@ const PsyCogSidebar = ({
   promptHistory, 
   viewState, 
   isAttentionCheckClicked, 
-  onAttentionCheckClick,
-  onStartPhase2
+  onAttentionCheckClick 
 }: PsyCogSidebarProps) => {
   const isIntervention = viewState === "intervention";
-  const { displayedText, isComplete } = useTypewriter(INTERVENTION_TEXT, 50, isIntervention);
 
   return (
     <aside
@@ -64,7 +29,7 @@ const PsyCogSidebar = ({
         h-screen bg-sidebar border-r border-sidebar-border
         transition-all duration-500 ease-in-out
         flex flex-col relative
-        ${isIntervention ? "flex-1" : isCollapsed ? "w-16" : "w-72"}
+        ${isCollapsed ? "w-16" : "w-72"}
       `}
     >
       {/* Toggle Button - hide during intervention */}
@@ -102,7 +67,7 @@ const PsyCogSidebar = ({
           <h1
             className={`
               font-semibold text-foreground transition-all duration-300
-              ${isCollapsed && !isIntervention ? "hidden" : "text-xl"}
+              ${isCollapsed ? "hidden" : "text-xl"}
             `}
           >
             PsyCog
@@ -113,28 +78,19 @@ const PsyCogSidebar = ({
       {/* Chat Content Area */}
       <div className="flex-1 overflow-y-auto p-2">
         {/* Show intervention message as chat during intervention state */}
-        {isIntervention ? (
-          <div className="p-3 flex flex-col items-center justify-center h-full">
+        {isIntervention && !isCollapsed ? (
+          <div className="p-3">
             {/* AI Message Bubble */}
-            <div className="flex items-start gap-3 max-w-2xl w-full">
+            <div className="flex items-start gap-3">
               <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                 <Sparkles className="w-4 h-4 text-primary" />
               </div>
               <div className="flex-1 bg-card border border-border rounded-xl p-4">
                 <p className="text-foreground text-sm leading-relaxed">
-                  {displayedText}
-                  {!isComplete && <span className="inline-block w-1.5 h-4 ml-0.5 bg-primary animate-pulse" />}
+                  {INTERVENTION_TEXT}
                 </p>
               </div>
             </div>
-
-            {/* Start Phase 2 Button */}
-            <button 
-              onClick={onStartPhase2}
-              className="mt-8 w-full max-w-md py-4 px-6 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-medium text-lg transition-all duration-300 hover:shadow-lg hover:shadow-primary/25"
-            >
-              Başlat
-            </button>
           </div>
         ) : (
           /* Regular prompt history */
@@ -159,7 +115,7 @@ const PsyCogSidebar = ({
       </div>
 
       {/* Footer */}
-      {(!isCollapsed || isIntervention) && (
+      {!isCollapsed && (
         <div className="p-4 border-t border-sidebar-border">
           <p className="text-xs text-muted-foreground text-center">
             {isIntervention ? "Mesajı okuyup logoyu işaretleyin" : "Geçmiş sorgularınız burada görünür"}

@@ -1,8 +1,7 @@
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Send, Sparkles, MessageSquare, Plus, ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
 import PsyCogSidebar from "@/components/PsyCogSidebar";
 import MainPanel from "@/components/MainPanel";
-import { generateSessionId, saveExperimentResult } from "@/lib/experimentService";
 
 const fakeChatHistory = ["IQ testim hakkında bilgi ver", "Raven testinin sonuçları nasıl yorumlanır?", "Bilişsel becerilerimi nasıl geliştirebilirim?", "Dikkat eksikliği testi yap", "Hafıza güçlendirme teknikleri", "Görsel-uzamsal zeka nedir?"];
 const fakeModels = [{
@@ -30,7 +29,6 @@ const Index = () => {
   const [viewState, setViewState] = useState<ViewState>("loading");
   const [isAttentionCheckClicked, setIsAttentionCheckClicked] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  const sessionId = useMemo(() => generateSessionId(), []);
 
   // When intervention state is active, expand sidebar
   useEffect(() => {
@@ -178,20 +176,6 @@ const Index = () => {
   }
 
   // Transformed view with sidebar and main panel
-  const handleStartPhase2 = () => {
-    // Save the attention check result
-    saveExperimentResult({
-      session_id: sessionId,
-      phase: 'phase2',
-      question_index: -1,
-      is_correct: true,
-      reaction_time_ms: 0,
-      timed_out: false,
-      attention_check_click: isAttentionCheckClicked
-    });
-    setViewState("phase2");
-  };
-
   return <div className="min-h-screen bg-background flex w-full">
       <PsyCogSidebar 
         isCollapsed={isSidebarCollapsed} 
@@ -200,16 +184,13 @@ const Index = () => {
         viewState={viewState}
         isAttentionCheckClicked={isAttentionCheckClicked}
         onAttentionCheckClick={() => setIsAttentionCheckClicked(!isAttentionCheckClicked)}
-        onStartPhase2={handleStartPhase2}
       />
-      {viewState !== "intervention" && (
-        <MainPanel 
-          isLoading={isLoading} 
-          viewState={viewState}
-          onViewStateChange={setViewState}
-          isAttentionCheckClicked={isAttentionCheckClicked}
-        />
-      )}
+      <MainPanel 
+        isLoading={isLoading} 
+        viewState={viewState}
+        onViewStateChange={setViewState}
+        isAttentionCheckClicked={isAttentionCheckClicked}
+      />
     </div>;
 };
 export default Index;
