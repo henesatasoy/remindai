@@ -56,7 +56,7 @@ const PsyCogSidebar = ({
   onStartPhase2
 }: PsyCogSidebarProps) => {
   const isIntervention = viewState === "intervention";
-  const { displayedText, isComplete } = useTypewriter(INTERVENTION_TEXT, 20, isIntervention);
+  const { displayedText, isComplete } = useTypewriter(INTERVENTION_TEXT, 50, isIntervention);
 
   return (
     <aside
