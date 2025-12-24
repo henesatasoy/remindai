@@ -180,6 +180,20 @@ import p2q4Opt2 from "@/assets/questions/phase2/q4-opt2.jpeg";
 import p2q4Opt3 from "@/assets/questions/phase2/q4-opt3.jpeg";
 import p2q4Opt4 from "@/assets/questions/phase2/q4-opt4.jpeg";
 
+// Phase 2 Question 5 images
+import p2q5Grid from "@/assets/questions/phase2/q5-grid.jpeg";
+import p2q5Opt1 from "@/assets/questions/phase2/q5-opt1.jpeg";
+import p2q5Opt2 from "@/assets/questions/phase2/q5-opt2.jpeg";
+import p2q5Opt3 from "@/assets/questions/phase2/q5-opt3.jpeg";
+import p2q5Opt4 from "@/assets/questions/phase2/q5-opt4.jpeg";
+
+// Phase 2 Question 6 images
+import p2q6Grid from "@/assets/questions/phase2/q6-grid.jpeg";
+import p2q6Opt1 from "@/assets/questions/phase2/q6-opt1.jpeg";
+import p2q6Opt2 from "@/assets/questions/phase2/q6-opt2.jpeg";
+import p2q6Opt3 from "@/assets/questions/phase2/q6-opt3.jpeg";
+import p2q6Opt4 from "@/assets/questions/phase2/q6-opt4.jpeg";
+
 export interface Question {
   id: string;
   gridImage: string;
@@ -360,16 +374,28 @@ export const PHASE2_QUESTIONS: Question[] = [
     options: [p2q4Opt1, p2q4Opt2, p2q4Opt3, p2q4Opt4],
     correctOptionIndex: 0,
   },
+  {
+    id: "phase2-5",
+    gridImage: p2q5Grid,
+    options: [p2q5Opt1, p2q5Opt2, p2q5Opt3, p2q5Opt4],
+    correctOptionIndex: 0,
+  },
+  {
+    id: "phase2-6",
+    gridImage: p2q6Grid,
+    options: [p2q6Opt1, p2q6Opt2, p2q6Opt3, p2q6Opt4],
+    correctOptionIndex: 0,
+  },
   // Remaining Phase 2 questions with placeholders
-  ...Array.from({ length: 8 }, (_, i) => ({
-    id: `phase2-${i + 5}`,
-    gridImage: `https://placehold.co/400x300/1a1a1a/666666?text=Faz2+Soru+${i + 5}`,
+  ...Array.from({ length: 6 }, (_, i) => ({
+    id: `phase2-${i + 7}`,
+    gridImage: `https://placehold.co/400x300/1a1a1a/666666?text=Faz2+Soru+${i + 7}`,
     options: [
       "https://placehold.co/150x100/1a1a1a/666666?text=A",
       "https://placehold.co/150x100/1a1a1a/666666?text=B",
       "https://placehold.co/150x100/1a1a1a/666666?text=C",
       "https://placehold.co/150x100/1a1a1a/666666?text=D",
     ],
-    correctOptionIndex: (i + 4) % 4,
+    correctOptionIndex: (i + 6) % 4,
   })),
 ];
