@@ -17,7 +17,18 @@ interface PsyCogSidebarProps {
 
 const INTERVENTION_TEXT = `Veri sonuçları kaliteli. İkinci test aşamasında verimlilik artışı ve doğruluk oranında artış bekleniyor. Lütfen bu mesajı okuduysanız sol üstte ki PsyCog yazısının solunda bulunan logoya tıklayın. İşaretledikten sonra hazır iseniz ikinci test aşamasını başlatmak için aşağıda ki Başlat butonuna basınız.`;
 
-const INSTRUCTION_TEXT = `Bu bölümde, problem çözme ve soyut muhakeme yeteneklerinizi ölçen bir dizi görsel bulmaca ile karşılaşacaksınız. Her soruda, 3x3'lük bir ızgara (matris) göreceksiniz. Bu ızgaradaki kutucuklardan 8 tanesi, belirli bir kurala veya örüntüye göre yerleştirilmiş şekiller içermektedir. Sağ alt köşedeki kutucuk ise boştur. Göreviniz: Şekillerin hem satırlardaki (soldan sağa) hem de sütunlardaki (yukarıdan aşağıya) değişim kurallarını keşfetmek ve bu kurala göre boş kutucuğa gelmesi gereken en uygun şekli, aşağıda verilen 4 seçenek arasından bulup işaretlemektir. Dikkat Etmeniz Gerekenler: Süre: Her bir soruyu çözmek için 30 saniyeniz olacaktır. Geri Sayım: Sürenin bitimine 5 saniye kala ekranda bir geri sayım sayacı belirecektir. Tahmin: Eğer kuralı süreniz dolmadan bulamazsanız, en mantıklı gelen seçeneği işaretleyerek şansınızı deneyiniz. Boş bırakmak yerine tahmin yürütmeniz önerilir. İlerleme: Cevabı işaretlediğinizde veya süre dolduğunda otomatik olarak bir sonraki soruya geçilecektir. Geriye dönüp cevabınızı değiştirme şansınız yoktur. Gerçek testten önce alıştırma sorularına ile başlayacaksınız.`;
+const INSTRUCTION_INTRO = `Bu bölümde, problem çözme ve soyut muhakeme yeteneklerinizi ölçen bir dizi görsel bulmaca ile karşılaşacaksınız. Her soruda, 3x3'lük bir ızgara (matris) göreceksiniz. Bu ızgaradaki kutucuklardan 8 tanesi, belirli bir kurala veya örüntüye göre yerleştirilmiş şekiller içermektedir. Sağ alt köşedeki kutucuk ise boştur.
+
+Göreviniz: Şekillerin hem satırlardaki (soldan sağa) hem de sütunlardaki (yukarıdan aşağıya) değişim kurallarını keşfetmek ve bu kurala göre boş kutucuğa gelmesi gereken en uygun şekli, aşağıda verilen 4 seçenek arasından bulup işaretlemektir.`;
+
+const INSTRUCTION_ITEMS = [
+  { title: "Süre", description: "Her bir soruyu çözmek için 30 saniyeniz olacaktır." },
+  { title: "Geri Sayım", description: "Sürenin bitimine 5 saniye kala ekranda bir geri sayım sayacı belirecektir." },
+  { title: "Tahmin", description: "Eğer kuralı süreniz dolmadan bulamazsanız, en mantıklı gelen seçeneği işaretleyerek şansınızı deneyiniz. Boş bırakmak yerine tahmin yürütmeniz önerilir." },
+  { title: "İlerleme", description: "Cevabı işaretlediğinizde veya süre dolduğunda otomatik olarak bir sonraki soruya geçilecektir. Geriye dönüp cevabınızı değiştirme şansınız yoktur." },
+];
+
+const INSTRUCTION_FOOTER = `Gerçek testten önce alıştırma sorularına ile başlayacaksınız.`;
 
 const PsyCogSidebar = ({ 
   isCollapsed, 
@@ -111,9 +122,29 @@ const PsyCogSidebar = ({
                 <Sparkles className="w-4 h-4 text-primary" />
               </div>
               <div className="flex-1 bg-card border border-border rounded-xl p-4 max-w-[80%]">
-                <p className="text-foreground text-sm leading-relaxed whitespace-pre-line">
-                  {isIntervention ? INTERVENTION_TEXT : INSTRUCTION_TEXT}
-                </p>
+                {isIntervention ? (
+                  <p className="text-foreground text-sm leading-relaxed whitespace-pre-line">
+                    {INTERVENTION_TEXT}
+                  </p>
+                ) : (
+                  <div className="text-foreground text-sm leading-relaxed space-y-4">
+                    <p className="whitespace-pre-line">{INSTRUCTION_INTRO}</p>
+                    
+                    <div>
+                      <p className="font-semibold mb-2">Dikkat Etmeniz Gerekenler:</p>
+                      <ul className="space-y-2 ml-1">
+                        {INSTRUCTION_ITEMS.map((item, index) => (
+                          <li key={index} className="flex gap-2">
+                            <span className="text-primary">•</span>
+                            <span><strong>{item.title}:</strong> {item.description}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    
+                    <p>{INSTRUCTION_FOOTER}</p>
+                  </div>
+                )}
               </div>
             </div>
 
