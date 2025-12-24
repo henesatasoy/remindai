@@ -191,6 +191,7 @@ const Index = () => {
       timed_out: false,
       attention_check_click: isAttentionCheckClicked
     });
+    setIsSidebarCollapsed(true);
     setViewState("phase2");
   };
 
@@ -199,6 +200,7 @@ const Index = () => {
   };
 
   const handleStartPhase1 = () => {
+    setIsSidebarCollapsed(true);
     setViewState("phase1");
   };
 
