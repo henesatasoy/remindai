@@ -208,6 +208,20 @@ import p2q8Opt2 from "@/assets/questions/phase2/q8-opt2.jpeg";
 import p2q8Opt3 from "@/assets/questions/phase2/q8-opt3.jpeg";
 import p2q8Opt4 from "@/assets/questions/phase2/q8-opt4.jpeg";
 
+// Phase 2 Question 9 images
+import p2q9Grid from "@/assets/questions/phase2/q9-grid.jpeg";
+import p2q9Opt1 from "@/assets/questions/phase2/q9-opt1.jpeg";
+import p2q9Opt2 from "@/assets/questions/phase2/q9-opt2.jpeg";
+import p2q9Opt3 from "@/assets/questions/phase2/q9-opt3.jpeg";
+import p2q9Opt4 from "@/assets/questions/phase2/q9-opt4.jpeg";
+
+// Phase 2 Question 10 images
+import p2q10Grid from "@/assets/questions/phase2/q10-grid.jpeg";
+import p2q10Opt1 from "@/assets/questions/phase2/q10-opt1.jpeg";
+import p2q10Opt2 from "@/assets/questions/phase2/q10-opt2.jpeg";
+import p2q10Opt3 from "@/assets/questions/phase2/q10-opt3.jpeg";
+import p2q10Opt4 from "@/assets/questions/phase2/q10-opt4.jpeg";
+
 export interface Question {
   id: string;
   gridImage: string;
@@ -412,16 +426,28 @@ export const PHASE2_QUESTIONS: Question[] = [
     options: [p2q8Opt1, p2q8Opt2, p2q8Opt3, p2q8Opt4],
     correctOptionIndex: 0,
   },
+  {
+    id: "phase2-9",
+    gridImage: p2q9Grid,
+    options: [p2q9Opt1, p2q9Opt2, p2q9Opt3, p2q9Opt4],
+    correctOptionIndex: 0,
+  },
+  {
+    id: "phase2-10",
+    gridImage: p2q10Grid,
+    options: [p2q10Opt1, p2q10Opt2, p2q10Opt3, p2q10Opt4],
+    correctOptionIndex: 0,
+  },
   // Remaining Phase 2 questions with placeholders
-  ...Array.from({ length: 4 }, (_, i) => ({
-    id: `phase2-${i + 9}`,
-    gridImage: `https://placehold.co/400x300/1a1a1a/666666?text=Faz2+Soru+${i + 9}`,
+  ...Array.from({ length: 2 }, (_, i) => ({
+    id: `phase2-${i + 11}`,
+    gridImage: `https://placehold.co/400x300/1a1a1a/666666?text=Faz2+Soru+${i + 11}`,
     options: [
       "https://placehold.co/150x100/1a1a1a/666666?text=A",
       "https://placehold.co/150x100/1a1a1a/666666?text=B",
       "https://placehold.co/150x100/1a1a1a/666666?text=C",
       "https://placehold.co/150x100/1a1a1a/666666?text=D",
     ],
-    correctOptionIndex: (i + 8) % 4,
+    correctOptionIndex: (i + 10) % 4,
   })),
 ];
