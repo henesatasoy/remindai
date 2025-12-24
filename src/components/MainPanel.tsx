@@ -168,19 +168,7 @@ const MainPanel = ({
 
         {/* Phase 1 Test State */}
         {viewState === "phase1" && <div>
-            <div className="flex items-center gap-4 pb-6 mb-6 border-b border-border">
-              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                <Brain className="w-6 h-6 text-primary" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-foreground">
-                  Faz 1 - Gerçek Test
-                </h1>
-                <p className="text-muted-foreground">
-                  12 soru • 30 saniye / soru
-                </p>
-              </div>
-            </div>
+            
             <TestEngine questions={PHASE1_QUESTIONS} onComplete={handlePhase1Complete} sessionId={sessionId} phase="phase1" />
           </div>}
 
