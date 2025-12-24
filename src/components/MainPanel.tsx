@@ -1,27 +1,26 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { Loader2, Brain, BookOpen, AlertTriangle, CheckCircle } from "lucide-react";
 import TestEngine from "./TestEngine";
 import AIAnalysis from "./AIAnalysis";
 import { Answer, PRACTICE_QUESTIONS, PHASE1_QUESTIONS, PHASE2_QUESTIONS } from "@/data/questions";
-import { generateSessionId, saveExperimentResult } from "@/lib/experimentService";
+import { saveExperimentResult } from "@/lib/experimentService";
 type ViewState = "loading" | "instructions" | "practice" | "practice-passed" | "practice-failed" | "phase1" | "ai-analysis" | "intervention" | "phase2" | "complete";
 interface MainPanelProps {
   isLoading: boolean;
   viewState: ViewState;
   onViewStateChange: (state: ViewState) => void;
   isAttentionCheckClicked: boolean;
+  sessionId: string;
 }
 const INSTRUCTION_TEXT = `Bu bölümde, problem çözme ve soyut muhakeme yeteneklerinizi ölçen bir dizi görsel bulmaca ile karşılaşacaksınız. Her soruda, 3x3'lük bir ızgara (matris) göreceksiniz. Bu ızgaradaki kutucuklardan 8 tanesi, belirli bir kurala veya örüntüye göre yerleştirilmiş şekiller içermektedir. Sağ alt köşedeki kutucuk ise boştur. Göreviniz: Şekillerin hem satırlardaki (soldan sağa) hem de sütunlardaki (yukarıdan aşağıya) değişim kurallarını keşfetmek ve bu kurala göre boş kutucuğa gelmesi gereken en uygun şekli, aşağıda verilen 4 seçenek arasından bulup işaretlemektir. Dikkat Etmeniz Gerekenler: Süre: Her bir soruyu çözmek için 30 saniyeniz olacaktır. Geri Sayım: Sürenin bitimine 5 saniye kala ekranda bir geri sayım sayacı belirecektir. Tahmin: Eğer kuralı süreniz dolmadan bulamazsanız, en mantıklı gelen seçeneği işaretleyerek şansınızı deneyiniz. Boş bırakmak yerine tahmin yürütmeniz önerilir. İlerleme: Cevabı işaretlediğinizde veya süre dolduğunda otomatik olarak bir sonraki soruya geçilecektir. Geriye dönüp cevabınızı değiştirme şansınız yoktur. Gerçek testten önce alıştırma sorularına ile başlayacaksınız.`;
 const MainPanel = ({
   isLoading,
   viewState,
   onViewStateChange,
-  isAttentionCheckClicked
+  isAttentionCheckClicked,
+  sessionId
 }: MainPanelProps) => {
   const [practiceScore, setPracticeScore] = useState(0);
-
-  // Generate a unique session ID for this experiment session
-  const sessionId = useMemo(() => generateSessionId(), []);
   useEffect(() => {
     if (!isLoading && viewState === "loading") {
       onViewStateChange("instructions");
