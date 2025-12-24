@@ -131,6 +131,32 @@ const PsyCogSidebar = ({
                 </div>
               </div>
             )}
+
+            {/* Instructions History - show on practice results and intervention */}
+            {(isPracticePassed || isPracticeFailed || isIntervention) && (
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                  <Sparkles className="w-4 h-4 text-primary" />
+                </div>
+                <div className="flex-1 bg-muted/50 border border-border/50 rounded-xl p-3 max-w-[80%]">
+                  <p className="text-muted-foreground text-xs line-clamp-3">{INSTRUCTION_INTRO.slice(0, 150)}...</p>
+                  <span className="text-primary/70 text-[10px] mt-1 block">Devam Et ✓</span>
+                </div>
+              </div>
+            )}
+
+            {/* Practice Result History - show on intervention */}
+            {isIntervention && (
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                  <Sparkles className="w-4 h-4 text-primary" />
+                </div>
+                <div className="flex-1 bg-muted/50 border border-border/50 rounded-xl p-3 max-w-[80%]">
+                  <p className="text-muted-foreground text-xs">Alıştırma Tamamlandı - Puan: {practiceScore}/10</p>
+                  <span className="text-primary/70 text-[10px] mt-1 block">Başlat ✓</span>
+                </div>
+              </div>
+            )}
             
             {/* AI Message Bubble */}
             <div className="flex items-start gap-3">
