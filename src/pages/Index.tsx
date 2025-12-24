@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Send, Sparkles, MessageSquare, Plus, ChevronLeft, ChevronRight } from "lucide-react";
+import { Send, Sparkles, MessageSquare, Plus, ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
 import PsyCogSidebar from "@/components/PsyCogSidebar";
 import MainPanel from "@/components/MainPanel";
 
@@ -10,6 +10,12 @@ const fakeChatHistory = [
   "Dikkat eksikliği testi yap",
   "Hafıza güçlendirme teknikleri",
   "Görsel-uzamsal zeka nedir?",
+];
+
+const fakeModels = [
+  { id: "psycog-4", name: "PsyCog-4", description: "En gelişmiş model" },
+  { id: "psycog-4-mini", name: "PsyCog-4 Mini", description: "Hızlı ve verimli" },
+  { id: "psycog-3.5", name: "PsyCog-3.5", description: "Dengeli performans" },
 ];
 
 const Index = () => {
@@ -51,6 +57,8 @@ const Index = () => {
   }, [isTransformed]);
 
   const [isHomeSidebarCollapsed, setIsHomeSidebarCollapsed] = useState(false);
+  const [selectedModel, setSelectedModel] = useState(fakeModels[0]);
+  const [isModelDropdownOpen, setIsModelDropdownOpen] = useState(false);
 
   // Initial centered view with decorative sidebar
   if (!isTransformed) {
@@ -146,6 +154,37 @@ const Index = () => {
           {/* Input Area */}
           <div className="w-full max-w-2xl animate-fade-in" style={{ animationDelay: "0.1s" }}>
             <div className="relative glow-input rounded-2xl bg-card border border-border transition-all duration-300">
+              {/* Model Selector */}
+              <div className="absolute left-3 top-1/2 -translate-y-1/2 z-20">
+                <button
+                  onClick={() => setIsModelDropdownOpen(!isModelDropdownOpen)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-muted hover:bg-muted/80 transition-colors text-sm text-foreground"
+                >
+                  <span className="font-medium">{selectedModel.name}</span>
+                  <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${isModelDropdownOpen ? "rotate-180" : ""}`} />
+                </button>
+                
+                {isModelDropdownOpen && (
+                  <div className="absolute top-full left-0 mt-2 w-56 bg-popover border border-border rounded-xl shadow-lg z-50 overflow-hidden">
+                    {fakeModels.map((model) => (
+                      <button
+                        key={model.id}
+                        onClick={() => {
+                          setSelectedModel(model);
+                          setIsModelDropdownOpen(false);
+                        }}
+                        className={`w-full text-left px-4 py-3 hover:bg-muted transition-colors ${
+                          selectedModel.id === model.id ? "bg-muted/50" : ""
+                        }`}
+                      >
+                        <div className="text-sm font-medium text-foreground">{model.name}</div>
+                        <div className="text-xs text-muted-foreground">{model.description}</div>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
               <input
                 ref={inputRef}
                 type="text"
@@ -153,7 +192,7 @@ const Index = () => {
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Bir şeyler sorun..."
-                className="w-full px-6 py-5 pr-14 bg-transparent text-foreground text-lg placeholder:text-muted-foreground focus:outline-none rounded-2xl"
+                className="w-full pl-36 pr-14 py-5 bg-transparent text-foreground text-lg placeholder:text-muted-foreground focus:outline-none rounded-2xl"
               />
               <button
                 onClick={handleSubmit}
