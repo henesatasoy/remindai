@@ -14,7 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      experiment_results: {
+        Row: {
+          attention_check_click: boolean | null
+          created_at: string
+          id: string
+          is_correct: boolean
+          phase: string
+          question_index: number
+          reaction_time_ms: number
+          session_id: string
+          timed_out: boolean
+        }
+        Insert: {
+          attention_check_click?: boolean | null
+          created_at?: string
+          id?: string
+          is_correct: boolean
+          phase: string
+          question_index: number
+          reaction_time_ms: number
+          session_id: string
+          timed_out?: boolean
+        }
+        Update: {
+          attention_check_click?: boolean | null
+          created_at?: string
+          id?: string
+          is_correct?: boolean
+          phase?: string
+          question_index?: number
+          reaction_time_ms?: number
+          session_id?: string
+          timed_out?: boolean
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
