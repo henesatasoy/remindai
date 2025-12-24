@@ -136,6 +136,18 @@ const PsyCogSidebar = ({
       <div className="flex-1 overflow-y-auto p-2">
         {/* Show full chat during fullscreen states */}
         {isFullscreenChat ? <div className="max-w-3xl mx-auto p-4 space-y-6">
+            {/* User's First Message */}
+            {userFirstMessage && <div className="flex items-start gap-3 justify-end">
+                <div className="bg-primary/10 border border-primary/20 rounded-xl p-4 max-w-[80%]">
+                  <p className="text-foreground text-sm leading-relaxed">
+                    {userFirstMessage}
+                  </p>
+                </div>
+                <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center shrink-0">
+                  <User className="w-4 h-4 text-muted-foreground" />
+                </div>
+              </div>}
+
             {/* Instructions History - show on practice results and intervention */}
             {(isPracticePassed || isPracticeFailed || isIntervention) && <button onClick={openInstructionsModal} className="flex items-start gap-3 w-full text-left hover:opacity-80 transition-opacity">
                 <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
@@ -212,12 +224,6 @@ const PsyCogSidebar = ({
               </div>}
           </div> : (/* Chat history with instructions and intervention */
       <div className="space-y-4 p-2">
-            {/* User's First Message in History */}
-            {userFirstMessage && !isCollapsed && <div className="flex items-start gap-2">
-                <User className="w-4 h-4 text-muted-foreground shrink-0 mt-1" />
-                <p className="text-xs text-muted-foreground line-clamp-2">{userFirstMessage}</p>
-              </div>}
-            
             {/* Instructions in History */}
             {showInstructionsInHistory && <button onClick={openInstructionsModal} className="flex items-start gap-2 w-full text-left hover:bg-sidebar-accent rounded-lg p-2 transition-colors">
                 <Sparkles className="w-4 h-4 text-primary shrink-0 mt-1" />
