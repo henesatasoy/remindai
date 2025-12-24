@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { RefreshCw, Filter, Database, Download, ChevronDown, ChevronRight } from "lucide-react";
-import { fetchSessionSummaries, fetchSessionDetails } from "@/lib/experimentService";
+import { fetchSessionSummaries, fetchSessionDetails, fetchAllResults } from "@/lib/experimentService";
 import {
   Table,
   TableBody,
@@ -50,6 +50,7 @@ const AdminPanel = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [expandedSessions, setExpandedSessions] = useState<Set<string>>(new Set());
   const [sessionDetails, setSessionDetails] = useState<Record<string, SessionDetail[]>>({});
+  const [isExporting, setIsExporting] = useState(false);
 
   const loadData = async () => {
     setIsLoading(true);
@@ -100,46 +101,57 @@ const AdminPanel = () => {
     }
   };
 
-  const exportToCSV = () => {
+  const exportToCSV = async () => {
     if (sessions.length === 0) return;
+    
+    setIsExporting(true);
+    
+    try {
+      // Fetch all detailed results
+      const allResults = await fetchAllResults();
+      
+      const headers = [
+        "Session ID",
+        "Phase",
+        "Question Index",
+        "Is Correct",
+        "Reaction Time (ms)",
+        "Timed Out",
+        "Attention Check",
+        "Created At",
+      ];
 
-    const headers = [
-      "Session ID",
-      "Phases",
-      "Total Correct",
-      "Total Questions",
-      "Correct Rate (%)",
-      "Avg Reaction Time (ms)",
-      "Attention Check",
-      "Created At",
-    ];
+      const rows = allResults.map((result: any) => [
+        result.session_id,
+        result.phase,
+        result.question_index + 1,
+        result.is_correct ? "Yes" : "No",
+        result.reaction_time_ms,
+        result.timed_out ? "Yes" : "No",
+        result.attention_check_click === null
+          ? "N/A"
+          : result.attention_check_click
+          ? "Yes"
+          : "No",
+        result.created_at,
+      ]);
 
-    const rows = sessions.map((session) => [
-      session.session_id,
-      session.phases,
-      session.total_correct,
-      session.total_questions,
-      Math.round((session.total_correct / session.total_questions) * 100),
-      Math.round(session.avg_reaction_time),
-      session.attention_check_click === null
-        ? "N/A"
-        : session.attention_check_click
-        ? "Yes"
-        : "No",
-      session.created_at,
-    ]);
+      const csvContent = [
+        headers.join(","),
+        ...rows.map((row) => row.map((cell) => `"${cell}"`).join(",")),
+      ].join("\n");
 
-    const csvContent = [
-      headers.join(","),
-      ...rows.map((row) => row.map((cell) => `"${cell}"`).join(",")),
-    ].join("\n");
-
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = `experiment_results_${new Date().toISOString().split("T")[0]}.csv`;
-    link.click();
-    URL.revokeObjectURL(link.href);
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `experiment_results_detailed_${new Date().toISOString().split("T")[0]}.csv`;
+      link.click();
+      URL.revokeObjectURL(link.href);
+    } catch (error) {
+      console.error("Failed to export CSV:", error);
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   return (
@@ -178,11 +190,15 @@ const AdminPanel = () => {
             <Button
               onClick={exportToCSV}
               variant="outline"
-              disabled={sessions.length === 0}
+              disabled={sessions.length === 0 || isExporting}
               className="flex items-center gap-2"
             >
-              <Download className="w-4 h-4" />
-              Export CSV
+              {isExporting ? (
+                <RefreshCw className="w-4 h-4 animate-spin" />
+              ) : (
+                <Download className="w-4 h-4" />
+              )}
+              {isExporting ? "Exporting..." : "Export CSV"}
             </Button>
 
             {/* Refresh Button */}
