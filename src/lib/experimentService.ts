@@ -126,3 +126,22 @@ export const fetchSessionSummaries = async (phaseFilter?: string) => {
     attention_check_click: session.attention_check_click,
   }));
 };
+
+/**
+ * Fetches detailed results for a specific session
+ */
+export const fetchSessionDetails = async (sessionId: string) => {
+  const { data, error } = await supabase
+    .from('experiment_results')
+    .select('*')
+    .eq('session_id', sessionId)
+    .order('phase', { ascending: true })
+    .order('question_index', { ascending: true });
+
+  if (error) {
+    console.error('Failed to fetch session details:', error);
+    return [];
+  }
+
+  return data || [];
+};
