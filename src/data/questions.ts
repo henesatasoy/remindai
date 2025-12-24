@@ -152,6 +152,20 @@ import p1q12Opt2 from "@/assets/questions/phase1/q12-opt2.jpeg";
 import p1q12Opt3 from "@/assets/questions/phase1/q12-opt3.jpeg";
 import p1q12Opt4 from "@/assets/questions/phase1/q12-opt4.jpeg";
 
+// Phase 2 Question 1 images
+import p2q1Grid from "@/assets/questions/phase2/q1-grid.jpeg";
+import p2q1Opt1 from "@/assets/questions/phase2/q1-opt1.jpeg";
+import p2q1Opt2 from "@/assets/questions/phase2/q1-opt2.jpeg";
+import p2q1Opt3 from "@/assets/questions/phase2/q1-opt3.jpeg";
+import p2q1Opt4 from "@/assets/questions/phase2/q1-opt4.jpeg";
+
+// Phase 2 Question 2 images
+import p2q2Grid from "@/assets/questions/phase2/q2-grid.jpeg";
+import p2q2Opt1 from "@/assets/questions/phase2/q2-opt1.jpeg";
+import p2q2Opt2 from "@/assets/questions/phase2/q2-opt2.jpeg";
+import p2q2Opt3 from "@/assets/questions/phase2/q2-opt3.jpeg";
+import p2q2Opt4 from "@/assets/questions/phase2/q2-opt4.jpeg";
+
 export interface Question {
   id: string;
   gridImage: string;
@@ -306,15 +320,30 @@ export const PHASE1_QUESTIONS: Question[] = [
   },
 ];
 
-// 12 Phase 2 questions (second half of actual test)
-export const PHASE2_QUESTIONS: Question[] = Array.from({ length: 12 }, (_, i) => ({
-  id: `phase2-${i + 1}`,
-  gridImage: `https://placehold.co/400x300/1a1a1a/666666?text=Faz2+Soru+${i + 1}`,
-  options: [
-    "https://placehold.co/150x100/1a1a1a/666666?text=A",
-    "https://placehold.co/150x100/1a1a1a/666666?text=B",
-    "https://placehold.co/150x100/1a1a1a/666666?text=C",
-    "https://placehold.co/150x100/1a1a1a/666666?text=D",
-  ],
-  correctOptionIndex: (i + 2) % 4,
-}));
+// 12 Phase 2 questions (second half of actual test) - first 2 with real images
+export const PHASE2_QUESTIONS: Question[] = [
+  {
+    id: "phase2-1",
+    gridImage: p2q1Grid,
+    options: [p2q1Opt1, p2q1Opt2, p2q1Opt3, p2q1Opt4],
+    correctOptionIndex: 0,
+  },
+  {
+    id: "phase2-2",
+    gridImage: p2q2Grid,
+    options: [p2q2Opt1, p2q2Opt2, p2q2Opt3, p2q2Opt4],
+    correctOptionIndex: 0,
+  },
+  // Remaining Phase 2 questions with placeholders
+  ...Array.from({ length: 10 }, (_, i) => ({
+    id: `phase2-${i + 3}`,
+    gridImage: `https://placehold.co/400x300/1a1a1a/666666?text=Faz2+Soru+${i + 3}`,
+    options: [
+      "https://placehold.co/150x100/1a1a1a/666666?text=A",
+      "https://placehold.co/150x100/1a1a1a/666666?text=B",
+      "https://placehold.co/150x100/1a1a1a/666666?text=C",
+      "https://placehold.co/150x100/1a1a1a/666666?text=D",
+    ],
+    correctOptionIndex: (i + 2) % 4,
+  })),
+];
