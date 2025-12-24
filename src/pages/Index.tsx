@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Send, Sparkles, MessageSquare, Plus, ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
 import PsyCogSidebar from "@/components/PsyCogSidebar";
 import MainPanel from "@/components/MainPanel";
+
 const fakeChatHistory = ["IQ testim hakkında bilgi ver", "Raven testinin sonuçları nasıl yorumlanır?", "Bilişsel becerilerimi nasıl geliştirebilirim?", "Dikkat eksikliği testi yap", "Hafıza güçlendirme teknikleri", "Görsel-uzamsal zeka nedir?"];
 const fakeModels = [{
   id: "psycog-4",
@@ -16,13 +17,26 @@ const fakeModels = [{
   name: "PsyCog-3.5",
   description: "Dengeli performans"
 }];
+
+type ViewState = "loading" | "instructions" | "practice" | "practice-passed" | "practice-failed" | "phase1" | "ai-analysis" | "intervention" | "phase2" | "complete";
+
 const Index = () => {
   const [inputValue, setInputValue] = useState("");
   const [isTransformed, setIsTransformed] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [promptHistory, setPromptHistory] = useState<string[]>([]);
+  const [viewState, setViewState] = useState<ViewState>("loading");
+  const [isAttentionCheckClicked, setIsAttentionCheckClicked] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // When intervention state is active, expand sidebar
+  useEffect(() => {
+    if (viewState === "intervention") {
+      setIsSidebarCollapsed(false);
+    }
+  }, [viewState]);
+
   const handleSubmit = () => {
     if (!inputValue.trim()) return;
     setPromptHistory(prev => [inputValue, ...prev]);
@@ -30,11 +44,13 @@ const Index = () => {
     setIsLoading(true);
     setInputValue("");
   };
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       handleSubmit();
     }
   };
+
   useEffect(() => {
     if (isLoading) {
       const timer = setTimeout(() => {
@@ -43,11 +59,13 @@ const Index = () => {
       return () => clearTimeout(timer);
     }
   }, [isLoading]);
+
   useEffect(() => {
     if (!isTransformed && inputRef.current) {
       inputRef.current.focus();
     }
   }, [isTransformed]);
+
   const [isHomeSidebarCollapsed, setIsHomeSidebarCollapsed] = useState(false);
   const [selectedModel, setSelectedModel] = useState(fakeModels[0]);
   const [isModelDropdownOpen, setIsModelDropdownOpen] = useState(false);
@@ -159,8 +177,20 @@ const Index = () => {
 
   // Transformed view with sidebar and main panel
   return <div className="min-h-screen bg-background flex w-full">
-      <PsyCogSidebar isCollapsed={isSidebarCollapsed} onToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)} promptHistory={promptHistory} />
-      <MainPanel isLoading={isLoading} />
+      <PsyCogSidebar 
+        isCollapsed={isSidebarCollapsed} 
+        onToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)} 
+        promptHistory={promptHistory}
+        viewState={viewState}
+        isAttentionCheckClicked={isAttentionCheckClicked}
+        onAttentionCheckClick={() => setIsAttentionCheckClicked(!isAttentionCheckClicked)}
+      />
+      <MainPanel 
+        isLoading={isLoading} 
+        viewState={viewState}
+        onViewStateChange={setViewState}
+        isAttentionCheckClicked={isAttentionCheckClicked}
+      />
     </div>;
 };
 export default Index;
