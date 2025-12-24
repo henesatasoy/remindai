@@ -1,4 +1,5 @@
 import { ChevronLeft, ChevronRight, MessageSquare, Sparkles } from "lucide-react";
+import { useState, useEffect } from "react";
 
 type ViewState = "loading" | "instructions" | "practice" | "practice-passed" | "practice-failed" | "phase1" | "ai-analysis" | "intervention" | "phase2" | "complete";
 
@@ -14,6 +15,37 @@ interface PsyCogSidebarProps {
 
 const INTERVENTION_TEXT = `Veri sonuçları kaliteli. İkinci test aşamasında verimlilik artışı ve doğruluk oranında artış bekleniyor. Lütfen bu mesajı okuduysanız sol üstte ki PsyCog yazısının solunda bulunan logoya tıklayın. İşaretledikten sonra hazır iseniz ikinci test aşamasını başlatmak için aşağıda ki Başlat butonuna basınız.`;
 
+const useTypewriter = (text: string, speed: number = 20, enabled: boolean = true) => {
+  const [displayedText, setDisplayedText] = useState("");
+  const [isComplete, setIsComplete] = useState(false);
+
+  useEffect(() => {
+    if (!enabled) {
+      setDisplayedText(text);
+      setIsComplete(true);
+      return;
+    }
+
+    setDisplayedText("");
+    setIsComplete(false);
+    let index = 0;
+
+    const timer = setInterval(() => {
+      if (index < text.length) {
+        setDisplayedText(text.slice(0, index + 1));
+        index++;
+      } else {
+        setIsComplete(true);
+        clearInterval(timer);
+      }
+    }, speed);
+
+    return () => clearInterval(timer);
+  }, [text, speed, enabled]);
+
+  return { displayedText, isComplete };
+};
+
 const PsyCogSidebar = ({ 
   isCollapsed, 
   onToggle, 
@@ -24,6 +56,7 @@ const PsyCogSidebar = ({
   onStartPhase2
 }: PsyCogSidebarProps) => {
   const isIntervention = viewState === "intervention";
+  const { displayedText, isComplete } = useTypewriter(INTERVENTION_TEXT, 20, isIntervention);
 
   return (
     <aside
@@ -89,7 +122,8 @@ const PsyCogSidebar = ({
               </div>
               <div className="flex-1 bg-card border border-border rounded-xl p-4">
                 <p className="text-foreground text-sm leading-relaxed">
-                  {INTERVENTION_TEXT}
+                  {displayedText}
+                  {!isComplete && <span className="inline-block w-1.5 h-4 ml-0.5 bg-primary animate-pulse" />}
                 </p>
               </div>
             </div>
