@@ -2,13 +2,85 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { Clock } from "lucide-react";
 import { Question, Answer, PRACTICE_QUESTIONS } from "@/data/questions";
 import { saveExperimentResult } from "@/lib/experimentService";
+
 type TestPhase = "fixation" | "blank" | "question" | "complete";
+
 interface TestEngineProps {
   questions?: Question[];
   onComplete?: (answers: Answer[]) => void;
   sessionId: string;
   phase: 'practice' | 'phase1' | 'phase2';
 }
+
+// Image preloader hook
+const useImagePreloader = (questions: Question[], currentIndex: number) => {
+  const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
+  
+  useEffect(() => {
+    // Preload current question images
+    const currentQ = questions[currentIndex];
+    if (currentQ) {
+      const imagesToLoad = [currentQ.gridImage, ...currentQ.options];
+      imagesToLoad.forEach(src => {
+        if (!loadedImages.has(src)) {
+          const img = new Image();
+          img.src = src;
+          img.onload = () => {
+            setLoadedImages(prev => new Set([...prev, src]));
+          };
+        }
+      });
+    }
+    
+    // Preload next question images
+    const nextQ = questions[currentIndex + 1];
+    if (nextQ) {
+      const nextImages = [nextQ.gridImage, ...nextQ.options];
+      nextImages.forEach(src => {
+        if (!loadedImages.has(src)) {
+          const img = new Image();
+          img.src = src;
+        }
+      });
+    }
+  }, [questions, currentIndex, loadedImages]);
+  
+  return loadedImages;
+};
+
+// Optimized image component
+const OptimizedImage = ({ 
+  src, 
+  alt, 
+  className,
+  isLoaded 
+}: { 
+  src: string; 
+  alt: string; 
+  className?: string;
+  isLoaded: boolean;
+}) => {
+  const [imageLoaded, setImageLoaded] = useState(isLoaded);
+  
+  return (
+    <div className={`relative ${className || ''}`}>
+      {!imageLoaded && (
+        <div className="absolute inset-0 bg-muted animate-pulse flex items-center justify-center">
+          <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+        </div>
+      )}
+      <img 
+        src={src} 
+        alt={alt} 
+        className={`w-full h-auto transition-opacity duration-200 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+        loading="eager"
+        decoding="async"
+        onLoad={() => setImageLoaded(true)}
+      />
+    </div>
+  );
+};
+
 const TestEngine = ({
   questions = PRACTICE_QUESTIONS,
   onComplete,
@@ -24,6 +96,9 @@ const TestEngine = ({
   const questionStartTime = useRef<number>(0);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const currentQuestion = questions[currentIndex];
+  
+  // Use image preloader
+  const loadedImages = useImagePreloader(questions, currentIndex);
 
   // Handle answer submission
   const submitAnswer = useCallback((selectedIndex: number | null) => {
@@ -168,7 +243,6 @@ const TestEngine = ({
         </span>
       </div>
 
-
       {/* Warning Flash */}
       {showWarning && <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
           <div className="text-4xl font-bold text-destructive animate-pulse bg-background/80 px-8 py-4 rounded-xl">
@@ -180,20 +254,32 @@ const TestEngine = ({
       <div className="pt-12 flex flex-col items-center gap-8">
         {/* Grid Image */}
         <div className="border border-border rounded-xl overflow-hidden bg-card">
-          <img src={currentQuestion.gridImage} alt="Soru görseli" className="w-full max-w-md h-auto" />
+          <OptimizedImage 
+            src={currentQuestion.gridImage} 
+            alt="Soru görseli" 
+            className="w-full max-w-md h-auto"
+            isLoaded={loadedImages.has(currentQuestion.gridImage)}
+          />
         </div>
 
         {/* Options */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-2xl">
-          {currentQuestion.options.map((option, index) => <button key={index} onClick={() => submitAnswer(index)} className="group relative border border-border rounded-xl overflow-hidden bg-card hover:border-primary hover:ring-2 hover:ring-primary/30 transition-all duration-200">
-              <img src={option} alt={`Seçenek ${String.fromCharCode(65 + index)}`} className="w-full h-auto" />
-              
-            </button>)}
+          {currentQuestion.options.map((option, index) => (
+            <button 
+              key={index} 
+              onClick={() => submitAnswer(index)} 
+              className="group relative border border-border rounded-xl overflow-hidden bg-card hover:border-primary hover:ring-2 hover:ring-primary/30 transition-all duration-200"
+            >
+              <OptimizedImage 
+                src={option} 
+                alt={`Seçenek ${String.fromCharCode(65 + index)}`}
+                isLoaded={loadedImages.has(option)}
+              />
+            </button>
+          ))}
         </div>
-
-        {/* Instructions */}
-        
       </div>
     </div>;
 };
+
 export default TestEngine;
