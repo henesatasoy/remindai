@@ -181,9 +181,7 @@ const TestEngine = ({
         </div>
 
         {/* Instructions */}
-        <p className="text-sm text-muted-foreground text-center">
-          Doğru cevabı seçmek için bir seçeneğe tıklayın
-        </p>
+        
       </div>
     </div>;
 };
