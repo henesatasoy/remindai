@@ -182,11 +182,7 @@ const MainPanel = ({
               {/* Clickable Logo */}
               <button
                 onClick={() => setIsCheckboxChecked(!isCheckboxChecked)}
-                className={`w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 cursor-pointer ${
-                  isCheckboxChecked 
-                    ? "bg-green-500/20 ring-2 ring-green-500" 
-                    : "bg-primary/10 hover:bg-primary/20"
-                }`}
+                className="w-16 h-16 rounded-full flex items-center justify-center bg-primary/10"
               >
                 <Sparkles className={`w-8 h-8 transition-colors duration-300 ${
                   isCheckboxChecked ? "text-green-500" : "text-primary"
