@@ -24,7 +24,7 @@ interface PsyCogSidebarProps {
   userFirstMessage?: string;
 }
 
-const INTERVENTION_TEXT_1 = `Veri sonuçları kaliteli. İkinci test aşamasında verimlilik artışı ve doğruluk oranında artış bekleniyor.`;
+const INTERVENTION_TEXT_1 = `Veri sonuçları kaliteli! İkinci test aşamasında verimlilik artışı ve doğruluk oranında artış bekleniyor!`;
 
 const INTERVENTION_TEXT_2 = `Lütfen bu mesajı okuduysanız sol üstte ki PsyCog yazısının solunda bulunan logoya tıklayın. İşaretledikten sonra hazır iseniz ikinci test aşamasını başlatmak için aşağıda ki Başlat butonuna basınız.`;
 
