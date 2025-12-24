@@ -68,6 +68,20 @@ import q10Opt2 from "@/assets/questions/practice/q10-opt2.jpeg";
 import q10Opt3 from "@/assets/questions/practice/q10-opt3.jpeg";
 import q10Opt4 from "@/assets/questions/practice/q10-opt4.jpeg";
 
+// Phase 1 Question 1 images
+import p1q1Grid from "@/assets/questions/phase1/q1-grid.jpeg";
+import p1q1Opt1 from "@/assets/questions/phase1/q1-opt1.jpeg";
+import p1q1Opt2 from "@/assets/questions/phase1/q1-opt2.jpeg";
+import p1q1Opt3 from "@/assets/questions/phase1/q1-opt3.jpeg";
+import p1q1Opt4 from "@/assets/questions/phase1/q1-opt4.jpeg";
+
+// Phase 1 Question 2 images
+import p1q2Grid from "@/assets/questions/phase1/q2-grid.jpeg";
+import p1q2Opt1 from "@/assets/questions/phase1/q2-opt1.jpeg";
+import p1q2Opt2 from "@/assets/questions/phase1/q2-opt2.jpeg";
+import p1q2Opt3 from "@/assets/questions/phase1/q2-opt3.jpeg";
+import p1q2Opt4 from "@/assets/questions/phase1/q2-opt4.jpeg";
+
 export interface Question {
   id: string;
   gridImage: string;
@@ -146,18 +160,33 @@ export const PRACTICE_QUESTIONS: Question[] = [
   },
 ];
 
-// 12 Phase 1 questions (first half of actual test)
-export const PHASE1_QUESTIONS: Question[] = Array.from({ length: 12 }, (_, i) => ({
-  id: `phase1-${i + 1}`,
-  gridImage: `https://placehold.co/400x300/1a1a1a/666666?text=Faz1+Soru+${i + 1}`,
-  options: [
-    "https://placehold.co/150x100/1a1a1a/666666?text=A",
-    "https://placehold.co/150x100/1a1a1a/666666?text=B",
-    "https://placehold.co/150x100/1a1a1a/666666?text=C",
-    "https://placehold.co/150x100/1a1a1a/666666?text=D",
-  ],
-  correctOptionIndex: i % 4,
-}));
+// 12 Phase 1 questions (first half of actual test) - first 2 with real images
+export const PHASE1_QUESTIONS: Question[] = [
+  {
+    id: "phase1-1",
+    gridImage: p1q1Grid,
+    options: [p1q1Opt1, p1q1Opt2, p1q1Opt3, p1q1Opt4],
+    correctOptionIndex: 0,
+  },
+  {
+    id: "phase1-2",
+    gridImage: p1q2Grid,
+    options: [p1q2Opt1, p1q2Opt2, p1q2Opt3, p1q2Opt4],
+    correctOptionIndex: 0,
+  },
+  // Remaining Phase 1 questions with placeholders
+  ...Array.from({ length: 10 }, (_, i) => ({
+    id: `phase1-${i + 3}`,
+    gridImage: `https://placehold.co/400x300/1a1a1a/666666?text=Faz1+Soru+${i + 3}`,
+    options: [
+      "https://placehold.co/150x100/1a1a1a/666666?text=A",
+      "https://placehold.co/150x100/1a1a1a/666666?text=B",
+      "https://placehold.co/150x100/1a1a1a/666666?text=C",
+      "https://placehold.co/150x100/1a1a1a/666666?text=D",
+    ],
+    correctOptionIndex: (i + 2) % 4,
+  })),
+];
 
 // 12 Phase 2 questions (second half of actual test)
 export const PHASE2_QUESTIONS: Question[] = Array.from({ length: 12 }, (_, i) => ({
