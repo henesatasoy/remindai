@@ -1,15 +1,8 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, MessageSquare, Sparkles, User, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 type ViewState = "loading" | "instructions" | "practice" | "practice-passed" | "practice-failed" | "phase1" | "ai-analysis" | "intervention" | "phase2" | "complete";
-
 interface PsyCogSidebarProps {
   isCollapsed: boolean;
   onToggle: () => void;
@@ -23,30 +16,31 @@ interface PsyCogSidebarProps {
   practiceScore?: number;
   userFirstMessage?: string;
 }
-
 const INTERVENTION_TEXT_1 = `Veri sonuçları kaliteli! İkinci test aşamasında verimlilik artışı ve doğruluk oranında artış bekleniyor!`;
-
 const INTERVENTION_TEXT_2 = `Lütfen bu mesajı okuduysanız sol üstte ki PsyCog yazısının solunda bulunan logoya tıklayın. İşaretledikten sonra hazır iseniz ikinci test aşamasını başlatmak için aşağıda ki Başlat butonuna basınız.`;
-
 const INSTRUCTION_INTRO = `Bu bölümde, problem çözme ve soyut muhakeme yeteneklerinizi ölçen bir dizi görsel bulmaca ile karşılaşacaksınız. Her soruda, 3x3'lük bir ızgara (matris) göreceksiniz. Bu ızgaradaki kutucuklardan 8 tanesi, belirli bir kurala veya örüntüye göre yerleştirilmiş şekiller içermektedir. Sağ alt köşedeki kutucuk ise boştur.
 
 Göreviniz: Şekillerin hem satırlardaki (soldan sağa) hem de sütunlardaki (yukarıdan aşağıya) değişim kurallarını keşfetmek ve bu kurala göre boş kutucuğa gelmesi gereken en uygun şekli, aşağıda verilen 4 seçenek arasından bulup işaretlemektir.`;
-
-const INSTRUCTION_ITEMS = [
-  { title: "Süre", description: "Her bir soruyu çözmek için 30 saniyeniz olacaktır." },
-  { title: "Geri Sayım", description: "Sürenin bitimine 5 saniye kala ekranda bir geri sayım sayacı belirecektir." },
-  { title: "Tahmin", description: "Eğer kuralı süreniz dolmadan bulamazsanız, en mantıklı gelen seçeneği işaretleyerek şansınızı deneyiniz. Boş bırakmak yerine tahmin yürütmeniz önerilir." },
-  { title: "İlerleme", description: "Cevabı işaretlediğinizde veya süre dolduğunda otomatik olarak bir sonraki soruya geçilecektir. Geriye dönüp cevabınızı değiştirme şansınız yoktur." },
-];
-
+const INSTRUCTION_ITEMS = [{
+  title: "Süre",
+  description: "Her bir soruyu çözmek için 30 saniyeniz olacaktır."
+}, {
+  title: "Geri Sayım",
+  description: "Sürenin bitimine 5 saniye kala ekranda bir geri sayım sayacı belirecektir."
+}, {
+  title: "Tahmin",
+  description: "Eğer kuralı süreniz dolmadan bulamazsanız, en mantıklı gelen seçeneği işaretleyerek şansınızı deneyiniz. Boş bırakmak yerine tahmin yürütmeniz önerilir."
+}, {
+  title: "İlerleme",
+  description: "Cevabı işaretlediğinizde veya süre dolduğunda otomatik olarak bir sonraki soruya geçilecektir. Geriye dönüp cevabınızı değiştirme şansınız yoktur."
+}];
 const INSTRUCTION_FOOTER = `Gerçek testten önce alıştırma sorularına ile başlayacaksınız.`;
-
-const PsyCogSidebar = ({ 
-  isCollapsed, 
-  onToggle, 
-  promptHistory, 
-  viewState, 
-  isAttentionCheckClicked, 
+const PsyCogSidebar = ({
+  isCollapsed,
+  onToggle,
+  promptHistory,
+  viewState,
+  isAttentionCheckClicked,
   onAttentionCheckClick,
   onStartPhase2,
   onStartPractice,
@@ -54,119 +48,85 @@ const PsyCogSidebar = ({
   practiceScore = 0,
   userFirstMessage
 }: PsyCogSidebarProps) => {
-  const [modalContent, setModalContent] = useState<{ title: string; content: React.ReactNode } | null>(null);
-  
+  const [modalContent, setModalContent] = useState<{
+    title: string;
+    content: React.ReactNode;
+  } | null>(null);
   const isIntervention = viewState === "intervention";
   const isInstructions = viewState === "instructions";
   const isPracticePassed = viewState === "practice-passed";
   const isPracticeFailed = viewState === "practice-failed";
   const isFullscreenChat = isIntervention || isInstructions || isPracticePassed || isPracticeFailed;
-  
+
   // Determine if we should show instructions in history (after instructions phase)
   const showInstructionsInHistory = !isInstructions && viewState !== "loading" && !isCollapsed;
-  
+
   // Determine if we should show practice result in history
-  const showPracticeResultInHistory = !isPracticePassed && !isPracticeFailed && 
-    (viewState === "phase1" || viewState === "ai-analysis" || viewState === "intervention" || viewState === "phase2" || viewState === "complete") && !isCollapsed;
-  
+  const showPracticeResultInHistory = !isPracticePassed && !isPracticeFailed && (viewState === "phase1" || viewState === "ai-analysis" || viewState === "intervention" || viewState === "phase2" || viewState === "complete") && !isCollapsed;
+
   // Determine if we should show intervention in history (after intervention, during phase2 or complete)
   const showInterventionInHistory = (viewState === "phase2" || viewState === "complete") && !isCollapsed;
-
   const openInstructionsModal = () => {
     setModalContent({
       title: "Test Talimatları",
-      content: (
-        <div className="space-y-4">
+      content: <div className="space-y-4">
           <p className="whitespace-pre-line">{INSTRUCTION_INTRO}</p>
           <div>
             <p className="font-semibold mb-2">Dikkat Etmeniz Gerekenler:</p>
             <ul className="space-y-2 ml-1">
-              {INSTRUCTION_ITEMS.map((item, index) => (
-                <li key={index} className="flex gap-2">
+              {INSTRUCTION_ITEMS.map((item, index) => <li key={index} className="flex gap-2">
                   <span className="text-primary">•</span>
                   <span><strong>{item.title}:</strong> {item.description}</span>
-                </li>
-              ))}
+                </li>)}
             </ul>
           </div>
           <p>{INSTRUCTION_FOOTER}</p>
         </div>
-      )
     });
   };
-
   const openPracticeResultModal = () => {
     setModalContent({
       title: "Alıştırma Sonucu",
-      content: (
-        <div className="space-y-3">
+      content: <div className="space-y-3">
           <p className="text-lg font-semibold">Alıştırma Tamamlandı</p>
           <p>Puan: <span className="text-primary font-semibold">{practiceScore}/10</span></p>
           <p>Alıştırma soruları bitti. Hazır iseniz 24 soruluk gerçek testin 12 soruluk ilk aşamasına başlamak için Başlat butonuna basınız.</p>
         </div>
-      )
     });
   };
-
   const openInterventionModal = () => {
     setModalContent({
       title: "AI Analiz Sonucu",
-      content: (
-        <div className="space-y-4">
+      content: <div className="space-y-4">
           <p className="whitespace-pre-line">{INTERVENTION_TEXT_1}</p>
           <p className="whitespace-pre-line">{INTERVENTION_TEXT_2}</p>
         </div>
-      )
     });
   };
-
-  return (
-    <aside
-      className={`
+  return <aside className={`
         h-screen bg-sidebar border-r border-sidebar-border
         transition-all duration-500 ease-in-out
         flex flex-col relative
         ${isFullscreenChat ? "w-full" : isCollapsed ? "w-16" : "w-72"}
-      `}
-    >
+      `}>
       {/* Toggle Button - hide during fullscreen chat states */}
-      {!isFullscreenChat && (
-        <button
-          onClick={onToggle}
-          className="absolute -right-3 top-6 z-10 w-6 h-6 rounded-full bg-secondary border border-border flex items-center justify-center hover:bg-muted transition-colors"
-        >
-          {isCollapsed ? (
-            <ChevronRight className="w-4 h-4 text-foreground" />
-          ) : (
-            <ChevronLeft className="w-4 h-4 text-foreground" />
-          )}
-        </button>
-      )}
+      {!isFullscreenChat && <button onClick={onToggle} className="absolute -right-3 top-6 z-10 w-6 h-6 rounded-full bg-secondary border border-border flex items-center justify-center hover:bg-muted transition-colors">
+          {isCollapsed ? <ChevronRight className="w-4 h-4 text-foreground" /> : <ChevronLeft className="w-4 h-4 text-foreground" />}
+        </button>}
 
       {/* Header with Logo - show clickable logo during intervention */}
       <div className="p-4 border-b border-sidebar-border">
         <div className="flex items-center gap-2">
           {/* Clickable Logo - only clickable during intervention */}
-          {isIntervention ? (
-            <button
-              onClick={onAttentionCheckClick}
-              className="w-8 h-8 rounded-full flex items-center justify-center bg-primary/10 shrink-0"
-            >
-              <Sparkles className={`w-5 h-5 transition-colors duration-300 ${
-                isAttentionCheckClicked ? "text-green-500" : "text-primary"
-              }`} />
-            </button>
-          ) : (
-            <div className="w-8 h-8 rounded-full flex items-center justify-center bg-primary/10 shrink-0">
+          {isIntervention ? <button onClick={onAttentionCheckClick} className="w-8 h-8 rounded-full flex items-center justify-center bg-primary/10 shrink-0">
+              <Sparkles className={`w-5 h-5 transition-colors duration-300 ${isAttentionCheckClicked ? "text-green-500" : "text-primary"}`} />
+            </button> : <div className="w-8 h-8 rounded-full flex items-center justify-center bg-primary/10 shrink-0">
               <Sparkles className="w-5 h-5 text-primary" />
-            </div>
-          )}
-          <h1
-            className={`
+            </div>}
+          <h1 className={`
               font-semibold text-foreground transition-all duration-300
               ${isCollapsed ? "hidden" : "text-xl"}
-            `}
-          >
+            `}>
             PsyCog
           </h1>
         </div>
@@ -175,11 +135,9 @@ const PsyCogSidebar = ({
       {/* Chat Content Area */}
       <div className="flex-1 overflow-y-auto p-2">
         {/* Show full chat during fullscreen states */}
-        {isFullscreenChat ? (
-          <div className="max-w-3xl mx-auto p-4 space-y-6">
+        {isFullscreenChat ? <div className="max-w-3xl mx-auto p-4 space-y-6">
             {/* User's First Message */}
-            {userFirstMessage && (
-              <div className="flex items-start gap-3 justify-end">
+            {userFirstMessage && <div className="flex items-start gap-3 justify-end">
                 <div className="bg-primary/10 border border-primary/20 rounded-xl p-4 max-w-[80%]">
                   <p className="text-foreground text-sm leading-relaxed">
                     {userFirstMessage}
@@ -188,15 +146,10 @@ const PsyCogSidebar = ({
                 <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center shrink-0">
                   <User className="w-4 h-4 text-muted-foreground" />
                 </div>
-              </div>
-            )}
+              </div>}
 
             {/* Instructions History - show on practice results and intervention */}
-            {(isPracticePassed || isPracticeFailed || isIntervention) && (
-              <button 
-                onClick={openInstructionsModal}
-                className="flex items-start gap-3 w-full text-left hover:opacity-80 transition-opacity"
-              >
+            {(isPracticePassed || isPracticeFailed || isIntervention) && <button onClick={openInstructionsModal} className="flex items-start gap-3 w-full text-left hover:opacity-80 transition-opacity">
                 <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                   <Sparkles className="w-4 h-4 text-primary" />
                 </div>
@@ -204,15 +157,10 @@ const PsyCogSidebar = ({
                   <p className="text-muted-foreground text-xs line-clamp-3">{INSTRUCTION_INTRO.slice(0, 150)}...</p>
                   <span className="text-primary/70 text-[10px] mt-1 block">Devam Et ✓</span>
                 </div>
-              </button>
-            )}
+              </button>}
 
             {/* Practice Result History - show on intervention */}
-            {isIntervention && (
-              <button 
-                onClick={openPracticeResultModal}
-                className="flex items-start gap-3 w-full text-left hover:opacity-80 transition-opacity"
-              >
+            {isIntervention && <button onClick={openPracticeResultModal} className="flex items-start gap-3 w-full text-left hover:opacity-80 transition-opacity">
                 <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                   <Sparkles className="w-4 h-4 text-primary" />
                 </div>
@@ -220,8 +168,7 @@ const PsyCogSidebar = ({
                   <p className="text-muted-foreground text-xs">Alıştırma Tamamlandı - Puan: {practiceScore}/10</p>
                   <span className="text-primary/70 text-[10px] mt-1 block">Başlat ✓</span>
                 </div>
-              </button>
-            )}
+              </button>}
             
             {/* AI Message Bubble */}
             <div className="flex items-start gap-3">
@@ -229,47 +176,36 @@ const PsyCogSidebar = ({
                 <Sparkles className="w-4 h-4 text-primary" />
               </div>
               <div className="flex-1 bg-card border border-border rounded-xl p-4 max-w-[80%]">
-                {isIntervention ? (
-                  <p className="text-foreground text-sm leading-relaxed whitespace-pre-line">
+                {isIntervention ? <p className="text-foreground text-sm leading-relaxed whitespace-pre-line">
                     {INTERVENTION_TEXT_1}
-                  </p>
-                ) : isPracticePassed ? (
-                  <div className="text-foreground text-sm leading-relaxed space-y-3">
+                  </p> : isPracticePassed ? <div className="text-foreground text-sm leading-relaxed space-y-3">
                     <p className="font-semibold text-base">Alıştırma Tamamlandı</p>
                     <p>Puan: <span className="text-primary font-semibold">{practiceScore}/10</span></p>
                     <p>Alıştırma soruları bitti. Hazır iseniz 24 soruluk gerçek testin 12 soruluk ilk aşamasına başlamak için lütfen aşağıdaki Başlat butonuna basınız.</p>
-                  </div>
-                ) : isPracticeFailed ? (
-                  <div className="text-foreground text-sm leading-relaxed space-y-3">
+                  </div> : isPracticeFailed ? <div className="text-foreground text-sm leading-relaxed space-y-3">
                     <p className="font-semibold text-base">Alıştırma Tamamlandı</p>
                     <p>Puan: <span className="text-destructive font-semibold">{practiceScore}/10</span></p>
                     <p className="text-lg">Lütfen deney yürütücüsüne haber ediniz.</p>
-                  </div>
-                ) : (
-                  <div className="text-foreground text-sm leading-relaxed space-y-4">
+                  </div> : <div className="text-foreground text-sm leading-relaxed space-y-4">
                     <p className="whitespace-pre-line">{INSTRUCTION_INTRO}</p>
                     
                     <div>
                       <p className="font-semibold mb-2">Dikkat Etmeniz Gerekenler:</p>
                       <ul className="space-y-2 ml-1">
-                        {INSTRUCTION_ITEMS.map((item, index) => (
-                          <li key={index} className="flex gap-2">
+                        {INSTRUCTION_ITEMS.map((item, index) => <li key={index} className="flex gap-2">
                             <span className="text-primary">•</span>
                             <span><strong>{item.title}:</strong> {item.description}</span>
-                          </li>
-                        ))}
+                          </li>)}
                       </ul>
                     </div>
                     
                     <p>{INSTRUCTION_FOOTER}</p>
-                  </div>
-                )}
+                  </div>}
               </div>
             </div>
 
             {/* Second AI Message for Intervention */}
-            {isIntervention && (
-              <div className="flex items-start gap-3">
+            {isIntervention && <div className="flex items-start gap-3">
                 <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                   <Sparkles className="w-4 h-4 text-primary" />
                 </div>
@@ -278,103 +214,59 @@ const PsyCogSidebar = ({
                     {INTERVENTION_TEXT_2}
                   </p>
                 </div>
-              </div>
-            )}
+              </div>}
 
             {/* Action Button - hide for practice-failed */}
-            {!isPracticeFailed && (
-              <div className="flex justify-center pt-6">
-                <Button
-                  onClick={isIntervention ? onStartPhase2 : isPracticePassed ? onStartPhase1 : onStartPractice}
-                  className="px-8 py-3"
-                >
+            {!isPracticeFailed && <div className="flex justify-center pt-6">
+                <Button onClick={isIntervention ? onStartPhase2 : isPracticePassed ? onStartPhase1 : onStartPractice} className="px-8 py-3">
                   {isIntervention ? "Başlat" : isPracticePassed ? "Başlat" : "Devam Et"}
                 </Button>
-              </div>
-            )}
-          </div>
-        ) : (
-          /* Chat history with instructions and intervention */
-          <div className="space-y-4 p-2">
+              </div>}
+          </div> : (/* Chat history with instructions and intervention */
+      <div className="space-y-4 p-2">
             {/* User's First Message in History */}
-            {userFirstMessage && !isCollapsed && (
-              <div className="flex items-start gap-2">
+            {userFirstMessage && !isCollapsed && <div className="flex items-start gap-2">
                 <User className="w-4 h-4 text-muted-foreground shrink-0 mt-1" />
                 <p className="text-xs text-muted-foreground line-clamp-2">{userFirstMessage}</p>
-              </div>
-            )}
+              </div>}
             
             {/* Instructions in History */}
-            {showInstructionsInHistory && (
-              <button 
-                onClick={openInstructionsModal}
-                className="flex items-start gap-2 w-full text-left hover:bg-sidebar-accent rounded-lg p-2 transition-colors"
-              >
+            {showInstructionsInHistory && <button onClick={openInstructionsModal} className="flex items-start gap-2 w-full text-left hover:bg-sidebar-accent rounded-lg p-2 transition-colors">
                 <Sparkles className="w-4 h-4 text-primary shrink-0 mt-1" />
                 <div className="text-xs text-muted-foreground">
                   <p className="line-clamp-2 mb-1">{INSTRUCTION_INTRO.slice(0, 100)}...</p>
                   <span className="text-primary/70 text-[10px]">Devam Et ✓</span>
                 </div>
-              </button>
-            )}
+              </button>}
             
             {/* Practice Result in History */}
-            {showPracticeResultInHistory && (
-              <button 
-                onClick={openPracticeResultModal}
-                className="flex items-start gap-2 w-full text-left hover:bg-sidebar-accent rounded-lg p-2 transition-colors"
-              >
+            {showPracticeResultInHistory && <button onClick={openPracticeResultModal} className="flex items-start gap-2 w-full text-left hover:bg-sidebar-accent rounded-lg p-2 transition-colors">
                 <Sparkles className="w-4 h-4 text-primary shrink-0 mt-1" />
                 <div className="text-xs text-muted-foreground">
                   <p className="line-clamp-2 mb-1">Alıştırma Tamamlandı - Puan: {practiceScore}/10</p>
                   <span className="text-primary/70 text-[10px]">Başlat ✓</span>
                 </div>
-              </button>
-            )}
+              </button>}
             
-            {showInterventionInHistory && (
-              <button 
-                onClick={openInterventionModal}
-                className="flex items-start gap-2 w-full text-left hover:bg-sidebar-accent rounded-lg p-2 transition-colors"
-              >
+            {showInterventionInHistory && <button onClick={openInterventionModal} className="flex items-start gap-2 w-full text-left hover:bg-sidebar-accent rounded-lg p-2 transition-colors">
                 <Sparkles className="w-4 h-4 text-primary shrink-0 mt-1" />
                 <div className="text-xs text-muted-foreground">
                   <p className="line-clamp-2 mb-1">{INTERVENTION_TEXT_1.slice(0, 80)}...</p>
                   <span className="text-primary/70 text-[10px]">Başlat ✓</span>
                 </div>
-              </button>
-            )}
+              </button>}
             
             {/* Regular prompt history */}
-            {promptHistory.map((prompt, index) => (
-              <div
-                key={index}
-                className={`
-                  flex items-start gap-3 p-3 rounded-lg
-                  hover:bg-sidebar-accent transition-colors cursor-pointer
-                  ${isCollapsed ? "justify-center" : ""}
-                `}
-              >
-                <MessageSquare className="w-5 h-5 text-muted-foreground shrink-0 mt-0.5" />
-                {!isCollapsed && (
-                  <span className="text-sm text-foreground line-clamp-2">
-                    {prompt}
-                  </span>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
+            {promptHistory.map((prompt, index) => {})}
+          </div>)}
       </div>
 
       {/* Footer - hide during fullscreen chat states */}
-      {!isCollapsed && !isFullscreenChat && (
-        <div className="p-4 border-t border-sidebar-border">
+      {!isCollapsed && !isFullscreenChat && <div className="p-4 border-t border-sidebar-border">
           <p className="text-xs text-muted-foreground text-center">
             Geçmiş sorgularınız burada görünür
           </p>
-        </div>
-      )}
+        </div>}
       {/* Message Detail Modal */}
       <Dialog open={modalContent !== null} onOpenChange={() => setModalContent(null)}>
         <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
@@ -386,8 +278,6 @@ const PsyCogSidebar = ({
           </div>
         </DialogContent>
       </Dialog>
-    </aside>
-  );
+    </aside>;
 };
-
 export default PsyCogSidebar;
