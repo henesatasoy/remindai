@@ -1,7 +1,16 @@
 import { useState, useEffect, useRef } from "react";
-import { Send, Sparkles } from "lucide-react";
+import { Send, Sparkles, MessageSquare, Plus, ChevronLeft, ChevronRight } from "lucide-react";
 import PsyCogSidebar from "@/components/PsyCogSidebar";
 import MainPanel from "@/components/MainPanel";
+
+const fakeChatHistory = [
+  "IQ testim hakkında bilgi ver",
+  "Raven testinin sonuçları nasıl yorumlanır?",
+  "Bilişsel becerilerimi nasıl geliştirebilirim?",
+  "Dikkat eksikliği testi yap",
+  "Hafıza güçlendirme teknikleri",
+  "Görsel-uzamsal zeka nedir?",
+];
 
 const Index = () => {
   const [inputValue, setInputValue] = useState("");
@@ -41,55 +50,132 @@ const Index = () => {
     }
   }, [isTransformed]);
 
-  // Initial centered view
+  const [isHomeSidebarCollapsed, setIsHomeSidebarCollapsed] = useState(false);
+
+  // Initial centered view with decorative sidebar
   if (!isTransformed) {
     return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
-        {/* Logo */}
-        <div className="mb-16 text-center animate-fade-in">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <Sparkles className="w-10 h-10 text-primary" />
-            <h1 className="text-5xl font-bold text-foreground tracking-tight">
-              PsyCog
-            </h1>
-          </div>
-          <p className="text-muted-foreground text-lg">
-            Yapay zeka destekli psikolojik değerlendirme
-          </p>
-        </div>
+      <div className="min-h-screen bg-background flex w-full">
+        {/* Decorative LLM-style Sidebar */}
+        <aside
+          className={`
+            h-screen bg-sidebar border-r border-sidebar-border
+            transition-all duration-500 ease-in-out
+            flex flex-col relative shrink-0
+            ${isHomeSidebarCollapsed ? "w-16" : "w-64"}
+          `}
+        >
+          {/* Toggle Button */}
+          <button
+            onClick={() => setIsHomeSidebarCollapsed(!isHomeSidebarCollapsed)}
+            className="absolute -right-3 top-6 z-10 w-6 h-6 rounded-full bg-secondary border border-border flex items-center justify-center hover:bg-muted transition-colors"
+          >
+            {isHomeSidebarCollapsed ? (
+              <ChevronRight className="w-4 h-4 text-foreground" />
+            ) : (
+              <ChevronLeft className="w-4 h-4 text-foreground" />
+            )}
+          </button>
 
-        {/* Input Area */}
-        <div className="w-full max-w-2xl animate-fade-in" style={{ animationDelay: "0.1s" }}>
-          <div className="relative glow-input rounded-2xl bg-card border border-border transition-all duration-300">
-            <input
-              ref={inputRef}
-              type="text"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Bir şeyler sorun..."
-              className="w-full px-6 py-5 pr-14 bg-transparent text-foreground text-lg placeholder:text-muted-foreground focus:outline-none rounded-2xl"
-            />
+          {/* New Chat Button */}
+          <div className="p-3 border-b border-sidebar-border">
             <button
-              onClick={handleSubmit}
-              disabled={!inputValue.trim()}
               className={`
-                absolute right-3 top-1/2 -translate-y-1/2
-                w-10 h-10 rounded-xl flex items-center justify-center
-                transition-all duration-300
-                ${
-                  inputValue.trim()
-                    ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                    : "bg-muted text-muted-foreground cursor-not-allowed"
-                }
+                w-full flex items-center gap-3 p-3 rounded-lg
+                bg-primary/10 hover:bg-primary/20 transition-colors
+                text-foreground
+                ${isHomeSidebarCollapsed ? "justify-center" : ""}
               `}
             >
-              <Send className="w-5 h-5" />
+              <Plus className="w-5 h-5 text-primary shrink-0" />
+              {!isHomeSidebarCollapsed && (
+                <span className="text-sm font-medium">Yeni Sohbet</span>
+              )}
             </button>
           </div>
-          <p className="text-center text-sm text-muted-foreground mt-4">
-            Sorgunuzu yazın ve Enter tuşuna basın
-          </p>
+
+          {/* Fake Chat History */}
+          <div className="flex-1 overflow-y-auto p-2">
+            <div className={`mb-2 ${isHomeSidebarCollapsed ? "hidden" : ""}`}>
+              <span className="text-xs text-muted-foreground px-3">Son 7 gün</span>
+            </div>
+            {fakeChatHistory.map((chat, index) => (
+              <div
+                key={index}
+                className={`
+                  flex items-start gap-3 p-3 rounded-lg
+                  hover:bg-sidebar-accent transition-colors cursor-pointer
+                  ${isHomeSidebarCollapsed ? "justify-center" : ""}
+                `}
+              >
+                <MessageSquare className="w-4 h-4 text-muted-foreground shrink-0 mt-0.5" />
+                {!isHomeSidebarCollapsed && (
+                  <span className="text-sm text-foreground line-clamp-1">
+                    {chat}
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Footer */}
+          {!isHomeSidebarCollapsed && (
+            <div className="p-4 border-t border-sidebar-border">
+              <p className="text-xs text-muted-foreground text-center">
+                PsyCog v2.4.1
+              </p>
+            </div>
+          )}
+        </aside>
+
+        {/* Main Content */}
+        <div className="flex-1 flex flex-col items-center justify-center p-4">
+          {/* Logo */}
+          <div className="mb-16 text-center animate-fade-in">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <Sparkles className="w-10 h-10 text-primary" />
+              <h1 className="text-5xl font-bold text-foreground tracking-tight">
+                PsyCog
+              </h1>
+            </div>
+            <p className="text-muted-foreground text-lg">
+              Yapay zeka destekli psikolojik değerlendirme
+            </p>
+          </div>
+
+          {/* Input Area */}
+          <div className="w-full max-w-2xl animate-fade-in" style={{ animationDelay: "0.1s" }}>
+            <div className="relative glow-input rounded-2xl bg-card border border-border transition-all duration-300">
+              <input
+                ref={inputRef}
+                type="text"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Bir şeyler sorun..."
+                className="w-full px-6 py-5 pr-14 bg-transparent text-foreground text-lg placeholder:text-muted-foreground focus:outline-none rounded-2xl"
+              />
+              <button
+                onClick={handleSubmit}
+                disabled={!inputValue.trim()}
+                className={`
+                  absolute right-3 top-1/2 -translate-y-1/2
+                  w-10 h-10 rounded-xl flex items-center justify-center
+                  transition-all duration-300
+                  ${
+                    inputValue.trim()
+                      ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                      : "bg-muted text-muted-foreground cursor-not-allowed"
+                  }
+                `}
+              >
+                <Send className="w-5 h-5" />
+              </button>
+            </div>
+            <p className="text-center text-sm text-muted-foreground mt-4">
+              Sorgunuzu yazın ve Enter tuşuna basın
+            </p>
+          </div>
         </div>
       </div>
     );
