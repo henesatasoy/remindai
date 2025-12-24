@@ -11,10 +11,13 @@ interface PsyCogSidebarProps {
   isAttentionCheckClicked: boolean;
   onAttentionCheckClick: () => void;
   onStartPhase2?: () => void;
+  onStartPractice?: () => void;
   userFirstMessage?: string;
 }
 
 const INTERVENTION_TEXT = `Veri sonuçları kaliteli. İkinci test aşamasında verimlilik artışı ve doğruluk oranında artış bekleniyor. Lütfen bu mesajı okuduysanız sol üstte ki PsyCog yazısının solunda bulunan logoya tıklayın. İşaretledikten sonra hazır iseniz ikinci test aşamasını başlatmak için aşağıda ki Başlat butonuna basınız.`;
+
+const INSTRUCTION_TEXT = `Bu bölümde, problem çözme ve soyut muhakeme yeteneklerinizi ölçen bir dizi görsel bulmaca ile karşılaşacaksınız. Her soruda, 3x3'lük bir ızgara (matris) göreceksiniz. Bu ızgaradaki kutucuklardan 8 tanesi, belirli bir kurala veya örüntüye göre yerleştirilmiş şekiller içermektedir. Sağ alt köşedeki kutucuk ise boştur. Göreviniz: Şekillerin hem satırlardaki (soldan sağa) hem de sütunlardaki (yukarıdan aşağıya) değişim kurallarını keşfetmek ve bu kurala göre boş kutucuğa gelmesi gereken en uygun şekli, aşağıda verilen 4 seçenek arasından bulup işaretlemektir. Dikkat Etmeniz Gerekenler: Süre: Her bir soruyu çözmek için 30 saniyeniz olacaktır. Geri Sayım: Sürenin bitimine 5 saniye kala ekranda bir geri sayım sayacı belirecektir. Tahmin: Eğer kuralı süreniz dolmadan bulamazsanız, en mantıklı gelen seçeneği işaretleyerek şansınızı deneyiniz. Boş bırakmak yerine tahmin yürütmeniz önerilir. İlerleme: Cevabı işaretlediğinizde veya süre dolduğunda otomatik olarak bir sonraki soruya geçilecektir. Geriye dönüp cevabınızı değiştirme şansınız yoktur. Gerçek testten önce alıştırma sorularına ile başlayacaksınız.`;
 
 const PsyCogSidebar = ({ 
   isCollapsed, 
@@ -24,9 +27,12 @@ const PsyCogSidebar = ({
   isAttentionCheckClicked, 
   onAttentionCheckClick,
   onStartPhase2,
+  onStartPractice,
   userFirstMessage
 }: PsyCogSidebarProps) => {
   const isIntervention = viewState === "intervention";
+  const isInstructions = viewState === "instructions";
+  const isFullscreenChat = isIntervention || isInstructions;
 
   return (
     <aside
@@ -34,11 +40,11 @@ const PsyCogSidebar = ({
         h-screen bg-sidebar border-r border-sidebar-border
         transition-all duration-500 ease-in-out
         flex flex-col relative
-        ${isIntervention ? "w-full" : isCollapsed ? "w-16" : "w-72"}
+        ${isFullscreenChat ? "w-full" : isCollapsed ? "w-16" : "w-72"}
       `}
     >
-      {/* Toggle Button - hide during intervention */}
-      {!isIntervention && (
+      {/* Toggle Button - hide during fullscreen chat states */}
+      {!isFullscreenChat && (
         <button
           onClick={onToggle}
           className="absolute -right-3 top-6 z-10 w-6 h-6 rounded-full bg-secondary border border-border flex items-center justify-center hover:bg-muted transition-colors"
@@ -51,7 +57,7 @@ const PsyCogSidebar = ({
         </button>
       )}
 
-      {/* Header with Logo */}
+      {/* Header with Logo - show clickable logo during intervention */}
       <div className="p-4 border-b border-sidebar-border">
         <div className="flex items-center gap-2">
           {/* Clickable Logo - only clickable during intervention */}
@@ -82,8 +88,8 @@ const PsyCogSidebar = ({
 
       {/* Chat Content Area */}
       <div className="flex-1 overflow-y-auto p-2">
-        {/* Show full chat during intervention state */}
-        {isIntervention ? (
+        {/* Show full chat during fullscreen states */}
+        {isFullscreenChat ? (
           <div className="max-w-3xl mx-auto p-4 space-y-6">
             {/* User's First Message */}
             {userFirstMessage && (
@@ -105,19 +111,19 @@ const PsyCogSidebar = ({
                 <Sparkles className="w-4 h-4 text-primary" />
               </div>
               <div className="flex-1 bg-card border border-border rounded-xl p-4 max-w-[80%]">
-                <p className="text-foreground text-sm leading-relaxed">
-                  {INTERVENTION_TEXT}
+                <p className="text-foreground text-sm leading-relaxed whitespace-pre-line">
+                  {isIntervention ? INTERVENTION_TEXT : INSTRUCTION_TEXT}
                 </p>
               </div>
             </div>
 
-            {/* Start Button */}
+            {/* Action Button */}
             <div className="flex justify-center pt-6">
               <Button
-                onClick={onStartPhase2}
+                onClick={isIntervention ? onStartPhase2 : onStartPractice}
                 className="px-8 py-3"
               >
-                Başlat
+                {isIntervention ? "Başlat" : "Devam Et"}
               </Button>
             </div>
           </div>
@@ -143,8 +149,8 @@ const PsyCogSidebar = ({
         )}
       </div>
 
-      {/* Footer - hide during intervention */}
-      {!isCollapsed && !isIntervention && (
+      {/* Footer - hide during fullscreen chat states */}
+      {!isCollapsed && !isFullscreenChat && (
         <div className="p-4 border-t border-sidebar-border">
           <p className="text-xs text-muted-foreground text-center">
             Geçmiş sorgularınız burada görünür
