@@ -222,6 +222,20 @@ import p2q10Opt2 from "@/assets/questions/phase2/q10-opt2.jpeg";
 import p2q10Opt3 from "@/assets/questions/phase2/q10-opt3.jpeg";
 import p2q10Opt4 from "@/assets/questions/phase2/q10-opt4.jpeg";
 
+// Phase 2 Question 11 images
+import p2q11Grid from "@/assets/questions/phase2/q11-grid.jpeg";
+import p2q11Opt1 from "@/assets/questions/phase2/q11-opt1.jpeg";
+import p2q11Opt2 from "@/assets/questions/phase2/q11-opt2.jpeg";
+import p2q11Opt3 from "@/assets/questions/phase2/q11-opt3.jpeg";
+import p2q11Opt4 from "@/assets/questions/phase2/q11-opt4.jpeg";
+
+// Phase 2 Question 12 images
+import p2q12Grid from "@/assets/questions/phase2/q12-grid.jpeg";
+import p2q12Opt1 from "@/assets/questions/phase2/q12-opt1.jpeg";
+import p2q12Opt2 from "@/assets/questions/phase2/q12-opt2.jpeg";
+import p2q12Opt3 from "@/assets/questions/phase2/q12-opt3.jpeg";
+import p2q12Opt4 from "@/assets/questions/phase2/q12-opt4.jpeg";
+
 export interface Question {
   id: string;
   gridImage: string;
@@ -438,16 +452,16 @@ export const PHASE2_QUESTIONS: Question[] = [
     options: [p2q10Opt1, p2q10Opt2, p2q10Opt3, p2q10Opt4],
     correctOptionIndex: 0,
   },
-  // Remaining Phase 2 questions with placeholders
-  ...Array.from({ length: 2 }, (_, i) => ({
-    id: `phase2-${i + 11}`,
-    gridImage: `https://placehold.co/400x300/1a1a1a/666666?text=Faz2+Soru+${i + 11}`,
-    options: [
-      "https://placehold.co/150x100/1a1a1a/666666?text=A",
-      "https://placehold.co/150x100/1a1a1a/666666?text=B",
-      "https://placehold.co/150x100/1a1a1a/666666?text=C",
-      "https://placehold.co/150x100/1a1a1a/666666?text=D",
-    ],
-    correctOptionIndex: (i + 10) % 4,
-  })),
+  {
+    id: "phase2-11",
+    gridImage: p2q11Grid,
+    options: [p2q11Opt1, p2q11Opt2, p2q11Opt3, p2q11Opt4],
+    correctOptionIndex: 0,
+  },
+  {
+    id: "phase2-12",
+    gridImage: p2q12Grid,
+    options: [p2q12Opt1, p2q12Opt2, p2q12Opt3, p2q12Opt4],
+    correctOptionIndex: 0,
+  },
 ];
