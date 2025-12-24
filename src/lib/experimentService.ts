@@ -48,11 +48,22 @@ export const saveExperimentResult = async (result: ExperimentResult): Promise<vo
 /**
  * Fetches all experiment results grouped by session
  */
-export const fetchAllResults = async () => {
-  const { data, error } = await supabase
+export const fetchAllResults = async (startDate?: Date, endDate?: Date) => {
+  let query = supabase
     .from('experiment_results')
     .select('*')
     .order('created_at', { ascending: false });
+
+  if (startDate) {
+    query = query.gte('created_at', startDate.toISOString());
+  }
+  if (endDate) {
+    const endOfDay = new Date(endDate);
+    endOfDay.setHours(23, 59, 59, 999);
+    query = query.lte('created_at', endOfDay.toISOString());
+  }
+
+  const { data, error } = await query;
 
   if (error) {
     console.error('Failed to fetch results:', error);
@@ -65,7 +76,7 @@ export const fetchAllResults = async () => {
 /**
  * Fetches aggregated session data for the admin dashboard
  */
-export const fetchSessionSummaries = async (phaseFilter?: string) => {
+export const fetchSessionSummaries = async (phaseFilter?: string, startDate?: Date, endDate?: Date) => {
   let query = supabase
     .from('experiment_results')
     .select('*')
@@ -73,6 +84,15 @@ export const fetchSessionSummaries = async (phaseFilter?: string) => {
 
   if (phaseFilter && phaseFilter !== 'all') {
     query = query.eq('phase', phaseFilter);
+  }
+
+  if (startDate) {
+    query = query.gte('created_at', startDate.toISOString());
+  }
+  if (endDate) {
+    const endOfDay = new Date(endDate);
+    endOfDay.setHours(23, 59, 59, 999);
+    query = query.lte('created_at', endOfDay.toISOString());
   }
 
   const { data, error } = await query;
