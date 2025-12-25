@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from "react";
-import { Send, Sparkles, MessageSquare, Plus, ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
+import { Sparkles, MessageSquare, Plus, ChevronLeft, ChevronRight, ChevronDown, Paperclip, Mic } from "lucide-react";
 import PsyCogSidebar from "@/components/PsyCogSidebar";
 import MainPanel from "@/components/MainPanel";
 import { generateSessionId, saveExperimentResult } from "@/lib/experimentService";
@@ -160,15 +160,17 @@ const Index = () => {
                   </div>}
               </div>
 
-              <input ref={inputRef} type="text" value={inputValue} onChange={e => setInputValue(e.target.value)} onKeyDown={handleKeyDown} placeholder="Bir şeyler sorun..." className="w-full pl-36 pr-14 py-5 bg-transparent text-foreground text-lg placeholder:text-muted-foreground focus:outline-none rounded-2xl" />
-              <button onClick={handleSubmit} disabled={!inputValue.trim()} className={`
-                  absolute right-3 top-1/2 -translate-y-1/2
-                  w-10 h-10 rounded-xl flex items-center justify-center
-                  transition-all duration-300
-                  ${inputValue.trim() ? "bg-primary text-primary-foreground hover:bg-primary/90" : "bg-muted text-muted-foreground cursor-not-allowed"}
-                `}>
-                <Send className="w-5 h-5" />
-              </button>
+              <input ref={inputRef} type="text" value={inputValue} onChange={e => setInputValue(e.target.value)} onKeyDown={handleKeyDown} placeholder="Bir şeyler sorun..." className="w-full pl-36 pr-24 py-5 bg-transparent text-foreground text-lg placeholder:text-muted-foreground focus:outline-none rounded-2xl" />
+              
+              {/* File Attachment and Voice Icons */}
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                <button className="w-10 h-10 rounded-xl flex items-center justify-center bg-muted text-muted-foreground hover:bg-muted/80 transition-colors cursor-default">
+                  <Paperclip className="w-5 h-5" />
+                </button>
+                <button className="w-10 h-10 rounded-xl flex items-center justify-center bg-muted text-muted-foreground hover:bg-muted/80 transition-colors cursor-default">
+                  <Mic className="w-5 h-5" />
+                </button>
+              </div>
             </div>
             
           </div>
