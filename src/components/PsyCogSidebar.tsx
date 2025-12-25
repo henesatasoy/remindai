@@ -165,7 +165,7 @@ const PsyCogSidebar = ({
                   <Sparkles className="w-4 h-4 text-primary" />
                 </div>
                 <div className="flex-1 bg-muted/50 border border-border/50 rounded-xl p-3 max-w-[80%]">
-                  <p className="text-muted-foreground text-xs">Alıştırma Tamamlandı - Puan: {practiceScore}/10</p>
+                  <p className="text-muted-foreground text-xs">Alıştırma Tamamlandı</p>
                   <span className="text-primary/70 text-[10px] mt-1 block">Başlat ✓</span>
                 </div>
               </button>}
@@ -243,7 +243,7 @@ const PsyCogSidebar = ({
             {showPracticeResultInHistory && <button onClick={openPracticeResultModal} className="flex items-start gap-2 w-full text-left hover:bg-sidebar-accent rounded-lg p-2 transition-colors">
                 <Sparkles className="w-4 h-4 text-primary shrink-0 mt-1" />
                 <div className="text-xs text-muted-foreground">
-                  <p className="line-clamp-2 mb-1">Alıştırma Tamamlandı - Puan: {practiceScore}/10</p>
+                  <p className="line-clamp-2 mb-1">Alıştırma Tamamlandı</p>
                   <span className="text-primary/70 text-[10px]">Başlat ✓</span>
                 </div>
               </button>}
