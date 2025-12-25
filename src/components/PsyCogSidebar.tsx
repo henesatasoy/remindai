@@ -21,7 +21,9 @@ const INTERVENTION_TEXT_1 = `Veri sonuçları kaliteli! İkinci test aşamasınd
 const INTERVENTION_TEXT_2 = `Lütfen bu mesajı okuduysanız sol üstte ki PsyCog yazısının solunda bulunan logoya tıklayın. İşaretledikten sonra hazır iseniz ikinci test aşamasını başlatmak için aşağıda ki Başlat butonuna basınız.`;
 const INSTRUCTION_INTRO = `Bu bölümde, problem çözme ve soyut muhakeme yeteneklerinizi ölçen bir dizi görsel bulmaca ile karşılaşacaksınız. Her soruda, 3x3'lük bir ızgara (matris) göreceksiniz. Bu ızgaradaki kutucuklardan 8 tanesi, belirli bir kurala veya örüntüye göre yerleştirilmiş şekiller içermektedir. Sağ alt köşedeki kutucuk ise boştur.
 
-Göreviniz: Şekillerin hem satırlardaki (soldan sağa) hem de sütunlardaki (yukarıdan aşağıya) değişim kurallarını keşfetmek ve bu kurala göre boş kutucuğa gelmesi gereken en uygun şekli, aşağıda verilen 4 seçenek arasından bulup işaretlemektir.`;
+Göreviniz: Şekillerin hem satırlardaki (soldan sağa) hem de sütunlardaki (yukarıdan aşağıya) değişim kurallarını keşfetmek ve bu kurala göre boş kutucuğa gelmesi gereken en uygun şekli, aşağıda verilen 4 seçenek arasından bulup işaretlemektir.
+
+Akış: Test toplamda 10 alıştırma ve her birinde 12 soru olan 2 aşamadan oluşmaktadır.  10 alıştırma sorusundan 3 tanesini doğru bildiğinizde otomatik olarak testin ilk aşamasına devam edeceksiniz. Ardından testin ilk aşamasının verilerinin analizinden sonra ikinci aşamaya devam edeceksiniz.`;
 const INSTRUCTION_ITEMS = [{
   title: "Süre",
   description: "Her bir soruyu çözmek için 30 saniyeniz olacaktır."
