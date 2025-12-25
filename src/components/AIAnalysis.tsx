@@ -3,7 +3,41 @@ import { Brain, Cpu, Activity } from "lucide-react";
 interface AIAnalysisProps {
   onComplete: () => void;
 }
-const TERMINAL_MESSAGES = ["Bağlantı kuruluyor...", "Nöral ağ başlatılıyor...", "Örüntüler analiz ediliyor...", "Bilişsel harita çıkarılıyor...", "Dikkat profili hesaplanıyor...", "Yanıt süreleri değerlendiriliyor...", "Hata örüntüleri taranıyor...", "Karar algoritmaları çalıştırılıyor...", "Doğruluk metrikleri hesaplanıyor...", "Performans modeli oluşturuluyor...", "Öğrenme eğrisi analiz ediliyor...", "Zorluk kalibrasyonu yapılıyor...", "Adaptif parametreler ayarlanıyor...", "Tahmin modeli eğitiliyor...", "Sonuçlar derleniyor...", "Veri doğrulaması yapılıyor...", "Optimizasyon tamamlanıyor..."];
+const TERMINAL_MESSAGES = [
+  "Bağlantı kuruluyor...",
+  "Nöral ağ başlatılıyor...",
+  "Bilişsel harita çıkarılıyor...",
+  "Dikkat profili hesaplanıyor...",
+  "Yanıt süreleri değerlendiriliyor...",
+  "Hata örüntüleri taranıyor...",
+  "Doğruluk metrikleri hesaplanıyor...",
+  "Performans modeli oluşturuluyor..."
+];
+
+// Generate random intervals that sum to 300 seconds (5 minutes)
+const generateRandomIntervals = (count: number, totalTime: number): number[] => {
+  const intervals: number[] = [];
+  let remaining = totalTime * 1000; // Convert to ms
+  
+  for (let i = 0; i < count - 1; i++) {
+    const avgRemaining = remaining / (count - i);
+    const minInterval = avgRemaining * 0.3;
+    const maxInterval = avgRemaining * 1.7;
+    const interval = minInterval + Math.random() * (maxInterval - minInterval);
+    intervals.push(Math.floor(interval));
+    remaining -= interval;
+  }
+  intervals.push(Math.floor(remaining));
+  
+  // Shuffle the intervals for more randomness
+  for (let i = intervals.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [intervals[i], intervals[j]] = [intervals[j], intervals[i]];
+  }
+  
+  return intervals;
+};
+
 const AIAnalysis = ({
   onComplete
 }: AIAnalysisProps) => {
@@ -11,6 +45,7 @@ const AIAnalysis = ({
   const [terminalLines, setTerminalLines] = useState<string[]>([]);
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
   const terminalRef = useRef<HTMLDivElement>(null);
+  const intervalsRef = useRef<number[]>(generateRandomIntervals(TERMINAL_MESSAGES.length, 300));
 
   // Timer countdown
   useEffect(() => {
@@ -27,20 +62,20 @@ const AIAnalysis = ({
     return () => clearInterval(timer);
   }, [onComplete]);
 
-  // Terminal message cycling
+  // Terminal message with random intervals spread across 5 minutes
   useEffect(() => {
-    const messageInterval = setInterval(() => {
-      const timestamp = new Date().toLocaleTimeString("tr-TR");
-      const message = TERMINAL_MESSAGES[currentMessageIndex % TERMINAL_MESSAGES.length];
-      setTerminalLines(prev => {
-        const newLines = [...prev, `[${timestamp}] ${message}`];
-        // Keep only last 12 lines
-        return newLines.slice(-12);
-      });
-      setCurrentMessageIndex(prev => prev + 1);
-    }, 3000 + Math.random() * 2000); // Random interval between 3-5 seconds
+    if (currentMessageIndex >= TERMINAL_MESSAGES.length) return;
 
-    return () => clearInterval(messageInterval);
+    const interval = intervalsRef.current[currentMessageIndex];
+    
+    const timeout = setTimeout(() => {
+      const timestamp = new Date().toLocaleTimeString("tr-TR");
+      const message = TERMINAL_MESSAGES[currentMessageIndex];
+      setTerminalLines(prev => [...prev, `[${timestamp}] ${message}`]);
+      setCurrentMessageIndex(prev => prev + 1);
+    }, interval);
+
+    return () => clearTimeout(timeout);
   }, [currentMessageIndex]);
 
   // Auto-scroll terminal
