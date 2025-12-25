@@ -72,7 +72,7 @@ const MainPanel = ({
   const isTestPhase = viewState === "practice" || viewState === "phase1" || viewState === "phase2";
   
   return <main className={`flex-1 h-screen overflow-y-auto bg-background animate-slide-in-right ${isTestPhase ? 'flex items-center justify-center' : ''}`}>
-      <div className="max-w-6xl w-full mx-auto p-8">
+      <div className="max-w-4xl w-full mx-auto p-8">
         {/* Loading State */}
         {viewState === "loading" && <div className="flex flex-col items-center justify-center h-[80vh] gap-6">
             <div className="relative">
