@@ -52,6 +52,7 @@ const PsyCogSidebar = ({
     title: string;
     content: React.ReactNode;
   } | null>(null);
+  const [interventionStep, setInterventionStep] = useState(1);
   const isIntervention = viewState === "intervention";
   const isInstructions = viewState === "instructions";
   const isPracticePassed = viewState === "practice-passed";
@@ -203,8 +204,15 @@ const PsyCogSidebar = ({
               </div>
             </div>
 
-            {/* Second AI Message for Intervention */}
-            {isIntervention && <div className="flex items-start gap-3">
+            {/* Devam Et button after first intervention message */}
+            {isIntervention && interventionStep === 1 && <div className="flex justify-center pt-6">
+                <Button onClick={() => setInterventionStep(2)} className="px-8 py-3">
+                  Devam Et
+                </Button>
+              </div>}
+
+            {/* Second AI Message for Intervention - only show after clicking Devam Et */}
+            {isIntervention && interventionStep === 2 && <div className="flex items-start gap-3">
                 <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                   <Sparkles className="w-4 h-4 text-primary" />
                 </div>
@@ -215,8 +223,8 @@ const PsyCogSidebar = ({
                 </div>
               </div>}
 
-            {/* Action Button - hide for practice-failed */}
-            {!isPracticeFailed && <div className="flex justify-center pt-6">
+            {/* Action Button - hide for practice-failed, and for intervention step 1 */}
+            {!isPracticeFailed && !(isIntervention && interventionStep === 1) && <div className="flex justify-center pt-6">
                 <Button onClick={isIntervention ? onStartPhase2 : isPracticePassed ? onStartPhase1 : onStartPractice} className="px-8 py-3">
                   {isIntervention ? "Başlat" : isPracticePassed ? "Başlat" : "Devam Et"}
                 </Button>
