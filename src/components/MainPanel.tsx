@@ -69,8 +69,8 @@ const MainPanel = ({
     console.log("Phase 2 completed:", answers);
     onViewStateChange("complete");
   };
-  return <main className="flex-1 h-screen overflow-y-auto bg-background animate-slide-in-right">
-      <div className="max-w-4xl mx-auto p-8">
+  return <main className="flex-1 h-screen overflow-y-auto bg-background animate-slide-in-right flex items-center justify-center">
+      <div className="max-w-4xl w-full mx-auto p-8">
         {/* Loading State */}
         {viewState === "loading" && <div className="flex flex-col items-center justify-center h-[80vh] gap-6">
             <div className="relative">
