@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ChevronLeft, ChevronRight, MessageSquare, Sparkles, User, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import TypewriterText from "./TypewriterText";
 type ViewState = "loading" | "instructions" | "practice" | "practice-passed" | "practice-failed" | "phase1" | "ai-analysis" | "intervention" | "phase2" | "complete";
 interface PsyCogSidebarProps {
   isCollapsed: boolean;
@@ -53,6 +54,8 @@ const PsyCogSidebar = ({
     content: React.ReactNode;
   } | null>(null);
   const [interventionStep, setInterventionStep] = useState(1);
+  const [isTyping1Complete, setIsTyping1Complete] = useState(false);
+  const [isTyping2Complete, setIsTyping2Complete] = useState(false);
   const isIntervention = viewState === "intervention";
   const isInstructions = viewState === "instructions";
   const isPracticePassed = viewState === "practice-passed";
@@ -178,7 +181,11 @@ const PsyCogSidebar = ({
               </div>
               <div className="flex-1 bg-card border border-border rounded-xl p-4 max-w-[80%]">
                 {isIntervention ? <p className="text-foreground text-sm leading-relaxed whitespace-pre-line">
-                    {INTERVENTION_TEXT_1}
+                    <TypewriterText 
+                      text={INTERVENTION_TEXT_1} 
+                      speed={25}
+                      onComplete={() => setIsTyping1Complete(true)}
+                    />
                   </p> : isPracticePassed ? <div className="text-foreground text-sm leading-relaxed space-y-3">
                     <p className="font-semibold text-base">Alıştırma Tamamlandı</p>
                     
@@ -204,27 +211,31 @@ const PsyCogSidebar = ({
               </div>
             </div>
 
-            {/* Devam Et button after first intervention message */}
-            {isIntervention && interventionStep === 1 && <div className="flex justify-center pt-6">
+            {/* Devam Et button after first intervention message - show only when typing is complete */}
+            {isIntervention && interventionStep === 1 && isTyping1Complete && <div className="flex justify-center pt-6 animate-fade-in">
                 <Button onClick={() => setInterventionStep(2)} className="px-8 py-3">
                   Devam Et
                 </Button>
               </div>}
 
             {/* Second AI Message for Intervention - only show after clicking Devam Et */}
-            {isIntervention && interventionStep === 2 && <div className="flex items-start gap-3">
+            {isIntervention && interventionStep === 2 && <div className="flex items-start gap-3 animate-fade-in">
                 <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                   <Sparkles className="w-4 h-4 text-primary" />
                 </div>
                 <div className="flex-1 bg-card border border-border rounded-xl p-4 max-w-[80%]">
                   <p className="text-foreground text-sm leading-relaxed whitespace-pre-line">
-                    {INTERVENTION_TEXT_2}
+                    <TypewriterText 
+                      text={INTERVENTION_TEXT_2} 
+                      speed={25}
+                      onComplete={() => setIsTyping2Complete(true)}
+                    />
                   </p>
                 </div>
               </div>}
 
-            {/* Action Button - hide for practice-failed, and for intervention step 1 */}
-            {!isPracticeFailed && !(isIntervention && interventionStep === 1) && <div className="flex justify-center pt-6">
+            {/* Action Button - hide for practice-failed, and for intervention until typing2 is complete */}
+            {!isPracticeFailed && !(isIntervention && (interventionStep === 1 || !isTyping2Complete)) && <div className="flex justify-center pt-6 animate-fade-in">
                 <Button onClick={isIntervention ? onStartPhase2 : isPracticePassed ? onStartPhase1 : onStartPractice} className="px-8 py-3">
                   {isIntervention ? "Başlat" : isPracticePassed ? "Başlat" : "Devam Et"}
                 </Button>
