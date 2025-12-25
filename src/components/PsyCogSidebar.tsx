@@ -225,17 +225,13 @@ const PsyCogSidebar = ({
                 </div>
                 <div className="flex-1 bg-card border border-border rounded-xl p-4 max-w-[80%]">
                   <p className="text-foreground text-sm leading-relaxed whitespace-pre-line">
-                    <TypewriterText 
-                      text={INTERVENTION_TEXT_2} 
-                      speed={10}
-                      onComplete={() => setIsTyping2Complete(true)}
-                    />
+                    {INTERVENTION_TEXT_2}
                   </p>
                 </div>
               </div>}
 
-            {/* Action Button - hide for practice-failed, and for intervention until typing2 is complete */}
-            {!isPracticeFailed && !(isIntervention && (interventionStep === 1 || !isTyping2Complete)) && <div className="flex justify-center pt-6 animate-fade-in">
+            {/* Action Button - hide for practice-failed, and for intervention until step 2 */}
+            {!isPracticeFailed && !(isIntervention && interventionStep === 1) && <div className="flex justify-center pt-6 animate-fade-in">
                 <Button onClick={isIntervention ? onStartPhase2 : isPracticePassed ? onStartPhase1 : onStartPractice} className="px-8 py-3">
                   {isIntervention ? "Başlat" : isPracticePassed ? "Başlat" : "Devam Et"}
                 </Button>
