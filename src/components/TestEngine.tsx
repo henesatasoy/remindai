@@ -12,69 +12,83 @@ interface TestEngineProps {
   phase: 'practice' | 'phase1' | 'phase2';
 }
 
-// Image preloader hook
+// Image preloader hook - preloads current + next 2 questions
 const useImagePreloader = (questions: Question[], currentIndex: number) => {
-  const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
+  const loadedImagesRef = useRef<Set<string>>(new Set());
+  const [allCurrentLoaded, setAllCurrentLoaded] = useState(false);
   
   useEffect(() => {
-    // Preload current question images
+    setAllCurrentLoaded(false);
+    
     const currentQ = questions[currentIndex];
-    if (currentQ) {
-      const imagesToLoad = [currentQ.gridImage, ...currentQ.options];
-      imagesToLoad.forEach(src => {
-        if (!loadedImages.has(src)) {
-          const img = new Image();
-          img.src = src;
-          img.onload = () => {
-            setLoadedImages(prev => new Set([...prev, src]));
-          };
-        }
-      });
+    if (!currentQ) return;
+    
+    const currentImages = [currentQ.gridImage, ...currentQ.options];
+    let loadedCount = 0;
+    const totalToLoad = currentImages.filter(src => !loadedImagesRef.current.has(src)).length;
+    
+    if (totalToLoad === 0) {
+      setAllCurrentLoaded(true);
     }
     
-    // Preload next question images
-    const nextQ = questions[currentIndex + 1];
-    if (nextQ) {
-      const nextImages = [nextQ.gridImage, ...nextQ.options];
-      nextImages.forEach(src => {
-        if (!loadedImages.has(src)) {
-          const img = new Image();
-          img.src = src;
-        }
-      });
-    }
-  }, [questions, currentIndex, loadedImages]);
+    // Preload current question images
+    currentImages.forEach(src => {
+      if (!loadedImagesRef.current.has(src)) {
+        const img = new Image();
+        img.src = src;
+        img.onload = () => {
+          loadedImagesRef.current.add(src);
+          loadedCount++;
+          if (loadedCount >= totalToLoad) {
+            setAllCurrentLoaded(true);
+          }
+        };
+      }
+    });
+    
+    // Preload next 2 questions in background
+    [1, 2].forEach(offset => {
+      const nextQ = questions[currentIndex + offset];
+      if (nextQ) {
+        [nextQ.gridImage, ...nextQ.options].forEach(src => {
+          if (!loadedImagesRef.current.has(src)) {
+            const img = new Image();
+            img.src = src;
+            img.onload = () => loadedImagesRef.current.add(src);
+          }
+        });
+      }
+    });
+  }, [questions, currentIndex]);
   
-  return loadedImages;
+  return { loadedImagesRef, allCurrentLoaded };
 };
 
-// Optimized image component
+// Optimized image component with fixed dimensions to prevent layout shift
 const OptimizedImage = ({ 
   src, 
   alt, 
   className,
-  isLoaded 
+  aspectRatio = "1/1"
 }: { 
   src: string; 
   alt: string; 
   className?: string;
-  isLoaded: boolean;
+  aspectRatio?: string;
 }) => {
-  const [imageLoaded, setImageLoaded] = useState(isLoaded);
+  const [imageLoaded, setImageLoaded] = useState(false);
   
   return (
-    <div className={`relative ${className || ''}`}>
-      {!imageLoaded && (
-        <div className="absolute inset-0 bg-muted animate-pulse flex items-center justify-center">
-          <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-        </div>
-      )}
+    <div 
+      className={`relative bg-muted ${className || ''}`}
+      style={{ aspectRatio }}
+    >
       <img 
         src={src} 
         alt={alt} 
-        className={`w-full h-auto transition-opacity duration-200 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+        className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-150 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
         loading="eager"
-        decoding="async"
+        decoding="sync"
         onLoad={() => setImageLoaded(true)}
       />
     </div>
@@ -98,7 +112,7 @@ const TestEngine = ({
   const currentQuestion = questions[currentIndex];
   
   // Use image preloader
-  const loadedImages = useImagePreloader(questions, currentIndex);
+  const { allCurrentLoaded } = useImagePreloader(questions, currentIndex);
 
   // Handle answer submission
   const submitAnswer = useCallback((selectedIndex: number | null) => {
@@ -253,12 +267,10 @@ const TestEngine = ({
       {/* Question Content */}
       <div className="pt-12 flex flex-col items-center gap-8">
         {/* Grid Image */}
-        <div className="border border-border rounded-xl overflow-hidden bg-card">
+        <div className="border border-border rounded-xl overflow-hidden bg-card w-full max-w-md">
           <OptimizedImage 
             src={currentQuestion.gridImage} 
             alt="Soru görseli" 
-            className="w-full max-w-md h-auto"
-            isLoaded={loadedImages.has(currentQuestion.gridImage)}
           />
         </div>
 
@@ -273,7 +285,6 @@ const TestEngine = ({
               <OptimizedImage 
                 src={option} 
                 alt={`Seçenek ${String.fromCharCode(65 + index)}`}
-                isLoaded={loadedImages.has(option)}
               />
             </button>
           ))}
