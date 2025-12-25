@@ -181,15 +181,11 @@ const PsyCogSidebar = ({
               </div>
               <div className="flex-1 bg-card border border-border rounded-xl p-4 max-w-[80%]">
                 {isIntervention ? <p className="text-foreground text-sm leading-relaxed whitespace-pre-line">
-                    <TypewriterText 
-                      text={INTERVENTION_TEXT_1} 
-                      speed={10}
-                      onComplete={() => setIsTyping1Complete(true)}
-                    />
+                    <TypewriterText text={INTERVENTION_TEXT_1} speed={10} onComplete={() => setIsTyping1Complete(true)} />
                   </p> : isPracticePassed ? <div className="text-foreground text-sm leading-relaxed space-y-3">
                     <p className="font-semibold text-base">Alıştırma Tamamlandı</p>
                     
-                    <p>Alıştırma soruları bitti. Hazır iseniz 24 soruluk gerçek testin 12 soruluk ilk aşamasına başlamak için lütfen aşağıdaki Başlat butonuna basınız.</p>
+                    <p>Alıştırma sorularını başarıyla tamamladınız. Hazır iseniz 24 soruluk gerçek testin 12 soruluk ilk aşamasına başlamak için lütfen aşağıdaki Başlat butonuna basınız.</p>
                   </div> : isPracticeFailed ? <div className="text-foreground text-sm leading-relaxed space-y-3">
                     <p className="font-semibold text-base">Alıştırma Tamamlandı</p>
                     <p className="text-lg">Lütfen deney yürütücüsüne haber ediniz.</p>
