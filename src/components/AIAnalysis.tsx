@@ -14,29 +14,17 @@ const TERMINAL_MESSAGES = [
   "Performans modeli oluşturuluyor..."
 ];
 
-// Generate random intervals that sum to 300 seconds (5 minutes)
-const generateRandomIntervals = (count: number, totalTime: number): number[] => {
-  const intervals: number[] = [];
-  let remaining = totalTime * 1000; // Convert to ms
-  
-  for (let i = 0; i < count - 1; i++) {
-    const avgRemaining = remaining / (count - i);
-    const minInterval = avgRemaining * 0.3;
-    const maxInterval = avgRemaining * 1.7;
-    const interval = minInterval + Math.random() * (maxInterval - minInterval);
-    intervals.push(Math.floor(interval));
-    remaining -= interval;
-  }
-  intervals.push(Math.floor(remaining));
-  
-  // Shuffle the intervals for more randomness
-  for (let i = intervals.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [intervals[i], intervals[j]] = [intervals[j], intervals[i]];
-  }
-  
-  return intervals;
-};
+// Fixed intervals for each message (in seconds) - total = 300 seconds (5 minutes)
+const MESSAGE_INTERVALS = [
+  5,   // Bağlantı kuruluyor... (appears after 5 sec)
+  23,  // Nöral ağ başlatılıyor...
+  41,  // Bilişsel harita çıkarılıyor...
+  35,  // Dikkat profili hesaplanıyor...
+  38,  // Yanıt süreleri değerlendiriliyor...
+  52,  // Hata örüntüleri taranıyor...
+  54,  // Doğruluk metrikleri hesaplanıyor...
+  52   // Performans modeli oluşturuluyor...
+];
 
 const AIAnalysis = ({
   onComplete
@@ -45,7 +33,6 @@ const AIAnalysis = ({
   const [terminalLines, setTerminalLines] = useState<string[]>([]);
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
   const terminalRef = useRef<HTMLDivElement>(null);
-  const intervalsRef = useRef<number[]>(generateRandomIntervals(TERMINAL_MESSAGES.length, 300));
 
   // Timer countdown
   useEffect(() => {
@@ -62,18 +49,18 @@ const AIAnalysis = ({
     return () => clearInterval(timer);
   }, [onComplete]);
 
-  // Terminal message with random intervals spread across 5 minutes
+  // Terminal message with fixed intervals
   useEffect(() => {
     if (currentMessageIndex >= TERMINAL_MESSAGES.length) return;
 
-    const interval = intervalsRef.current[currentMessageIndex];
+    const intervalSeconds = MESSAGE_INTERVALS[currentMessageIndex];
     
     const timeout = setTimeout(() => {
       const timestamp = new Date().toLocaleTimeString("tr-TR");
       const message = TERMINAL_MESSAGES[currentMessageIndex];
       setTerminalLines(prev => [...prev, `[${timestamp}] ${message}`]);
       setCurrentMessageIndex(prev => prev + 1);
-    }, interval);
+    }, intervalSeconds * 1000);
 
     return () => clearTimeout(timeout);
   }, [currentMessageIndex]);
