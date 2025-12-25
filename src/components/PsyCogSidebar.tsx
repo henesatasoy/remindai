@@ -141,7 +141,7 @@ const PsyCogSidebar = ({
       {/* Chat Content Area */}
       <div className="flex-1 overflow-y-auto p-2">
         {/* Show full chat during fullscreen states */}
-        {isFullscreenChat ? <div className="max-w-5xl mx-auto p-4 space-y-6">
+        {isFullscreenChat ? <div className="max-w-7xl mx-auto p-4 space-y-6">
             {/* User's First Message */}
             {userFirstMessage && <div className="flex items-start gap-3 justify-end">
                 <div className="bg-primary/10 border border-primary/20 rounded-xl p-4 max-w-[80%]">
