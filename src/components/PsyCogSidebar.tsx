@@ -35,7 +35,7 @@ const INSTRUCTION_ITEMS = [{
   title: "İlerleme",
   description: "Cevabı işaretlediğinizde veya süre dolduğunda otomatik olarak bir sonraki soruya geçilecektir. Geriye dönüp cevabınızı değiştirme şansınız yoktur."
 }];
-const INSTRUCTION_FOOTER = `Alıştırma sorularına ile devam etmek için lütfen Devam Et butonuna basınız. (Alıştırma sorularınız sonucunuza herhangi bir etkisi olmayacaktır.)`;
+const INSTRUCTION_FOOTER = `Alıştırma sorularına geçmek için lütfen Devam Et butonuna basınız. \n(Alıştırma sorularınız sonucunuza herhangi bir etkisi olmayacaktır.)`;
 const PsyCogSidebar = ({
   isCollapsed,
   onToggle,
