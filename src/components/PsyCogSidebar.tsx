@@ -89,7 +89,7 @@ const PsyCogSidebar = ({
       title: "Alıştırma Sonucu",
       content: <div className="space-y-3">
           <p className="text-lg font-semibold">Alıştırma Tamamlandı</p>
-          <p>Puan: <span className="text-primary font-semibold">{practiceScore}/10</span></p>
+          
           <p>Alıştırma soruları bitti. Hazır iseniz 24 soruluk gerçek testin 12 soruluk ilk aşamasına başlamak için Başlat butonuna basınız.</p>
         </div>
     });
