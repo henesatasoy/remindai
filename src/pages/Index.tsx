@@ -10,10 +10,6 @@ const fakeModels = [{
   name: "PsyCog-4",
   description: "En gelişmiş model"
 }, {
-  id: "psycog-4-mini",
-  name: "PsyCog-4 Mini",
-  description: "Hızlı ve verimli"
-}, {
   id: "psycog-3.5",
   name: "PsyCog-3.5",
   description: "Dengeli performans"
