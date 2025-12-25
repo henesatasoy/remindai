@@ -106,11 +106,8 @@ const AIAnalysis = ({
         </div>
       </div>
 
-      {/* Timer */}
-      <div className="text-center">
-        
-        
-      </div>
+      {/* Info text */}
+      <p className="text-muted-foreground text-sm">Bu işlem yaklaşık 5 dakika sürecektir.</p>
 
       {/* Progress bar */}
       <div className="w-full max-w-md">
