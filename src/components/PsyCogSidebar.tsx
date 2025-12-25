@@ -183,7 +183,7 @@ const PsyCogSidebar = ({
                 {isIntervention ? <p className="text-foreground text-sm leading-relaxed whitespace-pre-line">
                     <TypewriterText 
                       text={INTERVENTION_TEXT_1} 
-                      speed={25}
+                      speed={10}
                       onComplete={() => setIsTyping1Complete(true)}
                     />
                   </p> : isPracticePassed ? <div className="text-foreground text-sm leading-relaxed space-y-3">
@@ -227,7 +227,7 @@ const PsyCogSidebar = ({
                   <p className="text-foreground text-sm leading-relaxed whitespace-pre-line">
                     <TypewriterText 
                       text={INTERVENTION_TEXT_2} 
-                      speed={25}
+                      speed={10}
                       onComplete={() => setIsTyping2Complete(true)}
                     />
                   </p>
