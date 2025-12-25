@@ -4,7 +4,7 @@ import PsyCogSidebar from "@/components/PsyCogSidebar";
 import MainPanel from "@/components/MainPanel";
 import { generateSessionId, saveExperimentResult } from "@/lib/experimentService";
 
-const fakeChatHistory = ["IQ testim hakkında bilgi ver", "Raven testinin sonuçları nasıl yorumlanır?", "Bilişsel becerilerimi nasıl geliştirebilirim?", "Dikkat eksikliği testi yap", "Hafıza güçlendirme teknikleri", "Görsel-uzamsal zeka nedir?"];
+const fakeChatHistory = ["IQ testim hakkında bilgi ver", "Raven testinin sonuçları nasıl yorumlanır?", "Bilişsel becerilerimi nasıl geliştirebilirim?", "Dikkat eksikliği testi yap", "Hafıza güçlendirme teknikleri", "Plot-test 1"];
 const fakeModels = [{
   id: "psycog-4",
   name: "PsyCog-4",
