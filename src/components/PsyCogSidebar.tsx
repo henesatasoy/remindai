@@ -190,6 +190,7 @@ const PsyCogSidebar = ({
                     <p className="font-semibold text-base">Alıştırma Tamamlandı</p>
                     <p className="text-lg">Lütfen deney yürütücüsüne haber ediniz.</p>
                   </div> : <div className="text-foreground text-sm leading-relaxed space-y-4">
+                    <p className="font-semibold text-base">MaRs-IB Test Talimatları</p>
                     <p className="whitespace-pre-line">{INSTRUCTION_INTRO}</p>
                     
                     <div>
