@@ -18,7 +18,7 @@ interface PsyCogSidebarProps {
   userFirstMessage?: string;
 }
 const INTERVENTION_TEXT_1 = `Veri sonuçları kaliteli! İkinci test aşamasında verimlilik artışı ve doğruluk oranında artış bekleniyor!`;
-const INTERVENTION_TEXT_2 = `Lütfen bu mesajı okuduysanız sol üstte ki Metis yazısının solunda bulunan logoya tıklayın. İşaretledikten sonra hazır iseniz ikinci test aşamasını başlatmak için aşağıda ki Başlat butonuna basınız.`;
+const INTERVENTION_TEXT_2 = `Lütfen bu mesajı okuduysanız sol üstte ki ReMind yazısının solunda bulunan logoya tıklayın. İşaretledikten sonra hazır iseniz ikinci test aşamasını başlatmak için aşağıda ki Başlat butonuna basınız.`;
 const INSTRUCTION_INTRO = `Bu bölümde, problem çözme ve soyut muhakeme yeteneklerinizi ölçen bir dizi görsel bulmaca ile karşılaşacaksınız. Her soruda, 3x3'lük bir ızgara (matris) göreceksiniz. Bu ızgaradaki kutucuklardan 8 tanesi, belirli bir kurala veya örüntüye göre yerleştirilmiş şekiller içermektedir. Sağ alt köşedeki kutucuk ise boştur.
 
 Göreviniz: Şekillerin hem satırlardaki (soldan sağa) hem de sütunlardaki (yukarıdan aşağıya) değişim kurallarını keşfetmek ve bu kurala göre boş kutucuğa gelmesi gereken en uygun şekli, aşağıda verilen 4 seçenek arasından bulup işaretlemektir.
@@ -133,7 +133,7 @@ const PsyCogSidebar = ({
               font-semibold text-foreground transition-all duration-300
               ${isCollapsed ? "hidden" : "text-xl"}
             `}>
-            Metis
+            ReMind
           </h1>
         </div>
       </div>
