@@ -225,9 +225,9 @@ const TestEngine = ({
       </div>;
   }
 
-  // Render Blank Screen
+  // Render Blank Screen (white)
   if (testPhase === "blank") {
-    return <div className="h-[70vh]" />;
+    return <div className="h-[70vh] bg-white" />;
   }
 
   // Render Complete Screen
