@@ -124,7 +124,7 @@ const AIAnalysis = ({
           <div className="w-3 h-3 rounded-full bg-destructive/70" />
           <div className="w-3 h-3 rounded-full bg-yellow-500/70" />
           <div className="w-3 h-3 rounded-full bg-green-500/70" />
-          <span className="ml-2 text-xs text-muted-foreground font-mono">PsyCog AI Terminal</span>
+          <span className="ml-2 text-xs text-muted-foreground font-mono">Metis AI Terminal</span>
         </div>
         <div ref={terminalRef} className="h-64 p-4 font-mono text-sm overflow-y-auto">
           {terminalLines.map((line, index) => <div key={index} className="text-primary/80 mb-1 animate-fade-in" style={{
