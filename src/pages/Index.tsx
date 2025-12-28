@@ -4,14 +4,14 @@ import PsyCogSidebar from "@/components/PsyCogSidebar";
 import MainPanel from "@/components/MainPanel";
 import { generateSessionId, saveExperimentResult } from "@/lib/experimentService";
 
-const fakeChatHistory = ["Plot-test 3", "Metis AI'ın veri analiz süreci", "Test veri analiz sonuçları", "MaRs-IB kısa form testi", "Plot-test 2", "Plot-test 1"];
+const fakeChatHistory = ["Plot-test 3", "ReMind AI'ın veri analiz süreci", "Test veri analiz sonuçları", "MaRs-IB kısa form testi", "Plot-test 2", "Plot-test 1"];
 const fakeModels = [{
-  id: "metis-4",
-  name: "Metis-4",
+  id: "remind-4",
+  name: "ReMind-4",
   description: "En gelişmiş model"
 }, {
-  id: "metis-3.5",
-  name: "Metis-3.5",
+  id: "remind-3.5",
+  name: "ReMind-3.5",
   description: "Dengeli performans"
 }];
 
@@ -119,7 +119,7 @@ const Index = () => {
           {/* Footer */}
           {!isHomeSidebarCollapsed && <div className="p-4 border-t border-sidebar-border">
               <p className="text-xs text-muted-foreground text-center">
-                Metis v2.4.1
+                ReMind v2.4.1
               </p>
             </div>}
         </aside>
@@ -131,7 +131,7 @@ const Index = () => {
             <div className="flex items-center justify-center gap-3 mb-4">
               <Sparkles className="w-10 h-10 text-primary" />
               <h1 className="text-5xl font-bold text-foreground tracking-tight">
-                Metis
+                ReMind
               </h1>
             </div>
             <p className="text-muted-foreground text-lg">Psikoloji için tasarlanmış bir dil modeli</p>
