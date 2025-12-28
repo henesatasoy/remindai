@@ -3,7 +3,6 @@ import { Sparkles, MessageSquare, Plus, ChevronLeft, ChevronRight, ChevronDown, 
 import PsyCogSidebar from "@/components/PsyCogSidebar";
 import MainPanel from "@/components/MainPanel";
 import { generateSessionId, saveExperimentResult } from "@/lib/experimentService";
-
 const fakeChatHistory = ["Plot-test 3", "ReMind AI'ın veri analiz süreci", "Test veri analiz sonuçları", "MaRs-IB kısa form testi", "Plot-test 2", "Plot-test 1"];
 const fakeModels = [{
   id: "remind-4",
@@ -14,9 +13,7 @@ const fakeModels = [{
   name: "ReMind-3.5",
   description: "Dengeli performans"
 }];
-
 type ViewState = "loading" | "instructions" | "practice" | "practice-passed" | "practice-failed" | "phase1" | "ai-analysis" | "intervention" | "phase2" | "complete";
-
 const Index = () => {
   const [inputValue, setInputValue] = useState("");
   const [isTransformed, setIsTransformed] = useState(false);
@@ -37,7 +34,6 @@ const Index = () => {
       setIsSidebarCollapsed(false);
     }
   }, [viewState]);
-
   const handleSubmit = () => {
     if (!inputValue.trim()) return;
     setPromptHistory(prev => [inputValue, ...prev]);
@@ -45,13 +41,11 @@ const Index = () => {
     setIsLoading(true);
     setInputValue("");
   };
-
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       handleSubmit();
     }
   };
-
   useEffect(() => {
     if (isLoading) {
       const timer = setTimeout(() => {
@@ -60,13 +54,11 @@ const Index = () => {
       return () => clearTimeout(timer);
     }
   }, [isLoading]);
-
   useEffect(() => {
     if (!isTransformed && inputRef.current) {
       inputRef.current.focus();
     }
   }, [isTransformed]);
-
   const [isHomeSidebarCollapsed, setIsHomeSidebarCollapsed] = useState(false);
   const [selectedModel, setSelectedModel] = useState(fakeModels[0]);
   const [isModelDropdownOpen, setIsModelDropdownOpen] = useState(false);
@@ -134,7 +126,7 @@ const Index = () => {
                 ReMind
               </h1>
             </div>
-            <p className="text-muted-foreground text-lg">Psikoloji için tasarlanmış bir dil modeli</p>
+            <p className="text-muted-foreground text-lg">​Araştırmanıza odaklanın </p>
           </div>
 
           {/* Input Area */}
@@ -177,7 +169,6 @@ const Index = () => {
         </div>
       </div>;
   }
-
   const handleStartPhase2 = () => {
     // Save the attention check result
     saveExperimentResult({
@@ -192,11 +183,9 @@ const Index = () => {
     setIsSidebarCollapsed(true);
     setViewState("phase2");
   };
-
   const handleStartPractice = () => {
     setViewState("practice");
   };
-
   const handleStartPhase1 = () => {
     setIsSidebarCollapsed(true);
     setViewState("phase1");
@@ -205,31 +194,9 @@ const Index = () => {
   // Transformed view with sidebar and main panel
   // During intervention, instructions, or practice results, sidebar takes full screen
   const isFullscreenChat = viewState === "intervention" || viewState === "instructions" || viewState === "practice-passed" || viewState === "practice-failed";
-
   return <div className="min-h-screen bg-background flex w-full">
-      <PsyCogSidebar 
-        isCollapsed={isSidebarCollapsed} 
-        onToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)} 
-        promptHistory={promptHistory}
-        viewState={viewState}
-        isAttentionCheckClicked={isAttentionCheckClicked}
-        onAttentionCheckClick={() => setIsAttentionCheckClicked(!isAttentionCheckClicked)}
-        onStartPhase2={handleStartPhase2}
-        onStartPractice={handleStartPractice}
-        onStartPhase1={handleStartPhase1}
-        practiceScore={practiceScore}
-        userFirstMessage={promptHistory[promptHistory.length - 1] || ""}
-      />
-      {!isFullscreenChat && (
-        <MainPanel 
-          isLoading={isLoading} 
-          viewState={viewState}
-          onViewStateChange={setViewState}
-          isAttentionCheckClicked={isAttentionCheckClicked}
-          sessionId={sessionId}
-          onPracticeScoreChange={setPracticeScore}
-        />
-      )}
+      <PsyCogSidebar isCollapsed={isSidebarCollapsed} onToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)} promptHistory={promptHistory} viewState={viewState} isAttentionCheckClicked={isAttentionCheckClicked} onAttentionCheckClick={() => setIsAttentionCheckClicked(!isAttentionCheckClicked)} onStartPhase2={handleStartPhase2} onStartPractice={handleStartPractice} onStartPhase1={handleStartPhase1} practiceScore={practiceScore} userFirstMessage={promptHistory[promptHistory.length - 1] || ""} />
+      {!isFullscreenChat && <MainPanel isLoading={isLoading} viewState={viewState} onViewStateChange={setViewState} isAttentionCheckClicked={isAttentionCheckClicked} sessionId={sessionId} onPracticeScoreChange={setPracticeScore} />}
     </div>;
 };
 export default Index;
