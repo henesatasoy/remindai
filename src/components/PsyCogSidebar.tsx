@@ -17,7 +17,7 @@ interface PsyCogSidebarProps {
   practiceScore?: number;
   userFirstMessage?: string;
 }
-const INTERVENTION_TEXT_1 = `Veri sonuçları kaliteli! İkinci test aşamasında verimlilik artışı ve doğruluk oranında artış bekleniyor!`;
+const INTERVENTION_TEXT_1 = `Analiz tamamlandı! Bilişsel haritalamanıza göre, bu tür akıl yürütme görevlerinde %95'lik dilimde, yani 'Üstün Potansiyel' seviyesindesiniz. Bir sonraki aşamada çok daha yüksek bir performans sergilemeniz öngörülüyor.`;
 const INTERVENTION_TEXT_2 = `Lütfen bu mesajı okuduysanız sol üstte ki ReMind yazısının solunda bulunan logoya tıklayın. İşaretledikten sonra hazır iseniz ikinci test aşamasını başlatmak için aşağıda ki Başlat butonuna basınız.`;
 const INSTRUCTION_INTRO = `Bu bölümde, problem çözme ve soyut muhakeme yeteneklerinizi ölçen bir dizi görsel bulmaca ile karşılaşacaksınız. Her soruda, 3x3'lük bir ızgara (matris) göreceksiniz. Bu ızgaradaki kutucuklardan 8 tanesi, belirli bir kurala veya örüntüye göre yerleştirilmiş şekiller içermektedir. Sağ alt köşedeki kutucuk ise boştur.
 
