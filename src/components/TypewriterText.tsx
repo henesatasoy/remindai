@@ -5,13 +5,15 @@ interface TypewriterTextProps {
   speed?: number;
   onComplete?: () => void;
   className?: string;
+  html?: boolean;
 }
 
 const TypewriterText = ({ 
   text, 
   speed = 30, 
   onComplete,
-  className = "" 
+  className = "",
+  html = false
 }: TypewriterTextProps) => {
   const [displayedText, setDisplayedText] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -30,6 +32,17 @@ const TypewriterText = ({
       onComplete?.();
     }
   }, [currentIndex, text, speed, onComplete, isComplete]);
+
+  if (html) {
+    return (
+      <span className={className}>
+        <span dangerouslySetInnerHTML={{ __html: displayedText }} />
+        {!isComplete && (
+          <span className="inline-block w-0.5 h-4 bg-primary ml-0.5 animate-pulse" />
+        )}
+      </span>
+    );
+  }
 
   return (
     <span className={className}>
