@@ -3,6 +3,7 @@ import { Sparkles, MessageSquare, Plus, ChevronLeft, ChevronRight, ChevronDown, 
 import PsyCogSidebar from "@/components/PsyCogSidebar";
 import MainPanel from "@/components/MainPanel";
 import { generateSessionId, saveExperimentResult } from "@/lib/experimentService";
+import { ParticipantAssignment } from "@/lib/assignmentService";
 const fakeChatHistory = ["Plot-test 3", "ReMind AI'ın veri analiz süreci", "Test veri analiz sonuçları", "MaRs-IB kısa form testi", "Plot-test 2", "Plot-test 1"];
 const fakeModels = [{
   id: "remind-4",
@@ -23,6 +24,7 @@ const Index = () => {
   const [viewState, setViewState] = useState<ViewState>("loading");
   const [isAttentionCheckClicked, setIsAttentionCheckClicked] = useState(false);
   const [practiceScore, setPracticeScore] = useState(0);
+  const [assignment, setAssignment] = useState<ParticipantAssignment | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Generate a unique session ID for this experiment session
