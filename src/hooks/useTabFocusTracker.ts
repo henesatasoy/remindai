@@ -18,58 +18,68 @@ export const useTabFocusTracker = (
   useEffect(() => {
     if (!enabled || !sessionId) return;
 
+    console.log(`[TabFocus] Tracker enabled for session=${sessionId.slice(0, 8)} phase=${phase}`);
+
     const logEvent = async (
       eventType: "blur" | "focus",
       durationMs: number | null
     ) => {
+      console.log(`[TabFocus] ${eventType}${durationMs !== null ? ` after ${durationMs}ms` : ""}`);
       try {
-        await (supabase.from as any)("session_focus_events").insert({
-          session_id: sessionId,
-          phase,
-          event_type: eventType,
-          duration_ms: durationMs,
-        });
+        const { error } = await (supabase as any)
+          .from("session_focus_events")
+          .insert({
+            session_id: sessionId,
+            phase,
+            event_type: eventType,
+            duration_ms: durationMs,
+          });
+        if (error) {
+          console.error("[TabFocus] Insert error:", error);
+        }
       } catch (err) {
-        console.error("Failed to log focus event:", err);
+        console.error("[TabFocus] Failed to log focus event:", err);
+      }
+    };
+
+    const markBlur = () => {
+      if (blurTimeRef.current === null) {
+        blurTimeRef.current = Date.now();
+        logEvent("blur", null);
+      }
+    };
+
+    const markFocus = () => {
+      if (blurTimeRef.current !== null) {
+        const duration = Date.now() - blurTimeRef.current;
+        blurTimeRef.current = null;
+        logEvent("focus", duration);
       }
     };
 
     const handleVisibilityChange = () => {
       if (document.hidden) {
-        blurTimeRef.current = Date.now();
-        logEvent("blur", null);
-      } else if (blurTimeRef.current !== null) {
-        const duration = Date.now() - blurTimeRef.current;
-        blurTimeRef.current = null;
-        logEvent("focus", duration);
+        markBlur();
+      } else {
+        markFocus();
       }
     };
 
-    const handleBlur = () => {
-      // Window lost focus (e.g. switched to another app) — only log if not
-      // already logged via visibilitychange
-      if (!document.hidden && blurTimeRef.current === null) {
-        blurTimeRef.current = Date.now();
-        logEvent("blur", null);
-      }
-    };
-
-    const handleFocus = () => {
-      if (!document.hidden && blurTimeRef.current !== null) {
-        const duration = Date.now() - blurTimeRef.current;
-        blurTimeRef.current = null;
-        logEvent("focus", duration);
-      }
-    };
+    const handleBlur = () => markBlur();
+    const handleFocus = () => markFocus();
 
     document.addEventListener("visibilitychange", handleVisibilityChange);
     window.addEventListener("blur", handleBlur);
     window.addEventListener("focus", handleFocus);
+    window.addEventListener("pagehide", handleBlur);
+    window.addEventListener("pageshow", handleFocus);
 
     return () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       window.removeEventListener("blur", handleBlur);
       window.removeEventListener("focus", handleFocus);
+      window.removeEventListener("pagehide", handleBlur);
+      window.removeEventListener("pageshow", handleFocus);
     };
   }, [sessionId, phase, enabled]);
 };
