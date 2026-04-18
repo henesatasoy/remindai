@@ -41,7 +41,27 @@ interface SessionSummary {
   avg_reaction_time: number;
   created_at: string;
   attention_check_click: boolean | null;
+  assigned_group: string | null;
+  participant_code: string | null;
 }
+
+const getGroupLabel = (group: string | null): string => {
+  switch (group) {
+    case 'positive': return 'Pozitif';
+    case 'negative': return 'Negatif';
+    case 'control': return 'Kontrol';
+    default: return '-';
+  }
+};
+
+const getGroupBadgeClass = (group: string | null): string => {
+  switch (group) {
+    case 'positive': return 'bg-emerald-500/10 text-emerald-600';
+    case 'negative': return 'bg-rose-500/10 text-rose-600';
+    case 'control': return 'bg-slate-500/10 text-slate-600';
+    default: return 'bg-muted text-muted-foreground';
+  }
+};
 
 interface SessionDetail {
   id: string;

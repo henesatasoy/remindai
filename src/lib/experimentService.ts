@@ -136,15 +136,42 @@ export const fetchSessionSummaries = async (phaseFilter?: string, startDate?: Da
     }
   });
 
-  return Array.from(sessionMap.values()).map((session) => ({
-    session_id: session.session_id,
-    phases: Array.from(session.phases).join(', '),
-    total_correct: session.total_correct,
-    total_questions: session.total_questions,
-    avg_reaction_time: Math.round(session.total_reaction_time / session.total_questions),
-    created_at: session.created_at,
-    attention_check_click: session.attention_check_click,
-  }));
+  // Fetch participant assignments for these sessions
+  const sessionIds = Array.from(sessionMap.keys());
+  const assignmentMap = new Map<string, { assigned_group: string; participant_code: string }>();
+
+  if (sessionIds.length > 0) {
+    const { data: assignments, error: assignError } = await supabase
+      .from('participant_assignments')
+      .select('session_id, assigned_group, participant_code')
+      .in('session_id', sessionIds);
+
+    if (assignError) {
+      console.error('Failed to fetch participant assignments:', assignError);
+    } else {
+      (assignments || []).forEach((a: any) => {
+        assignmentMap.set(a.session_id, {
+          assigned_group: a.assigned_group,
+          participant_code: a.participant_code,
+        });
+      });
+    }
+  }
+
+  return Array.from(sessionMap.values()).map((session) => {
+    const assignment = assignmentMap.get(session.session_id);
+    return {
+      session_id: session.session_id,
+      phases: Array.from(session.phases).join(', '),
+      total_correct: session.total_correct,
+      total_questions: session.total_questions,
+      avg_reaction_time: Math.round(session.total_reaction_time / session.total_questions),
+      created_at: session.created_at,
+      attention_check_click: session.attention_check_click,
+      assigned_group: assignment?.assigned_group ?? null,
+      participant_code: assignment?.participant_code ?? null,
+    };
+  });
 };
 
 /**
