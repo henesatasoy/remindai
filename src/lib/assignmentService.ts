@@ -69,7 +69,7 @@ export const getInterventionMessage = (group: AssignmentGroup): string => {
     case "positive":
       return "Analiz tamamlandı! Bilişsel haritalamanıza göre, bu tür akıl yürütme görevlerinde %95'lik dilimde, yani <strong>'Üstün Potansiyel'</strong> seviyesindesiniz. <strong>Bir sonraki aşamada çok daha yüksek bir performans sergilemeniz öngörülüyor.</strong>";
     case "negative":
-      return "Analiz tamamlandı. Bilişsel haritalamanıza göre, bu tür akıl yürütme görevlerinde %5'lik dilimde, yani 'Düşük Potansiyel' seviyesindesiniz.";
+      return "Analiz tamamlandı. Bilişsel haritalamanıza göre, bu tür akıl yürütme görevlerinde %7'lik dilimde, yani 'Düşük Potansiyel' seviyesindesiniz.";
     case "control":
       return "Analiz tamamlandı ve cevaplarınız sisteme kaydedildi! İkinci test aşamasının verileri bekleniyor.";
   }
