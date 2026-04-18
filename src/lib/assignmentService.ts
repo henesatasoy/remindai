@@ -8,6 +8,11 @@ export interface ParticipantAssignment {
   slot_number: number;
 }
 
+export type AssignmentResult =
+  | { status: "assigned"; assignment: ParticipantAssignment }
+  | { status: "full" }
+  | { status: "error" };
+
 /**
  * Atomically assigns the current session to a group using the
  * "drawing without replacement" weighted-random strategy implemented
