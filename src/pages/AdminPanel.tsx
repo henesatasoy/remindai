@@ -154,12 +154,22 @@ const AdminPanel = () => {
     loadSlotCounts();
   };
 
-  // Filter sessions by attention check
+  // Filter sessions by attention check and assigned group
   const filteredSessions = sessions.filter((session) => {
-    if (attentionFilter === "all") return true;
-    if (attentionFilter === "clicked") return session.attention_check_click === true;
-    if (attentionFilter === "not_clicked") return session.attention_check_click === false;
-    if (attentionFilter === "no_data") return session.attention_check_click === null;
+    // Attention check filter
+    if (attentionFilter === "clicked" && session.attention_check_click !== true) return false;
+    if (attentionFilter === "not_clicked" && session.attention_check_click !== false) return false;
+    if (attentionFilter === "no_data" && session.attention_check_click !== null) return false;
+
+    // Group filter
+    if (groupFilter !== "all") {
+      if (groupFilter === "unassigned") {
+        if (session.assigned_group !== null) return false;
+      } else if (session.assigned_group !== groupFilter) {
+        return false;
+      }
+    }
+
     return true;
   });
 
