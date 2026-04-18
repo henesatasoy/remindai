@@ -159,15 +159,23 @@ const Index = () => {
                   </div>}
               </div>
 
-              <input ref={inputRef} type="text" value={inputValue} onChange={e => setInputValue(e.target.value)} onKeyDown={handleKeyDown} placeholder="Bir şeyler sorun..." className="w-full pl-36 pr-24 py-5 bg-transparent text-foreground text-lg placeholder:text-muted-foreground focus:outline-none rounded-2xl" />
+              <input ref={inputRef} type="text" value={inputValue} onChange={e => setInputValue(e.target.value)} onKeyDown={handleKeyDown} placeholder="Bir şeyler sorun..." className="w-full pl-36 pr-36 py-5 bg-transparent text-foreground text-lg placeholder:text-muted-foreground focus:outline-none rounded-2xl" />
               
-              {/* File Attachment and Voice Icons */}
+              {/* File Attachment, Voice, and Send Icons */}
               <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
                 <button className="w-10 h-10 rounded-xl flex items-center justify-center bg-muted text-muted-foreground hover:bg-muted/80 transition-colors cursor-default">
                   <Paperclip className="w-5 h-5" />
                 </button>
                 <button className="w-10 h-10 rounded-xl flex items-center justify-center bg-muted text-muted-foreground hover:bg-muted/80 transition-colors cursor-default">
                   <Mic className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={handleSubmit}
+                  disabled={!inputValue.trim()}
+                  aria-label="Mesajı gönder"
+                  className="w-10 h-10 rounded-xl flex items-center justify-center bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <ArrowUp className="w-5 h-5" />
                 </button>
               </div>
             </div>
