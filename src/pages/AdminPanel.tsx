@@ -180,8 +180,23 @@ const AdminPanel = () => {
       // Fetch all detailed results with date filter
       const allResults = await fetchAllResults(startDate, endDate);
       
+      // Fetch participant assignments to enrich the export
+      const { data: assignments } = await supabase
+        .from('participant_assignments')
+        .select('session_id, assigned_group, participant_code');
+
+      const assignmentLookup = new Map<string, { group: string; code: string }>();
+      (assignments || []).forEach((a: any) => {
+        assignmentLookup.set(a.session_id, {
+          group: a.assigned_group,
+          code: a.participant_code,
+        });
+      });
+
       const headers = [
         "Session ID",
+        "Participant Code",
+        "Assigned Group",
         "Phase",
         "Question Index",
         "Is Correct",
@@ -191,20 +206,25 @@ const AdminPanel = () => {
         "Created At",
       ];
 
-      const rows = allResults.map((result: any) => [
-        result.session_id,
-        result.phase,
-        result.question_index + 1,
-        result.is_correct ? "Yes" : "No",
-        result.reaction_time_ms,
-        result.timed_out ? "Yes" : "No",
-        result.attention_check_click === null
-          ? "N/A"
-          : result.attention_check_click
-          ? "Yes"
-          : "No",
-        result.created_at,
-      ]);
+      const rows = allResults.map((result: any) => {
+        const assignment = assignmentLookup.get(result.session_id);
+        return [
+          result.session_id,
+          assignment?.code ?? "",
+          assignment?.group ?? "",
+          result.phase,
+          result.question_index + 1,
+          result.is_correct ? "Yes" : "No",
+          result.reaction_time_ms,
+          result.timed_out ? "Yes" : "No",
+          result.attention_check_click === null
+            ? "N/A"
+            : result.attention_check_click
+            ? "Yes"
+            : "No",
+          result.created_at,
+        ];
+      });
 
       const csvContent = [
         headers.join(","),
@@ -455,6 +475,22 @@ const AdminPanel = () => {
                           {session.session_id.slice(0, 8)}...
                         </TableCell>
                         <TableCell>
+                          {session.participant_code ? (
+                            <div className="flex items-center gap-2">
+                              <span className="font-mono text-sm font-semibold text-foreground">
+                                {session.participant_code}
+                              </span>
+                              <span
+                                className={`px-2 py-0.5 rounded text-xs font-medium ${getGroupBadgeClass(session.assigned_group)}`}
+                              >
+                                {getGroupLabel(session.assigned_group)}
+                              </span>
+                            </div>
+                          ) : (
+                            <span className="text-muted-foreground text-xs">-</span>
+                          )}
+                        </TableCell>
+                        <TableCell>
                           <div className="flex gap-1">
                             {session.phases.split(', ').map((phase) => (
                               <span
@@ -509,7 +545,7 @@ const AdminPanel = () => {
                       </TableRow>
                       <CollapsibleContent asChild>
                         <TableRow className="bg-muted/30">
-                          <TableCell colSpan={7} className="p-0">
+                          <TableCell colSpan={9} className="p-0">
                             <div className="p-4">
                               <h4 className="text-sm font-medium text-foreground mb-3">
                                 Soru Detayları
