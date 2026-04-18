@@ -5,7 +5,7 @@ import AIAnalysis from "./AIAnalysis";
 import { Answer, PRACTICE_QUESTIONS, PHASE1_QUESTIONS, PHASE2_QUESTIONS } from "@/data/questions";
 import { saveExperimentResult } from "@/lib/experimentService";
 import { assignParticipantGroup, ParticipantAssignment } from "@/lib/assignmentService";
-type ViewState = "loading" | "instructions" | "practice" | "practice-passed" | "practice-failed" | "phase1" | "ai-analysis" | "intervention" | "phase2" | "complete";
+type ViewState = "loading" | "instructions" | "practice" | "practice-passed" | "practice-failed" | "phase1" | "ai-analysis" | "intervention" | "phase2" | "complete" | "experiment-full";
 interface MainPanelProps {
   isLoading: boolean;
   viewState: ViewState;
@@ -52,13 +52,19 @@ const MainPanel = ({
     console.log("Phase 1 completed:", answers);
     // Trigger group assignment as soon as Phase 1 ends — runs in parallel with
     // the 5-minute "AI analysis" screen so the message is ready by intervention.
-    assignParticipantGroup(sessionId).then((assignment) => {
-      if (assignment) {
-        console.log(`Assigned: ${assignment.assigned_group} (${assignment.participant_code})`);
+    assignParticipantGroup(sessionId).then((result) => {
+      if (result.status === "assigned") {
+        console.log(`Assigned: ${result.assignment.assigned_group} (${result.assignment.participant_code})`);
+        onAssignmentChange?.(result.assignment);
+      } else if (result.status === "full") {
+        console.warn("Experiment is full — showing graceful end screen");
+        onAssignmentChange?.(null);
+        onViewStateChange("experiment-full");
+        return;
       } else {
         console.error("Group assignment failed — sidebar will fall back to control message");
+        onAssignmentChange?.(null);
       }
-      onAssignmentChange?.(assignment);
     });
     onViewStateChange("ai-analysis");
   };
@@ -207,6 +213,25 @@ const MainPanel = ({
               </h1>
               <p className="text-lg text-muted-foreground">
                 Lütfen deney yürütücüsüne haber veriniz.
+              </p>
+            </div>
+          </div>}
+
+        {/* Experiment Full State - graceful end screen for participants 82+ */}
+        {viewState === "experiment-full" && <div className="flex flex-col items-center justify-center h-[80vh] gap-8 animate-fade-in">
+            <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center">
+              <CheckCircle className="w-12 h-12 text-primary" />
+            </div>
+
+            <div className="text-center space-y-4 max-w-2xl">
+              <h1 className="text-3xl font-bold text-foreground">
+                Çalışmamıza gösterdiğiniz ilgi için teşekkür ederiz!
+              </h1>
+              <p className="text-lg text-muted-foreground leading-relaxed">
+                Bu araştırma için hedeflenen katılımcı sayısına ulaşılmıştır ve veri toplama süreci tamamlanmıştır.
+              </p>
+              <p className="text-base text-muted-foreground leading-relaxed">
+                Cevaplarınız değerlendirmeye dahil edilmeyecektir. Lütfen deney yürütücüsüne haber veriniz.
               </p>
             </div>
           </div>}

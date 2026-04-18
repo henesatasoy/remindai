@@ -8,6 +8,11 @@ export interface ParticipantAssignment {
   slot_number: number;
 }
 
+export type AssignmentResult =
+  | { status: "assigned"; assignment: ParticipantAssignment }
+  | { status: "full" }
+  | { status: "error" };
+
 /**
  * Atomically assigns the current session to a group using the
  * "drawing without replacement" weighted-random strategy implemented
@@ -21,7 +26,7 @@ export interface ParticipantAssignment {
  */
 export const assignParticipantGroup = async (
   sessionId: string
-): Promise<ParticipantAssignment | null> => {
+): Promise<AssignmentResult> => {
   try {
     // Cast to any because the generated types haven't been refreshed yet for the new RPC
     const { data, error } = await (supabase.rpc as any)("assign_participant_group", {
@@ -29,21 +34,28 @@ export const assignParticipantGroup = async (
     });
 
     if (error) {
+      const msg = (error.message || "").toLowerCase();
+      if (msg.includes("slots are full") || msg.includes("81/81")) {
+        return { status: "full" };
+      }
       console.error("Failed to assign participant group:", error);
-      return null;
+      return { status: "error" };
     }
 
     const row = Array.isArray(data) ? data[0] : data;
-    if (!row) return null;
+    if (!row) return { status: "error" };
 
     return {
-      assigned_group: row.assigned_group as AssignmentGroup,
-      participant_code: row.participant_code as string,
-      slot_number: row.slot_number as number,
+      status: "assigned",
+      assignment: {
+        assigned_group: row.assigned_group as AssignmentGroup,
+        participant_code: row.participant_code as string,
+        slot_number: row.slot_number as number,
+      },
     };
   } catch (err) {
     console.error("Error assigning participant group:", err);
-    return null;
+    return { status: "error" };
   }
 };
 
