@@ -14,7 +14,7 @@ const fakeModels = [{
   name: "ReMind-3.5",
   description: "Dengeli performans"
 }];
-type ViewState = "loading" | "instructions" | "practice" | "practice-passed" | "practice-failed" | "phase1" | "ai-analysis" | "intervention" | "phase2" | "complete";
+type ViewState = "loading" | "instructions" | "practice" | "practice-passed" | "practice-failed" | "phase1" | "ai-analysis" | "intervention" | "phase2" | "complete" | "experiment-full";
 const Index = () => {
   const [inputValue, setInputValue] = useState("");
   const [isTransformed, setIsTransformed] = useState(false);
