@@ -216,6 +216,25 @@ const MainPanel = ({
               </p>
             </div>
           </div>}
+
+        {/* Experiment Full State - graceful end screen for participants 82+ */}
+        {viewState === "experiment-full" && <div className="flex flex-col items-center justify-center h-[80vh] gap-8 animate-fade-in">
+            <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center">
+              <CheckCircle className="w-12 h-12 text-primary" />
+            </div>
+
+            <div className="text-center space-y-4 max-w-2xl">
+              <h1 className="text-3xl font-bold text-foreground">
+                Çalışmamıza gösterdiğiniz ilgi için teşekkür ederiz!
+              </h1>
+              <p className="text-lg text-muted-foreground leading-relaxed">
+                Bu araştırma için hedeflenen katılımcı sayısına ulaşılmıştır ve veri toplama süreci tamamlanmıştır.
+              </p>
+              <p className="text-base text-muted-foreground leading-relaxed">
+                Cevaplarınız değerlendirmeye dahil edilmeyecektir. Lütfen deney yürütücüsüne haber veriniz.
+              </p>
+            </div>
+          </div>}
       </div>
     </main>;
 };
