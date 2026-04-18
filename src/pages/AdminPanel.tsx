@@ -150,6 +150,7 @@ const AdminPanel = () => {
     const data = await fetchSessionSummaries(phaseFilter, startDate, endDate);
     setSessions(data);
     setIsLoading(false);
+    loadSlotCounts();
   };
 
   // Filter sessions by attention check
