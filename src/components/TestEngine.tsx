@@ -267,7 +267,7 @@ const TestEngine = ({
       {/* Question Content */}
       <div className="pt-12 flex flex-col items-center gap-8">
         {/* Grid Image */}
-        <div className="border border-border rounded-xl overflow-hidden bg-card w-full max-w-md">
+        <div className="border border-border rounded-none overflow-hidden bg-card w-full max-w-md">
           <OptimizedImage 
             src={currentQuestion.gridImage} 
             alt="Soru görseli" 
@@ -280,7 +280,7 @@ const TestEngine = ({
             <button 
               key={index} 
               onClick={() => submitAnswer(index)} 
-              className="group relative border border-border rounded-xl overflow-hidden bg-card hover:border-primary hover:ring-2 hover:ring-primary/30 transition-all duration-200"
+              className="group relative border border-border rounded-none overflow-hidden bg-card hover:border-primary hover:ring-2 hover:ring-primary/30 transition-all duration-200"
             >
               <OptimizedImage 
                 src={option} 
