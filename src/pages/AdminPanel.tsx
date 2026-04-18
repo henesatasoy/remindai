@@ -408,6 +408,7 @@ const AdminPanel = () => {
               <TableRow>
                 <TableHead className="w-10"></TableHead>
                 <TableHead>Session ID</TableHead>
+                <TableHead>Katılımcı</TableHead>
                 <TableHead>Phases</TableHead>
                 <TableHead className="text-center">Total Correct</TableHead>
                 <TableHead className="text-center">Avg Reaction Time</TableHead>
@@ -419,13 +420,13 @@ const AdminPanel = () => {
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={8} className="text-center py-8">
+                  <TableCell colSpan={9} className="text-center py-8">
                     <RefreshCw className="w-6 h-6 animate-spin mx-auto text-muted-foreground" />
                   </TableCell>
                 </TableRow>
               ) : filteredSessions.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
+                  <TableCell colSpan={9} className="text-center py-8 text-muted-foreground">
                     No data found
                   </TableCell>
                 </TableRow>
