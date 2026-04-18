@@ -698,7 +698,7 @@ const AdminPanel = () => {
                       </TableRow>
                       <CollapsibleContent asChild>
                         <TableRow className="bg-muted/30">
-                          <TableCell colSpan={9} className="p-0">
+                          <TableCell colSpan={10} className="p-0">
                             <div className="p-4">
                               <h4 className="text-sm font-medium text-foreground mb-3">
                                 Soru Detayları
