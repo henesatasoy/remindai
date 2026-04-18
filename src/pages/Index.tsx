@@ -4,6 +4,7 @@ import PsyCogSidebar from "@/components/PsyCogSidebar";
 import MainPanel from "@/components/MainPanel";
 import { generateSessionId, saveExperimentResult } from "@/lib/experimentService";
 import { ParticipantAssignment } from "@/lib/assignmentService";
+import { useTabFocusTracker } from "@/hooks/useTabFocusTracker";
 const fakeChatHistory = ["Plot-test 3", "ReMind AI'ın veri analiz süreci", "Test veri analiz sonuçları", "MaRs-IB kısa form testi", "Plot-test 2", "Plot-test 1"];
 const fakeModels = [{
   id: "remind-4",
@@ -29,6 +30,10 @@ const Index = () => {
 
   // Generate a unique session ID for this experiment session
   const sessionId = useMemo(() => generateSessionId(), []);
+
+  // Track tab/window focus loss during all active test phases
+  const trackedPhases: ViewState[] = ["practice", "phase1", "phase2", "ai-analysis", "intervention"];
+  useTabFocusTracker(sessionId, viewState, trackedPhases.includes(viewState));
 
   // When intervention state is active, expand sidebar
   useEffect(() => {

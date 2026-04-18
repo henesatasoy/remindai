@@ -44,7 +44,18 @@ interface SessionSummary {
   attention_check_click: boolean | null;
   assigned_group: string | null;
   participant_code: string | null;
+  blur_count: number;
+  total_blur_ms: number;
 }
+
+const formatBlurDuration = (ms: number): string => {
+  if (ms <= 0) return '0s';
+  const totalSec = Math.round(ms / 1000);
+  if (totalSec < 60) return `${totalSec}s`;
+  const m = Math.floor(totalSec / 60);
+  const s = totalSec % 60;
+  return s === 0 ? `${m}d` : `${m}d ${s}s`;
+};
 
 const getGroupLabel = (group: string | null): string => {
   switch (group) {
@@ -560,6 +571,7 @@ const AdminPanel = () => {
                 <TableHead className="text-center">Total Correct</TableHead>
                 <TableHead className="text-center">Avg Reaction Time</TableHead>
                 <TableHead className="text-center">Attention Check</TableHead>
+                <TableHead className="text-center">Sekme Çıkışı</TableHead>
                 <TableHead>Created At</TableHead>
                 <TableHead className="w-16 text-center">Sil</TableHead>
               </TableRow>
@@ -567,13 +579,13 @@ const AdminPanel = () => {
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={9} className="text-center py-8">
+                  <TableCell colSpan={10} className="text-center py-8">
                     <RefreshCw className="w-6 h-6 animate-spin mx-auto text-muted-foreground" />
                   </TableCell>
                 </TableRow>
               ) : filteredSessions.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={9} className="text-center py-8 text-muted-foreground">
+                  <TableCell colSpan={10} className="text-center py-8 text-muted-foreground">
                     No data found
                   </TableCell>
                 </TableRow>
@@ -651,6 +663,20 @@ const AdminPanel = () => {
                             <span className="text-destructive">✗</span>
                           )}
                         </TableCell>
+                        <TableCell className="text-center">
+                          {session.blur_count > 0 ? (
+                            <div className="flex flex-col items-center">
+                              <span className="text-destructive font-semibold text-sm">
+                                {session.blur_count}x
+                              </span>
+                              <span className="text-xs text-muted-foreground">
+                                {formatBlurDuration(session.total_blur_ms)}
+                              </span>
+                            </div>
+                          ) : (
+                            <span className="text-green-500">✓</span>
+                          )}
+                        </TableCell>
                         <TableCell className="text-sm text-muted-foreground">
                           {formatDate(session.created_at)}
                         </TableCell>
@@ -672,7 +698,7 @@ const AdminPanel = () => {
                       </TableRow>
                       <CollapsibleContent asChild>
                         <TableRow className="bg-muted/30">
-                          <TableCell colSpan={9} className="p-0">
+                          <TableCell colSpan={10} className="p-0">
                             <div className="p-4">
                               <h4 className="text-sm font-medium text-foreground mb-3">
                                 Soru Detayları
