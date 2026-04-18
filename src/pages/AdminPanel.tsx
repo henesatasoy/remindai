@@ -75,6 +75,9 @@ interface SessionDetail {
   created_at: string;
 }
 
+const MAX_PER_GROUP = 27;
+const TOTAL_SLOTS = MAX_PER_GROUP * 3;
+
 const AdminPanel = () => {
   const [sessions, setSessions] = useState<SessionSummary[]>([]);
   const [phaseFilter, setPhaseFilter] = useState<string>("all");
@@ -86,6 +89,34 @@ const AdminPanel = () => {
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
   const [deletingSession, setDeletingSession] = useState<string | null>(null);
+  const [slotCounts, setSlotCounts] = useState<{ positive: number; negative: number; control: number }>({
+    positive: 0,
+    negative: 0,
+    control: 0,
+  });
+
+  const loadSlotCounts = async () => {
+    const { data, error } = await supabase
+      .from('participant_assignments')
+      .select('assigned_group');
+
+    if (error) {
+      console.error('Failed to load slot counts:', error);
+      return;
+    }
+
+    const counts = { positive: 0, negative: 0, control: 0 };
+    (data || []).forEach((row: any) => {
+      if (row.assigned_group === 'positive') counts.positive += 1;
+      else if (row.assigned_group === 'negative') counts.negative += 1;
+      else if (row.assigned_group === 'control') counts.control += 1;
+    });
+    setSlotCounts(counts);
+  };
+
+  useEffect(() => {
+    loadSlotCounts();
+  }, []);
 
   const handleDeleteSession = async (sessionId: string, e: React.MouseEvent) => {
     e.stopPropagation();
