@@ -230,21 +230,9 @@ const TestEngine = ({
     return <div className="h-[70vh] bg-white" />;
   }
 
-  // Render Complete Screen
+  // Render Complete Screen - hidden, immediately transitions to next phase via onComplete
   if (testPhase === "complete") {
-    const correctCount = answers.filter(a => a.isCorrect).length;
-    const avgTime = Math.round(answers.reduce((sum, a) => sum + a.responseTimeMs, 0) / answers.length / 1000);
-    return <div className="flex flex-col items-center justify-center h-[70vh] gap-6">
-        <h2 className="text-3xl font-bold text-foreground">Test Tamamlandı!</h2>
-        <div className="text-center space-y-2">
-          <p className="text-xl text-muted-foreground">
-            Doğru Cevaplar: <span className="text-primary font-semibold">{correctCount}/{questions.length}</span>
-          </p>
-          <p className="text-xl text-muted-foreground">
-            Ortalama Süre: <span className="text-primary font-semibold">{avgTime} saniye</span>
-          </p>
-        </div>
-      </div>;
+    return <div className="h-[70vh] bg-background" />;
   }
 
   // Render Question
