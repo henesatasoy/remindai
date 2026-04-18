@@ -82,6 +82,7 @@ const AdminPanel = () => {
   const [sessions, setSessions] = useState<SessionSummary[]>([]);
   const [phaseFilter, setPhaseFilter] = useState<string>("all");
   const [attentionFilter, setAttentionFilter] = useState<string>("all");
+  const [groupFilter, setGroupFilter] = useState<string>("all");
   const [isLoading, setIsLoading] = useState(true);
   const [expandedSessions, setExpandedSessions] = useState<Set<string>>(new Set());
   const [sessionDetails, setSessionDetails] = useState<Record<string, SessionDetail[]>>({});
@@ -369,6 +370,22 @@ const AdminPanel = () => {
                   <SelectItem value="practice">Practice</SelectItem>
                   <SelectItem value="phase1">Phase 1</SelectItem>
                   <SelectItem value="phase2">Phase 2</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Group Filter */}
+            <div className="flex items-center gap-2">
+              <Select value={groupFilter} onValueChange={setGroupFilter}>
+                <SelectTrigger className="w-40">
+                  <SelectValue placeholder="Grup" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Tüm Gruplar</SelectItem>
+                  <SelectItem value="positive">Pozitif</SelectItem>
+                  <SelectItem value="negative">Negatif</SelectItem>
+                  <SelectItem value="control">Kontrol</SelectItem>
+                  <SelectItem value="unassigned">Atanmamış</SelectItem>
                 </SelectContent>
               </Select>
             </div>
