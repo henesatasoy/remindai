@@ -139,27 +139,48 @@ export const fetchSessionSummaries = async (phaseFilter?: string, startDate?: Da
   // Fetch participant assignments for these sessions
   const sessionIds = Array.from(sessionMap.keys());
   const assignmentMap = new Map<string, { assigned_group: string; participant_code: string }>();
+  const focusMap = new Map<string, { blur_count: number; total_blur_ms: number }>();
 
   if (sessionIds.length > 0) {
-    const { data: assignments, error: assignError } = await supabase
-      .from('participant_assignments')
-      .select('session_id, assigned_group, participant_code')
-      .in('session_id', sessionIds);
+    const [assignmentsRes, focusRes] = await Promise.all([
+      supabase
+        .from('participant_assignments')
+        .select('session_id, assigned_group, participant_code')
+        .in('session_id', sessionIds),
+      (supabase.from as any)('session_focus_events')
+        .select('session_id, event_type, duration_ms')
+        .in('session_id', sessionIds),
+    ]);
 
-    if (assignError) {
-      console.error('Failed to fetch participant assignments:', assignError);
+    if (assignmentsRes.error) {
+      console.error('Failed to fetch participant assignments:', assignmentsRes.error);
     } else {
-      (assignments || []).forEach((a: any) => {
+      (assignmentsRes.data || []).forEach((a: any) => {
         assignmentMap.set(a.session_id, {
           assigned_group: a.assigned_group,
           participant_code: a.participant_code,
         });
       });
     }
+
+    if (focusRes.error) {
+      console.error('Failed to fetch focus events:', focusRes.error);
+    } else {
+      (focusRes.data || []).forEach((f: any) => {
+        const existing = focusMap.get(f.session_id) ?? { blur_count: 0, total_blur_ms: 0 };
+        if (f.event_type === 'blur') {
+          existing.blur_count += 1;
+        } else if (f.event_type === 'focus' && typeof f.duration_ms === 'number') {
+          existing.total_blur_ms += f.duration_ms;
+        }
+        focusMap.set(f.session_id, existing);
+      });
+    }
   }
 
   return Array.from(sessionMap.values()).map((session) => {
     const assignment = assignmentMap.get(session.session_id);
+    const focus = focusMap.get(session.session_id);
     return {
       session_id: session.session_id,
       phases: Array.from(session.phases).join(', '),
@@ -170,8 +191,27 @@ export const fetchSessionSummaries = async (phaseFilter?: string, startDate?: Da
       attention_check_click: session.attention_check_click,
       assigned_group: assignment?.assigned_group ?? null,
       participant_code: assignment?.participant_code ?? null,
+      blur_count: focus?.blur_count ?? 0,
+      total_blur_ms: focus?.total_blur_ms ?? 0,
     };
   });
+};
+
+/**
+ * Fetches all tab focus/blur events for a specific session
+ */
+export const fetchSessionFocusEvents = async (sessionId: string) => {
+  const { data, error } = await (supabase.from as any)('session_focus_events')
+    .select('*')
+    .eq('session_id', sessionId)
+    .order('created_at', { ascending: true });
+
+  if (error) {
+    console.error('Failed to fetch focus events:', error);
+    return [];
+  }
+
+  return data || [];
 };
 
 /**
