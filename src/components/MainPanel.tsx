@@ -5,7 +5,7 @@ import AIAnalysis from "./AIAnalysis";
 import { Answer, PRACTICE_QUESTIONS, PHASE1_QUESTIONS, PHASE2_QUESTIONS } from "@/data/questions";
 import { saveExperimentResult } from "@/lib/experimentService";
 import { assignParticipantGroup, ParticipantAssignment } from "@/lib/assignmentService";
-type ViewState = "loading" | "instructions" | "practice" | "practice-passed" | "practice-failed" | "phase1" | "ai-analysis" | "intervention" | "phase2" | "complete";
+type ViewState = "loading" | "instructions" | "practice" | "practice-passed" | "practice-failed" | "phase1" | "ai-analysis" | "intervention" | "phase2" | "complete" | "experiment-full";
 interface MainPanelProps {
   isLoading: boolean;
   viewState: ViewState;
