@@ -31,6 +31,10 @@ const Index = () => {
   // Generate a unique session ID for this experiment session
   const sessionId = useMemo(() => generateSessionId(), []);
 
+  // Track tab/window focus loss during all active test phases
+  const trackedPhases: ViewState[] = ["practice", "phase1", "phase2", "ai-analysis", "intervention"];
+  useTabFocusTracker(sessionId, viewState, trackedPhases.includes(viewState));
+
   // When intervention state is active, expand sidebar
   useEffect(() => {
     if (viewState === "intervention") {
