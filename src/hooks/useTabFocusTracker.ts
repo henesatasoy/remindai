@@ -6,7 +6,8 @@ import { supabase } from "@/integrations/supabase/client";
  * Inserts a "blur" event when visibility is lost and a "focus" event
  * (with duration_ms) when the participant returns.
  *
- * Pass `enabled = false` to disable tracking outside of test phases.
+ * The hook persists across phase transitions while `enabled` stays true,
+ * so a blur that starts in one phase and ends in another is still captured.
  */
 export const useTabFocusTracker = (
   sessionId: string,
@@ -14,23 +15,33 @@ export const useTabFocusTracker = (
   enabled: boolean
 ) => {
   const blurTimeRef = useRef<number | null>(null);
+  const phaseRef = useRef(phase);
+
+  // Keep latest phase available inside the listeners without remounting them
+  useEffect(() => {
+    phaseRef.current = phase;
+  }, [phase]);
 
   useEffect(() => {
     if (!enabled || !sessionId) return;
 
-    console.log(`[TabFocus] Tracker enabled for session=${sessionId.slice(0, 8)} phase=${phase}`);
+    console.log(`[TabFocus] Tracker enabled for session=${sessionId.slice(0, 8)}`);
 
     const logEvent = async (
       eventType: "blur" | "focus",
       durationMs: number | null
     ) => {
-      console.log(`[TabFocus] ${eventType}${durationMs !== null ? ` after ${durationMs}ms` : ""}`);
+      const currentPhase = phaseRef.current;
+      console.log(
+        `[TabFocus] ${eventType} during ${currentPhase}` +
+          (durationMs !== null ? ` (${durationMs}ms away)` : "")
+      );
       try {
         const { error } = await (supabase as any)
           .from("session_focus_events")
           .insert({
             session_id: sessionId,
-            phase,
+            phase: currentPhase,
             event_type: eventType,
             duration_ms: durationMs,
           });
@@ -81,5 +92,7 @@ export const useTabFocusTracker = (
       window.removeEventListener("pagehide", handleBlur);
       window.removeEventListener("pageshow", handleFocus);
     };
-  }, [sessionId, phase, enabled]);
+    // Intentionally exclude `phase` so changing phases doesn't tear down listeners
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sessionId, enabled]);
 };
