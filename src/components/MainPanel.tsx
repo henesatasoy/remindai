@@ -52,13 +52,19 @@ const MainPanel = ({
     console.log("Phase 1 completed:", answers);
     // Trigger group assignment as soon as Phase 1 ends — runs in parallel with
     // the 5-minute "AI analysis" screen so the message is ready by intervention.
-    assignParticipantGroup(sessionId).then((assignment) => {
-      if (assignment) {
-        console.log(`Assigned: ${assignment.assigned_group} (${assignment.participant_code})`);
+    assignParticipantGroup(sessionId).then((result) => {
+      if (result.status === "assigned") {
+        console.log(`Assigned: ${result.assignment.assigned_group} (${result.assignment.participant_code})`);
+        onAssignmentChange?.(result.assignment);
+      } else if (result.status === "full") {
+        console.warn("Experiment is full — showing graceful end screen");
+        onAssignmentChange?.(null);
+        onViewStateChange("experiment-full");
+        return;
       } else {
         console.error("Group assignment failed — sidebar will fall back to control message");
+        onAssignmentChange?.(null);
       }
-      onAssignmentChange?.(assignment);
     });
     onViewStateChange("ai-analysis");
   };
