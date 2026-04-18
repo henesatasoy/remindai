@@ -44,7 +44,18 @@ interface SessionSummary {
   attention_check_click: boolean | null;
   assigned_group: string | null;
   participant_code: string | null;
+  blur_count: number;
+  total_blur_ms: number;
 }
+
+const formatBlurDuration = (ms: number): string => {
+  if (ms <= 0) return '0s';
+  const totalSec = Math.round(ms / 1000);
+  if (totalSec < 60) return `${totalSec}s`;
+  const m = Math.floor(totalSec / 60);
+  const s = totalSec % 60;
+  return s === 0 ? `${m}d` : `${m}d ${s}s`;
+};
 
 const getGroupLabel = (group: string | null): string => {
   switch (group) {
