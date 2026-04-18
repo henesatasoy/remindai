@@ -75,6 +75,9 @@ interface SessionDetail {
   created_at: string;
 }
 
+const MAX_PER_GROUP = 27;
+const TOTAL_SLOTS = MAX_PER_GROUP * 3;
+
 const AdminPanel = () => {
   const [sessions, setSessions] = useState<SessionSummary[]>([]);
   const [phaseFilter, setPhaseFilter] = useState<string>("all");
@@ -86,6 +89,34 @@ const AdminPanel = () => {
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
   const [deletingSession, setDeletingSession] = useState<string | null>(null);
+  const [slotCounts, setSlotCounts] = useState<{ positive: number; negative: number; control: number }>({
+    positive: 0,
+    negative: 0,
+    control: 0,
+  });
+
+  const loadSlotCounts = async () => {
+    const { data, error } = await supabase
+      .from('participant_assignments')
+      .select('assigned_group');
+
+    if (error) {
+      console.error('Failed to load slot counts:', error);
+      return;
+    }
+
+    const counts = { positive: 0, negative: 0, control: 0 };
+    (data || []).forEach((row: any) => {
+      if (row.assigned_group === 'positive') counts.positive += 1;
+      else if (row.assigned_group === 'negative') counts.negative += 1;
+      else if (row.assigned_group === 'control') counts.control += 1;
+    });
+    setSlotCounts(counts);
+  };
+
+  useEffect(() => {
+    loadSlotCounts();
+  }, []);
 
   const handleDeleteSession = async (sessionId: string, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -119,6 +150,7 @@ const AdminPanel = () => {
     const data = await fetchSessionSummaries(phaseFilter, startDate, endDate);
     setSessions(data);
     setIsLoading(false);
+    loadSlotCounts();
   };
 
   // Filter sessions by attention check
@@ -383,6 +415,73 @@ const AdminPanel = () => {
             </Button>
           </div>
         </div>
+
+        {/* Slot Counter Widget — Drawing Without Replacement progress */}
+        {(() => {
+          const totalAssigned = slotCounts.positive + slotCounts.negative + slotCounts.control;
+          const totalRemaining = TOTAL_SLOTS - totalAssigned;
+          const overallPct = Math.min((totalAssigned / TOTAL_SLOTS) * 100, 100);
+          const groups = [
+            { key: 'positive', label: 'Pozitif', count: slotCounts.positive, barClass: 'bg-emerald-500', textClass: 'text-emerald-600' },
+            { key: 'negative', label: 'Negatif', count: slotCounts.negative, barClass: 'bg-rose-500', textClass: 'text-rose-600' },
+            { key: 'control', label: 'Kontrol', count: slotCounts.control, barClass: 'bg-slate-500', textClass: 'text-slate-600' },
+          ];
+          return (
+            <div className="bg-card border border-border rounded-xl p-6 mb-8">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h2 className="text-lg font-semibold text-foreground">Katılımcı Slot Doluluğu</h2>
+                  <p className="text-sm text-muted-foreground">
+                    Atanan: <span className="font-medium text-foreground">{totalAssigned}</span> / {TOTAL_SLOTS}
+                    {' · '}
+                    Kalan: <span className="font-medium text-foreground">{totalRemaining}</span>
+                  </p>
+                </div>
+                <div className="text-right">
+                  <p className="text-2xl font-bold text-foreground">{Math.round(overallPct)}%</p>
+                  <p className="text-xs text-muted-foreground">tamamlandı</p>
+                </div>
+              </div>
+
+              {/* Overall progress bar */}
+              <div className="w-full h-2 bg-muted rounded-full overflow-hidden mb-6">
+                <div
+                  className="h-full bg-primary transition-all duration-500"
+                  style={{ width: `${overallPct}%` }}
+                />
+              </div>
+
+              {/* Per-group breakdown */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {groups.map((g) => {
+                  const pct = Math.min((g.count / MAX_PER_GROUP) * 100, 100);
+                  const remaining = MAX_PER_GROUP - g.count;
+                  const isFull = g.count >= MAX_PER_GROUP;
+                  return (
+                    <div key={g.key} className="border border-border rounded-lg p-4 bg-background">
+                      <div className="flex items-baseline justify-between mb-2">
+                        <span className={`text-sm font-medium ${g.textClass}`}>{g.label}</span>
+                        <span className="text-sm font-mono text-foreground">
+                          <span className="text-lg font-bold">{g.count}</span>
+                          <span className="text-muted-foreground">/{MAX_PER_GROUP}</span>
+                        </span>
+                      </div>
+                      <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden mb-2">
+                        <div
+                          className={`h-full ${g.barClass} transition-all duration-500`}
+                          style={{ width: `${pct}%` }}
+                        />
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        {isFull ? 'Dolu' : `${remaining} slot kaldı`}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })()}
 
         {/* Stats Summary */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
