@@ -257,15 +257,15 @@ const TestEngine = ({
         </span>
       </div>
 
-      {/* Warning Flash */}
-      {showWarning && <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
-          <div className="text-4xl font-bold text-destructive animate-pulse bg-background/80 px-8 py-4 rounded-xl">
-            Son 5 Saniye!
-          </div>
-        </div>}
-
       {/* Question Content */}
       <div className="pt-12 flex flex-col items-center gap-8">
+        {/* Warning Flash - above question image */}
+        {showWarning && (
+          <div className="text-2xl font-bold text-destructive animate-pulse">
+            Son 5 Saniye!
+          </div>
+        )}
+
         {/* Grid Image */}
         <div className="border border-border rounded-none overflow-hidden bg-card w-full max-w-md">
           <OptimizedImage 
