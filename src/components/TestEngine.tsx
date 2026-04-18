@@ -108,7 +108,7 @@ const TestEngine = ({
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [correctCount, setCorrectCount] = useState(0);
   const questionStartTime = useRef<number>(0);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const currentQuestion = questions[currentIndex];
   
   // Use image preloader

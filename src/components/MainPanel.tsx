@@ -4,6 +4,7 @@ import TestEngine from "./TestEngine";
 import AIAnalysis from "./AIAnalysis";
 import { Answer, PRACTICE_QUESTIONS, PHASE1_QUESTIONS, PHASE2_QUESTIONS } from "@/data/questions";
 import { saveExperimentResult } from "@/lib/experimentService";
+import { assignParticipantGroup, ParticipantAssignment } from "@/lib/assignmentService";
 type ViewState = "loading" | "instructions" | "practice" | "practice-passed" | "practice-failed" | "phase1" | "ai-analysis" | "intervention" | "phase2" | "complete";
 interface MainPanelProps {
   isLoading: boolean;
@@ -12,6 +13,7 @@ interface MainPanelProps {
   isAttentionCheckClicked: boolean;
   sessionId: string;
   onPracticeScoreChange?: (score: number) => void;
+  onAssignmentChange?: (assignment: ParticipantAssignment | null) => void;
 }
 const INSTRUCTION_TEXT = `Bu bölümde, problem çözme ve soyut muhakeme yeteneklerinizi ölçen bir dizi görsel bulmaca ile karşılaşacaksınız. Her soruda, 3x3'lük bir ızgara (matris) göreceksiniz. Bu ızgaradaki kutucuklardan 8 tanesi, belirli bir kurala veya örüntüye göre yerleştirilmiş şekiller içermektedir. Sağ alt köşedeki kutucuk ise boştur. Göreviniz: Şekillerin hem satırlardaki (soldan sağa) hem de sütunlardaki (yukarıdan aşağıya) değişim kurallarını keşfetmek ve bu kurala göre boş kutucuğa gelmesi gereken en uygun şekli, aşağıda verilen 4 seçenek arasından bulup işaretlemektir. Dikkat Etmeniz Gerekenler: Süre: Her bir soruyu çözmek için 30 saniyeniz olacaktır. Geri Sayım: Sürenin bitimine 5 saniye kala ekranda bir geri sayım sayacı belirecektir. Tahmin: Eğer kuralı süreniz dolmadan bulamazsanız, en mantıklı gelen seçeneği işaretleyerek şansınızı deneyiniz. Boş bırakmak yerine tahmin yürütmeniz önerilir. İlerleme: Cevabı işaretlediğinizde veya süre dolduğunda otomatik olarak bir sonraki soruya geçilecektir. Geriye dönüp cevabınızı değiştirme şansınız yoktur. Gerçek testten önce alıştırma sorularına ile başlayacaksınız.`;
 const MainPanel = ({
@@ -20,7 +22,8 @@ const MainPanel = ({
   onViewStateChange,
   isAttentionCheckClicked,
   sessionId,
-  onPracticeScoreChange
+  onPracticeScoreChange,
+  onAssignmentChange
 }: MainPanelProps) => {
   const [practiceScore, setPracticeScore] = useState(0);
   useEffect(() => {
@@ -47,6 +50,16 @@ const MainPanel = ({
   };
   const handlePhase1Complete = (answers: Answer[]) => {
     console.log("Phase 1 completed:", answers);
+    // Trigger group assignment as soon as Phase 1 ends — runs in parallel with
+    // the 5-minute "AI analysis" screen so the message is ready by intervention.
+    assignParticipantGroup(sessionId).then((assignment) => {
+      if (assignment) {
+        console.log(`Assigned: ${assignment.assigned_group} (${assignment.participant_code})`);
+      } else {
+        console.error("Group assignment failed — sidebar will fall back to control message");
+      }
+      onAssignmentChange?.(assignment);
+    });
     onViewStateChange("ai-analysis");
   };
   const handleAIAnalysisComplete = () => {

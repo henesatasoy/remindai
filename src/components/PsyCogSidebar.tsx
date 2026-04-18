@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight, MessageSquare, Sparkles, User, X } from "luc
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import TypewriterText from "./TypewriterText";
+import { ParticipantAssignment, getInterventionMessage } from "@/lib/assignmentService";
 type ViewState = "loading" | "instructions" | "practice" | "practice-passed" | "practice-failed" | "phase1" | "ai-analysis" | "intervention" | "phase2" | "complete";
 interface PsyCogSidebarProps {
   isCollapsed: boolean;
@@ -16,8 +17,11 @@ interface PsyCogSidebarProps {
   onStartPhase1?: () => void;
   practiceScore?: number;
   userFirstMessage?: string;
+  assignment?: ParticipantAssignment | null;
 }
-const INTERVENTION_TEXT_1 = `Analiz tamamlandı! Bilişsel haritalamanıza göre, bu tür akıl yürütme görevlerinde %95'lik dilimde, yani <strong>'Üstün Potansiyel'</strong> seviyesindesiniz. <strong>Bir sonraki aşamada çok daha yüksek bir performans sergilemeniz öngörülüyor.</strong>`;
+// Default to the control (neutral) message until the assignment resolves.
+// This way an observer cannot infer the group from any visual cue.
+const DEFAULT_INTERVENTION_TEXT = getInterventionMessage("control");
 const INTERVENTION_TEXT_2 = `Lütfen bu mesajı okuduysanız sol üstte ki ReMind yazısının solunda bulunan logoya tıklayın. İşaretledikten sonra hazır iseniz ikinci test aşamasını başlatmak için aşağıda ki Başlat butonuna basınız.`;
 const INSTRUCTION_INTRO = `Bu bölümde, problem çözme ve soyut muhakeme yeteneklerinizi ölçen bir dizi görsel bulmaca ile karşılaşacaksınız. Her soruda, 3x3'lük bir ızgara (matris) göreceksiniz. Bu ızgaradaki kutucuklardan 8 tanesi, belirli bir kurala veya örüntüye göre yerleştirilmiş şekiller içermektedir. Sağ alt köşedeki kutucuk ise boştur.
 
@@ -49,8 +53,14 @@ const PsyCogSidebar = ({
   onStartPractice,
   onStartPhase1,
   practiceScore = 0,
-  userFirstMessage
+  userFirstMessage,
+  assignment
 }: PsyCogSidebarProps) => {
+  // Resolve the intervention text from the participant's assigned group.
+  // Falls back to the neutral control message if assignment hasn't resolved yet.
+  const interventionText1 = assignment
+    ? getInterventionMessage(assignment.assigned_group)
+    : DEFAULT_INTERVENTION_TEXT;
   const [modalContent, setModalContent] = useState<{
     title: string;
     content: React.ReactNode;
@@ -104,7 +114,7 @@ const PsyCogSidebar = ({
     setModalContent({
       title: "AI Analiz Sonucu",
       content: <div className="space-y-4">
-          <p className="whitespace-pre-line">{INTERVENTION_TEXT_1}</p>
+          <p className="whitespace-pre-line" dangerouslySetInnerHTML={{ __html: interventionText1 }} />
           <p className="whitespace-pre-line">{INTERVENTION_TEXT_2}</p>
         </div>
     });
@@ -183,7 +193,7 @@ const PsyCogSidebar = ({
               </div>
               <div className="flex-1 bg-card border border-border rounded-xl p-4 max-w-[80%]">
                 {isIntervention ? <p className="text-foreground text-sm leading-relaxed whitespace-pre-line">
-                    <TypewriterText text={INTERVENTION_TEXT_1} speed={10} onComplete={() => setIsTyping1Complete(true)} html={true} />
+                    <TypewriterText text={interventionText1} speed={10} onComplete={() => setIsTyping1Complete(true)} html={true} />
                   </p> : isPracticePassed ? <div className="text-foreground text-sm leading-relaxed space-y-3">
                     <p className="font-semibold text-base">Alıştırma Tamamlandı</p>
                     
@@ -264,7 +274,7 @@ const PsyCogSidebar = ({
             {showInterventionInHistory && <button onClick={openInterventionModal} className="flex items-start gap-2 w-full text-left hover:bg-sidebar-accent rounded-lg p-2 transition-colors">
                 <Sparkles className="w-4 h-4 text-primary shrink-0 mt-1" />
                 <div className="text-xs text-muted-foreground">
-                  <p className="line-clamp-2 mb-1">{INTERVENTION_TEXT_1.slice(0, 80)}...</p>
+                  <p className="line-clamp-2 mb-1">{interventionText1.replace(/<[^>]+>/g, "").slice(0, 80)}...</p>
                   <span className="text-primary/70 text-[10px]">Başlat ✓</span>
                 </div>
               </button>}

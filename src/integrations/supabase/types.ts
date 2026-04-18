@@ -50,15 +50,49 @@ export type Database = {
         }
         Relationships: []
       }
+      participant_assignments: {
+        Row: {
+          assigned_group: Database["public"]["Enums"]["assignment_group"]
+          created_at: string
+          id: string
+          participant_code: string
+          session_id: string
+          slot_number: number
+        }
+        Insert: {
+          assigned_group: Database["public"]["Enums"]["assignment_group"]
+          created_at?: string
+          id?: string
+          participant_code: string
+          session_id: string
+          slot_number: number
+        }
+        Update: {
+          assigned_group?: Database["public"]["Enums"]["assignment_group"]
+          created_at?: string
+          id?: string
+          participant_code?: string
+          session_id?: string
+          slot_number?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      assign_participant_group: {
+        Args: { p_session_id: string }
+        Returns: {
+          assigned_group: Database["public"]["Enums"]["assignment_group"]
+          participant_code: string
+          slot_number: number
+        }[]
+      }
     }
     Enums: {
-      [_ in never]: never
+      assignment_group: "positive" | "negative" | "control"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -185,6 +219,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      assignment_group: ["positive", "negative", "control"],
+    },
   },
 } as const
