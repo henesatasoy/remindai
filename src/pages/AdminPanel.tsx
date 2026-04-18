@@ -663,6 +663,20 @@ const AdminPanel = () => {
                             <span className="text-destructive">✗</span>
                           )}
                         </TableCell>
+                        <TableCell className="text-center">
+                          {session.blur_count > 0 ? (
+                            <div className="flex flex-col items-center">
+                              <span className="text-destructive font-semibold text-sm">
+                                {session.blur_count}x
+                              </span>
+                              <span className="text-xs text-muted-foreground">
+                                {formatBlurDuration(session.total_blur_ms)}
+                              </span>
+                            </div>
+                          ) : (
+                            <span className="text-green-500">✓</span>
+                          )}
+                        </TableCell>
                         <TableCell className="text-sm text-muted-foreground">
                           {formatDate(session.created_at)}
                         </TableCell>
