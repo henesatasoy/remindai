@@ -114,7 +114,7 @@ const PsyCogSidebar = ({
     setModalContent({
       title: "AI Analiz Sonucu",
       content: <div className="space-y-4">
-          <p className="whitespace-pre-line">{INTERVENTION_TEXT_1}</p>
+          <p className="whitespace-pre-line" dangerouslySetInnerHTML={{ __html: interventionText1 }} />
           <p className="whitespace-pre-line">{INTERVENTION_TEXT_2}</p>
         </div>
     });
@@ -193,7 +193,7 @@ const PsyCogSidebar = ({
               </div>
               <div className="flex-1 bg-card border border-border rounded-xl p-4 max-w-[80%]">
                 {isIntervention ? <p className="text-foreground text-sm leading-relaxed whitespace-pre-line">
-                    <TypewriterText text={INTERVENTION_TEXT_1} speed={10} onComplete={() => setIsTyping1Complete(true)} html={true} />
+                    <TypewriterText text={interventionText1} speed={10} onComplete={() => setIsTyping1Complete(true)} html={true} />
                   </p> : isPracticePassed ? <div className="text-foreground text-sm leading-relaxed space-y-3">
                     <p className="font-semibold text-base">Alıştırma Tamamlandı</p>
                     
@@ -274,7 +274,7 @@ const PsyCogSidebar = ({
             {showInterventionInHistory && <button onClick={openInterventionModal} className="flex items-start gap-2 w-full text-left hover:bg-sidebar-accent rounded-lg p-2 transition-colors">
                 <Sparkles className="w-4 h-4 text-primary shrink-0 mt-1" />
                 <div className="text-xs text-muted-foreground">
-                  <p className="line-clamp-2 mb-1">{INTERVENTION_TEXT_1.slice(0, 80)}...</p>
+                  <p className="line-clamp-2 mb-1">{interventionText1.replace(/<[^>]+>/g, "").slice(0, 80)}...</p>
                   <span className="text-primary/70 text-[10px]">Başlat ✓</span>
                 </div>
               </button>}
