@@ -67,7 +67,7 @@ export const assignParticipantGroup = async (
 export const getInterventionMessage = (group: AssignmentGroup): string => {
   switch (group) {
     case "positive":
-      return "Analiz tamamlandı! Bilişsel haritalamanıza göre, bu tür akıl yürütme görevlerinde %95'lik dilimde, yani <strong>'Üstün Potansiyel'</strong> seviyesindesiniz. <strong>Bir sonraki aşamada çok daha yüksek bir performans sergilemeniz öngörülüyor.</strong>";
+      return "Analiz tamamlandı! Bilişsel haritalamanıza göre, bu tür akıl yürütme görevlerinde %96'lık dilimde, yani <strong>'Üstün Potansiyel'</strong> seviyesindesiniz. <strong>Bir sonraki aşamada çok daha yüksek bir performans sergilemeniz öngörülüyor.</strong>";
     case "negative":
       return "Analiz tamamlandı. Bilişsel haritalamanıza göre, bu tür akıl yürütme görevlerinde %7'lik dilimde, yani 'Düşük Potansiyel' seviyesindesiniz.";
     case "control":
