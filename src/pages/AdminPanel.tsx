@@ -3,6 +3,7 @@ import { RefreshCw, Filter, Database, Download, ChevronDown, ChevronRight, Calen
 import { format } from "date-fns";
 import { tr } from "date-fns/locale";
 import { fetchSessionSummaries, fetchSessionDetails, fetchAllResults, deleteSession } from "@/lib/experimentService";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import {
   Table,
