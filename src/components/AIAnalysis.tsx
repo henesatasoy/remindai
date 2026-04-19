@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Brain, Cpu, Activity } from "lucide-react";
+import { Brain, Cpu, Activity, Paperclip, Mic, ArrowUp } from "lucide-react";
 interface AIAnalysisProps {
   onComplete: () => void;
 }
