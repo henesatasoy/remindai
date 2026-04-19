@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { Clock } from "lucide-react";
+import { Clock, X } from "lucide-react";
 import { Question, Answer, PRACTICE_QUESTIONS } from "@/data/questions";
 import { saveExperimentResult } from "@/lib/experimentService";
 import { isImageWarm, warmQuestion, warmQuestionSet } from "@/lib/imageWarmup";
@@ -252,6 +252,19 @@ const TestEngine = ({
           {timeLeft}s
         </span>
       </div>
+
+      {/* Exit Button */}
+      <button
+        onClick={() => {
+          if (window.confirm("Testten çıkmak istediğinize emin misiniz? İlerlemeniz kaybolacaktır.")) {
+            window.location.href = "/";
+          }
+        }}
+        aria-label="Testten çık"
+        className="absolute top-0 right-0 w-9 h-9 rounded-lg flex items-center justify-center bg-muted text-muted-foreground hover:bg-muted/80 transition-colors"
+      >
+        <X className="w-4 h-4" />
+      </button>
 
       {/* Question Content */}
       <div className="pt-12 flex flex-col items-center gap-8">
