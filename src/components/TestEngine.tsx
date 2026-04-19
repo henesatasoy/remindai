@@ -12,55 +12,53 @@ interface TestEngineProps {
   phase: 'practice' | 'phase1' | 'phase2';
 }
 
-// Image preloader hook - preloads current + next 2 questions
+// Image preloader hook - aggressively preloads ALL question images for the phase upfront.
+// Current question images are prioritized (eager); the rest load in parallel in the background.
 const useImagePreloader = (questions: Question[], currentIndex: number) => {
   const loadedImagesRef = useRef<Set<string>>(new Set());
   const [allCurrentLoaded, setAllCurrentLoaded] = useState(false);
-  
+
+  // Preload ALL phase images once when the questions array changes.
+  useEffect(() => {
+    questions.forEach((q) => {
+      [q.gridImage, ...q.options].forEach((src) => {
+        if (!loadedImagesRef.current.has(src)) {
+          const img = new Image();
+          img.decoding = "async";
+          img.src = src;
+          img.onload = () => loadedImagesRef.current.add(src);
+        }
+      });
+    });
+  }, [questions]);
+
+  // Track readiness of the CURRENT question's images so the UI can render without flicker.
   useEffect(() => {
     setAllCurrentLoaded(false);
-    
     const currentQ = questions[currentIndex];
     if (!currentQ) return;
-    
+
     const currentImages = [currentQ.gridImage, ...currentQ.options];
-    let loadedCount = 0;
-    const totalToLoad = currentImages.filter(src => !loadedImagesRef.current.has(src)).length;
-    
-    if (totalToLoad === 0) {
+    const pending = currentImages.filter((src) => !loadedImagesRef.current.has(src));
+
+    if (pending.length === 0) {
       setAllCurrentLoaded(true);
+      return;
     }
-    
-    // Preload current question images
-    currentImages.forEach(src => {
-      if (!loadedImagesRef.current.has(src)) {
-        const img = new Image();
-        img.src = src;
-        img.onload = () => {
-          loadedImagesRef.current.add(src);
-          loadedCount++;
-          if (loadedCount >= totalToLoad) {
-            setAllCurrentLoaded(true);
-          }
-        };
-      }
-    });
-    
-    // Preload next 2 questions in background
-    [1, 2].forEach(offset => {
-      const nextQ = questions[currentIndex + offset];
-      if (nextQ) {
-        [nextQ.gridImage, ...nextQ.options].forEach(src => {
-          if (!loadedImagesRef.current.has(src)) {
-            const img = new Image();
-            img.src = src;
-            img.onload = () => loadedImagesRef.current.add(src);
-          }
-        });
-      }
+
+    let loadedCount = 0;
+    pending.forEach((src) => {
+      const img = new Image();
+      img.decoding = "async";
+      img.src = src;
+      img.onload = () => {
+        loadedImagesRef.current.add(src);
+        loadedCount++;
+        if (loadedCount >= pending.length) setAllCurrentLoaded(true);
+      };
     });
   }, [questions, currentIndex]);
-  
+
   return { loadedImagesRef, allCurrentLoaded };
 };
 
