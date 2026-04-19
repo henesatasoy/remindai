@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Brain, Cpu, Activity, X } from "lucide-react";
+import { Brain, Cpu, Activity } from "lucide-react";
 interface AIAnalysisProps {
   onComplete: () => void;
 }
@@ -141,6 +141,18 @@ const AIAnalysis = ({
             </div>}
         </div>
       </div>
+
+      {/* Exit Button - placed below the terminal */}
+      <button
+        onClick={() => {
+          if (window.confirm("Testten çıkmak istediğinize emin misiniz? İlerlemeniz kaybolacaktır.")) {
+            window.location.href = "/";
+          }
+        }}
+        className="px-6 py-2 text-sm rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted opacity-60 hover:opacity-100 transition-all"
+      >
+        Testten Çık
+      </button>
 
       {/* Floating particles effect */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
