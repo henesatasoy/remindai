@@ -408,7 +408,7 @@ export const PHASE2_QUESTIONS: Question[] = [
     id: "phase2-3",
     gridImage: p2q3Grid,
     options: [p2q3Opt1, p2q3Opt2, p2q3Opt3, p2q3Opt4],
-    correctOptionIndex: 0,
+    correctOptionIndex: 1,
   },
   {
     id: "phase2-4",
