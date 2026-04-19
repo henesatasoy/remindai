@@ -107,13 +107,13 @@ const AIAnalysis = ({
       </div>
 
       {/* Info text */}
-      <p className="text-muted-foreground text-sm">Bu işlem yaklaşık 5 dakika sürecektir.</p>
+      <p className="text-muted-foreground text-sm">Bu işlem yaklaşık 3 dakika sürecektir.</p>
 
       {/* Progress bar */}
       <div className="w-full max-w-md">
         <div className="h-2 bg-secondary rounded-full overflow-hidden">
           <div className="h-full bg-primary transition-all duration-1000 ease-linear" style={{
-          width: `${(300 - timeLeft) / 300 * 100}%`
+          width: `${(180 - timeLeft) / 180 * 100}%`
         }} />
         </div>
       </div>
