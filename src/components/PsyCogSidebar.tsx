@@ -255,9 +255,20 @@ const PsyCogSidebar = ({
             </div>
 
             {/* Devam Et button after first intervention message - show only when typing is complete */}
-            {isIntervention && interventionStep === 1 && isTyping1Complete && <div className="flex justify-center pt-6 animate-fade-in">
+            {isIntervention && interventionStep === 1 && isTyping1Complete && <div className="flex justify-center items-center gap-3 pt-6 animate-fade-in">
                 <Button onClick={() => setInterventionStep(2)} className="px-8 py-3">
                   Devam Et
+                </Button>
+                <Button
+                  variant="ghost"
+                  onClick={() => {
+                    if (window.confirm("Testten çıkmak istediğinize emin misiniz? İlerlemeniz kaybolacaktır.")) {
+                      window.location.href = "/";
+                    }
+                  }}
+                  className="px-6 py-3 text-muted-foreground hover:text-foreground opacity-60 hover:opacity-100"
+                >
+                  Testten Çık
                 </Button>
               </div>}
 
