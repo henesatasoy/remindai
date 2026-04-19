@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import { Sparkles, MessageSquare, Plus, ChevronLeft, ChevronRight, ChevronDown, Paperclip, Mic, ArrowUp } from "lucide-react";
 import PsyCogSidebar from "@/components/PsyCogSidebar";
 import MainPanel from "@/components/MainPanel";
-import { generateSessionId, saveExperimentResult } from "@/lib/experimentService";
+import { generateSessionId, saveExperimentResult, logSidebarInteraction } from "@/lib/experimentService";
 import { ParticipantAssignment } from "@/lib/assignmentService";
 import { useTabFocusTracker } from "@/hooks/useTabFocusTracker";
 const fakeChatHistory = ["Plot-test 3", "ReMind AI'ın veri analiz süreci", "Test veri analiz sonuçları", "MaRs-IB kısa form testi", "Plot-test 2", "Plot-test 1"];
@@ -87,7 +87,9 @@ const Index = () => {
 
           {/* New Chat Button */}
           <div className="p-3 border-b border-sidebar-border">
-            <button className={`
+            <button
+              onClick={() => logSidebarInteraction(sessionId, "home", "new_chat")}
+              className={`
                 w-full flex items-center gap-3 p-3 rounded-lg
                 bg-primary/10 hover:bg-primary/20 transition-colors
                 text-foreground
@@ -103,7 +105,10 @@ const Index = () => {
             <div className={`mb-2 ${isHomeSidebarCollapsed ? "hidden" : ""}`}>
               <span className="text-xs text-muted-foreground px-3">Son 7 gün</span>
             </div>
-            {fakeChatHistory.map((chat, index) => <div key={index} className={`
+            {fakeChatHistory.map((chat, index) => <div
+                key={index}
+                onClick={() => logSidebarInteraction(sessionId, "home", `chat_history:${chat}`)}
+                className={`
                   flex items-start gap-3 p-3 rounded-lg
                   hover:bg-sidebar-accent transition-colors cursor-pointer
                   ${isHomeSidebarCollapsed ? "justify-center" : ""}
