@@ -69,32 +69,30 @@ const useImagePreloader = (questions: Question[], currentIndex: number) => {
   return { allCurrentLoaded };
 };
 
-// Optimized image component with fixed dimensions to prevent layout shift
-const OptimizedImage = ({ 
-  src, 
-  alt, 
+// Optimized image component with fixed dimensions to prevent layout shift.
+// Since images are pre-decoded by the preloader, no fade-in is needed — they paint instantly.
+const OptimizedImage = ({
+  src,
+  alt,
   className,
-  aspectRatio = "1/1"
-}: { 
-  src: string; 
-  alt: string; 
+  aspectRatio = "1/1",
+}: {
+  src: string;
+  alt: string;
   className?: string;
   aspectRatio?: string;
 }) => {
-  const [imageLoaded, setImageLoaded] = useState(false);
-  
   return (
-    <div 
+    <div
       className={`relative bg-muted ${className || ''}`}
       style={{ aspectRatio }}
     >
-      <img 
-        src={src} 
-        alt={alt} 
-        className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-150 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+      <img
+        src={src}
+        alt={alt}
+        className="absolute inset-0 w-full h-full object-contain"
         loading="eager"
         decoding="sync"
-        onLoad={() => setImageLoaded(true)}
       />
     </div>
   );
