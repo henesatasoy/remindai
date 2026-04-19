@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { RefreshCw, Filter, Database, Download, ChevronDown, ChevronRight, CalendarIcon, X, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import { tr } from "date-fns/locale";
-import { fetchSessionSummaries, fetchSessionDetails, fetchAllResults, deleteSession } from "@/lib/experimentService";
+import { fetchSessionSummaries, fetchSessionDetails, fetchAllResults, deleteSession, fetchSessionSidebarInteractions } from "@/lib/experimentService";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import {
@@ -695,7 +695,9 @@ const AdminPanel = () => {
                         </TableCell>
                         <TableCell className="text-center">
                           {session.sidebar_click_count > 0 ? (
-                            <span className="text-destructive font-semibold text-sm">Dokundu</span>
+                            <span className="text-destructive font-semibold text-sm">
+                              {session.sidebar_click_count}x
+                            </span>
                           ) : (
                             <span className="text-green-500">✓</span>
                           )}
