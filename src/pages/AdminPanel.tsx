@@ -679,9 +679,9 @@ const AdminPanel = () => {
                           {session.attention_check_click === null ? (
                             <span className="text-muted-foreground">-</span>
                           ) : session.attention_check_click ? (
-                            <span className="text-green-500">✓</span>
+                            <span className="text-green-600 font-medium text-sm">Tıkladı</span>
                           ) : (
-                            <span className="text-destructive">✗</span>
+                            <span className="text-destructive font-medium text-sm">Tıklamadı</span>
                           )}
                         </TableCell>
                         <TableCell className="text-center">
@@ -700,11 +700,9 @@ const AdminPanel = () => {
                         </TableCell>
                         <TableCell className="text-center">
                           {session.sidebar_click_count > 0 ? (
-                            <span className="text-destructive font-semibold text-sm">
-                              {session.sidebar_click_count}x
-                            </span>
+                            <span className="text-destructive font-medium text-sm">Dokundu</span>
                           ) : (
-                            <span className="text-green-500">✓</span>
+                            <span className="text-green-600 font-medium text-sm">Dokunmadı</span>
                           )}
                         </TableCell>
                         <TableCell className="text-sm text-muted-foreground">
