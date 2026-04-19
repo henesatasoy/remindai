@@ -4,7 +4,7 @@ import { Question, Answer, PRACTICE_QUESTIONS } from "@/data/questions";
 import { saveExperimentResult } from "@/lib/experimentService";
 import { isImageWarm, warmQuestion, warmQuestionSet } from "@/lib/imageWarmup";
 
-type TestPhase = "fixation" | "blank" | "question" | "complete";
+type TestPhase = "prep" | "fixation" | "blank" | "question" | "complete";
 
 interface TestEngineProps {
   questions?: Question[];
@@ -82,7 +82,7 @@ const TestEngine = ({
   phase
 }: TestEngineProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [testPhase, setTestPhase] = useState<TestPhase>("fixation");
+  const [testPhase, setTestPhase] = useState<TestPhase>("prep");
   const [timeLeft, setTimeLeft] = useState(30);
   const [showWarning, setShowWarning] = useState(false);
   const [answers, setAnswers] = useState<Answer[]>([]);
@@ -152,6 +152,15 @@ const TestEngine = ({
   // guaranteeing instant paint with zero perceptible delay when the question appears.
   const fixationMinElapsedRef = useRef(false);
   useEffect(() => {
+    if (testPhase === "prep") {
+      // Preparation buffer: blank screen lets layout shifts and slide animations
+      // settle BEFORE the fixation cross appears, ensuring the 500ms fixation
+      // window starts on a visually stable screen.
+      const timer = setTimeout(() => {
+        setTestPhase("fixation");
+      }, 400);
+      return () => clearTimeout(timer);
+    }
     if (testPhase === "fixation") {
       fixationMinElapsedRef.current = false;
       const timer = setTimeout(() => {
@@ -211,6 +220,11 @@ const TestEngine = ({
       onComplete(answers);
     }
   }, [testPhase, answers, onComplete]);
+
+  // Render Preparation Buffer (blank screen to let layout/animations settle)
+  if (testPhase === "prep") {
+    return <div className="h-[70vh] bg-background" />;
+  }
 
   // Render Fixation Cross
   if (testPhase === "fixation") {
