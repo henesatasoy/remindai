@@ -136,20 +136,18 @@ const MainPanel = ({
       <div className="max-w-4xl w-full mx-auto p-8">
         {/* Loading State */}
         {viewState === "loading" && <div className="relative">
-            {/* Top-right action button */}
-            <div className="absolute top-0 right-0 z-10">
-              <button
-                onClick={() => {
-                  if (window.confirm("Testten çıkmak istediğinize emin misiniz?")) {
-                    window.location.href = "/";
-                  }
-                }}
-                aria-label="Testten çık"
-                className="w-9 h-9 rounded-lg flex items-center justify-center bg-muted text-muted-foreground hover:bg-muted/80 transition-colors"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
+            {/* Top-right action button — pinned to viewport corner */}
+            <button
+              onClick={() => {
+                if (window.confirm("Testten çıkmak istediğinize emin misiniz?")) {
+                  window.location.href = "/";
+                }
+              }}
+              aria-label="Testten çık"
+              className="fixed top-4 right-4 z-50 w-9 h-9 rounded-lg flex items-center justify-center bg-muted text-muted-foreground hover:bg-muted/80 transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
             <div className="flex flex-col items-center justify-center h-[80vh] gap-6">
               <div className="relative">
                 <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl animate-pulse-glow" />
