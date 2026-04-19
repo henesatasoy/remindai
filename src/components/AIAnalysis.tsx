@@ -154,6 +154,33 @@ const AIAnalysis = ({
         Testten Çık
       </button>
 
+      {/* Decorative prompt input bar — visual only, non-functional */}
+      <div className="w-full max-w-2xl">
+        <div className="relative rounded-2xl bg-card border border-border">
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 z-10">
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-muted text-sm text-foreground">
+              <span className="font-medium">ReMind-4</span>
+            </div>
+          </div>
+          <input
+            type="text"
+            placeholder="Bir şeyler sorun..."
+            className="w-full pl-32 pr-36 py-4 bg-transparent text-foreground text-base placeholder:text-muted-foreground focus:outline-none rounded-2xl"
+          />
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
+            <button type="button" className="w-9 h-9 rounded-xl flex items-center justify-center bg-muted text-muted-foreground hover:bg-muted/80 transition-colors">
+              <Paperclip className="w-4 h-4" />
+            </button>
+            <button type="button" className="w-9 h-9 rounded-xl flex items-center justify-center bg-muted text-muted-foreground hover:bg-muted/80 transition-colors">
+              <Mic className="w-4 h-4" />
+            </button>
+            <button type="button" className="w-9 h-9 rounded-xl flex items-center justify-center bg-primary text-primary-foreground hover:bg-primary/90 transition-colors">
+              <ArrowUp className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      </div>
+
       {/* Floating particles effect */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         {[...Array(6)].map((_, i) => <div key={i} className="absolute w-1 h-1 bg-primary/30 rounded-full animate-pulse" style={{
