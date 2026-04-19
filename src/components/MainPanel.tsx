@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Loader2, Brain, BookOpen, AlertTriangle, CheckCircle } from "lucide-react";
+import { Loader2, Brain, BookOpen, AlertTriangle, CheckCircle, X } from "lucide-react";
 import TestEngine from "./TestEngine";
 import AIAnalysis from "./AIAnalysis";
 import { Answer, PRACTICE_QUESTIONS, PHASE1_QUESTIONS, PHASE2_QUESTIONS } from "@/data/questions";
