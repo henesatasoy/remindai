@@ -420,7 +420,7 @@ export const PHASE2_QUESTIONS: Question[] = [
     id: "phase2-5",
     gridImage: p2q5Grid,
     options: [p2q5Opt1, p2q5Opt2, p2q5Opt3, p2q5Opt4],
-    correctOptionIndex: 0,
+    correctOptionIndex: 2,
   },
   {
     id: "phase2-6",
