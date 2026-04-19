@@ -35,9 +35,9 @@ const Index = () => {
   const trackedPhases: ViewState[] = ["practice", "phase1", "phase2", "ai-analysis", "intervention"];
   useTabFocusTracker(sessionId, viewState, trackedPhases.includes(viewState));
 
-  // When intervention state is active, expand sidebar
+  // Auto-expand sidebar on intervention and AI analysis screens
   useEffect(() => {
-    if (viewState === "intervention") {
+    if (viewState === "intervention" || viewState === "ai-analysis") {
       setIsSidebarCollapsed(false);
     }
   }, [viewState]);
