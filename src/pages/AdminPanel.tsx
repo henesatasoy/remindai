@@ -811,6 +811,71 @@ const AdminPanel = () => {
                                   <RefreshCw className="w-4 h-4 animate-spin text-muted-foreground" />
                                 </div>
                               )}
+
+                              {/* Sidebar / Prompt Interactions */}
+                              <h4 className="text-sm font-medium text-foreground mt-6 mb-3">
+                                Sidebar &amp; Prompt Etkileşimleri
+                              </h4>
+                              {sessionSidebar[session.session_id] ? (
+                                sessionSidebar[session.session_id].length === 0 ? (
+                                  <p className="text-sm text-muted-foreground">
+                                    Bu oturumda sahte sidebar veya prompt etkileşimi kaydedilmemiş.
+                                  </p>
+                                ) : (
+                                  <div className="rounded-lg border border-border overflow-hidden">
+                                    <Table>
+                                      <TableHeader>
+                                        <TableRow className="bg-muted/50">
+                                          <TableHead className="py-2">Faz</TableHead>
+                                          <TableHead className="py-2">Etkileşim</TableHead>
+                                          <TableHead className="py-2">Detay</TableHead>
+                                          <TableHead className="py-2">Zaman</TableHead>
+                                        </TableRow>
+                                      </TableHeader>
+                                      <TableBody>
+                                        {sessionSidebar[session.session_id].map((ev) => {
+                                          const [kind, ...rest] = ev.element.split(":");
+                                          const detailText = rest.join(":");
+                                          const labelMap: Record<string, string> = {
+                                            new_chat: "Yeni Sohbet",
+                                            chat_history: "Sohbet Geçmişi",
+                                            prompt_attach_click: "Attach Butonu (home)",
+                                            prompt_mic_click: "Mic Butonu (home)",
+                                            sidebar_prompt_input: "Sidebar Prompt'a Yazıldı",
+                                            sidebar_prompt_attach_click: "Sidebar Attach Butonu",
+                                            sidebar_prompt_mic_click: "Sidebar Mic Butonu",
+                                            ai_terminal_prompt_input: "Terminal Prompt'a Yazıldı",
+                                            ai_terminal_prompt_attach_click: "Terminal Attach Butonu",
+                                            ai_terminal_prompt_mic_click: "Terminal Mic Butonu",
+                                          };
+                                          return (
+                                            <TableRow key={ev.id} className="text-sm">
+                                              <TableCell className="py-2">
+                                                <span className="px-2 py-0.5 rounded text-xs font-medium bg-muted text-muted-foreground">
+                                                  {ev.phase}
+                                                </span>
+                                              </TableCell>
+                                              <TableCell className="py-2">
+                                                {labelMap[kind] ?? kind}
+                                              </TableCell>
+                                              <TableCell className="py-2 text-muted-foreground max-w-md truncate">
+                                                {detailText || "-"}
+                                              </TableCell>
+                                              <TableCell className="py-2 text-xs text-muted-foreground">
+                                                {formatDate(ev.created_at)}
+                                              </TableCell>
+                                            </TableRow>
+                                          );
+                                        })}
+                                      </TableBody>
+                                    </Table>
+                                  </div>
+                                )
+                              ) : (
+                                <div className="flex items-center justify-center py-4">
+                                  <RefreshCw className="w-4 h-4 animate-spin text-muted-foreground" />
+                                </div>
+                              )}
                             </div>
                           </TableCell>
                         </TableRow>
