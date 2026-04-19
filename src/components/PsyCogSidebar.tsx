@@ -335,18 +335,17 @@ const PsyCogSidebar = ({
               </div>
               <input
                 type="text"
-                disabled
                 placeholder="Bir şeyler sorun..."
-                className="w-full pl-32 pr-36 py-4 bg-transparent text-foreground text-base placeholder:text-muted-foreground focus:outline-none rounded-2xl cursor-not-allowed"
+                className="w-full pl-32 pr-36 py-4 bg-transparent text-foreground text-base placeholder:text-muted-foreground focus:outline-none rounded-2xl"
               />
               <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
-                <button disabled className="w-9 h-9 rounded-xl flex items-center justify-center bg-muted text-muted-foreground cursor-not-allowed">
+                <button type="button" className="w-9 h-9 rounded-xl flex items-center justify-center bg-muted text-muted-foreground hover:bg-muted/80 transition-colors">
                   <Paperclip className="w-4 h-4" />
                 </button>
-                <button disabled className="w-9 h-9 rounded-xl flex items-center justify-center bg-muted text-muted-foreground cursor-not-allowed">
+                <button type="button" className="w-9 h-9 rounded-xl flex items-center justify-center bg-muted text-muted-foreground hover:bg-muted/80 transition-colors">
                   <Mic className="w-4 h-4" />
                 </button>
-                <button disabled className="w-9 h-9 rounded-xl flex items-center justify-center bg-primary text-primary-foreground opacity-60 cursor-not-allowed">
+                <button type="button" className="w-9 h-9 rounded-xl flex items-center justify-center bg-primary text-primary-foreground hover:bg-primary/90 transition-colors">
                   <ArrowUp className="w-4 h-4" />
                 </button>
               </div>
