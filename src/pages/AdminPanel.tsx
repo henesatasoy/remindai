@@ -84,6 +84,7 @@ interface SessionDetail {
   is_correct: boolean;
   reaction_time_ms: number;
   timed_out: boolean;
+  attention_check_click: boolean | null;
   created_at: string;
 }
 
