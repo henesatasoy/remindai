@@ -279,8 +279,8 @@ export const PRACTICE_QUESTIONS: Question[] = [
   {
     id: "practice-5",
     gridImage: q5Grid,
-    options: [q5Opt1, q5Opt2, q5Opt3, q5Opt4],
-    correctOptionIndex: 0,
+    options: [q5Opt3, q5Opt2, q5Opt1, q5Opt4],
+    correctOptionIndex: 2,
   },
   {
     id: "practice-6",
