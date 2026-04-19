@@ -24,13 +24,18 @@ const INSTRUCTION_TEXT = `Bu bölümde, problem çözme ve soyut muhakeme yetene
 const scheduleIdleWarmup = (callback: () => void) => {
   if (typeof window === "undefined") return () => undefined;
 
-  if ("requestIdleCallback" in window) {
-    const idleId = window.requestIdleCallback(() => callback(), { timeout: 1500 });
-    return () => window.cancelIdleCallback(idleId);
+  const browserWindow = window as Window & typeof globalThis & {
+    requestIdleCallback?: (callback: IdleRequestCallback, options?: IdleRequestOptions) => number;
+    cancelIdleCallback?: (handle: number) => void;
+  };
+
+  if (browserWindow.requestIdleCallback && browserWindow.cancelIdleCallback) {
+    const idleId = browserWindow.requestIdleCallback(() => callback(), { timeout: 1500 });
+    return () => browserWindow.cancelIdleCallback?.(idleId);
   }
 
-  const timeoutId = window.setTimeout(callback, 250);
-  return () => window.clearTimeout(timeoutId);
+  const timeoutId = setTimeout(callback, 250);
+  return () => clearTimeout(timeoutId);
 };
 
 const MainPanel = ({
