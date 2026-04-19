@@ -657,6 +657,15 @@ const AdminPanel = () => {
                           {formatReactionTime(session.avg_reaction_time)}
                         </TableCell>
                         <TableCell className="text-center">
+                          {session.fast_response_count > 0 ? (
+                            <span className="font-semibold text-amber-600">
+                              {session.fast_response_count}x
+                            </span>
+                          ) : (
+                            <span className="text-green-500">✓</span>
+                          )}
+                        </TableCell>
+                        <TableCell className="text-center">
                           {session.attention_check_click === null ? (
                             <span className="text-muted-foreground">-</span>
                           ) : session.attention_check_click ? (
