@@ -100,6 +100,7 @@ const AdminPanel = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [expandedSessions, setExpandedSessions] = useState<Set<string>>(new Set());
   const [sessionDetails, setSessionDetails] = useState<Record<string, SessionDetail[]>>({});
+  const [sessionSidebar, setSessionSidebar] = useState<Record<string, Array<{ id: string; phase: string; element: string; created_at: string }>>>({});
   const [isExporting, setIsExporting] = useState(false);
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
@@ -215,6 +216,10 @@ const AdminPanel = () => {
       if (!sessionDetails[sessionId]) {
         const details = await fetchSessionDetails(sessionId);
         setSessionDetails((prev) => ({ ...prev, [sessionId]: details }));
+      }
+      if (!sessionSidebar[sessionId]) {
+        const sb = await fetchSessionSidebarInteractions(sessionId);
+        setSessionSidebar((prev) => ({ ...prev, [sessionId]: sb }));
       }
     }
     setExpandedSessions(newExpanded);
