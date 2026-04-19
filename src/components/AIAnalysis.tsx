@@ -81,7 +81,7 @@ const AIAnalysis = ({
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
-  return <div className="relative min-h-screen flex flex-col items-center gap-8 animate-fade-in pt-[10vh] pb-32">
+  return <div className="relative min-h-[80vh] flex flex-col items-center justify-center gap-8 animate-fade-in">
       {/* Hidden skip button for dev testing */}
       <button onClick={onComplete} className="absolute top-0 right-0 w-12 h-12 opacity-0 hover:opacity-10 transition-opacity" aria-label="Skip (Dev Only)" />
 
