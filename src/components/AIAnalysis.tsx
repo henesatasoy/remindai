@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Brain, Cpu, Activity, X } from "lucide-react";
+import { Brain, Cpu, Activity } from "lucide-react";
 interface AIAnalysisProps {
   onComplete: () => void;
 }
@@ -80,18 +80,7 @@ const AIAnalysis = ({
       {/* Hidden skip button for dev testing */}
       <button onClick={onComplete} className="absolute top-0 right-0 w-12 h-12 opacity-0 hover:opacity-10 transition-opacity" aria-label="Skip (Dev Only)" />
 
-      {/* Exit Button - corner, low visual weight */}
-      <button
-        onClick={() => {
-          if (window.confirm("Testten çıkmak istediğinize emin misiniz? İlerlemeniz kaybolacaktır.")) {
-            window.location.href = "/";
-          }
-        }}
-        aria-label="Testten çık"
-        className="fixed top-2 right-2 w-7 h-7 rounded-md flex items-center justify-center text-muted-foreground/40 hover:text-foreground hover:bg-muted transition-colors z-50"
-      >
-        <X className="w-3.5 h-3.5" />
-      </button>
+      {/* (X exit button removed — replaced by a labeled button below the terminal) */}
 
       {/* Header */}
       <div className="flex items-center gap-4">
@@ -152,6 +141,18 @@ const AIAnalysis = ({
             </div>}
         </div>
       </div>
+
+      {/* Exit Button - placed below the terminal */}
+      <button
+        onClick={() => {
+          if (window.confirm("Testten çıkmak istediğinize emin misiniz? İlerlemeniz kaybolacaktır.")) {
+            window.location.href = "/";
+          }
+        }}
+        className="px-6 py-2 text-sm rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted opacity-60 hover:opacity-100 transition-all"
+      >
+        Testten Çık
+      </button>
 
       {/* Floating particles effect */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
