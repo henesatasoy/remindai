@@ -235,7 +235,7 @@ const AdminPanel = () => {
     
     try {
       // Fetch all detailed results with date filter
-      const allResults = await fetchAllResults(startDate, endDate);
+      const allResults = await fetchAllResults(startDate, endDate, phaseFilter);
       
       // Fetch participant assignments to enrich the export
       const { data: assignments } = await supabase
