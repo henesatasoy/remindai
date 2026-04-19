@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import { Sparkles, MessageSquare, Plus, ChevronLeft, ChevronRight, ChevronDown, Paperclip, Mic, ArrowUp } from "lucide-react";
 import PsyCogSidebar from "@/components/PsyCogSidebar";
 import MainPanel from "@/components/MainPanel";
-import { generateSessionId, saveExperimentResult } from "@/lib/experimentService";
+import { generateSessionId, saveExperimentResult, logSidebarInteraction } from "@/lib/experimentService";
 import { ParticipantAssignment } from "@/lib/assignmentService";
 import { useTabFocusTracker } from "@/hooks/useTabFocusTracker";
 const fakeChatHistory = ["Plot-test 3", "ReMind AI'ın veri analiz süreci", "Test veri analiz sonuçları", "MaRs-IB kısa form testi", "Plot-test 2", "Plot-test 1"];
@@ -87,7 +87,9 @@ const Index = () => {
 
           {/* New Chat Button */}
           <div className="p-3 border-b border-sidebar-border">
-            <button className={`
+            <button
+              onClick={() => logSidebarInteraction(sessionId, "home", "new_chat")}
+              className={`
                 w-full flex items-center gap-3 p-3 rounded-lg
                 bg-primary/10 hover:bg-primary/20 transition-colors
                 text-foreground
@@ -103,7 +105,10 @@ const Index = () => {
             <div className={`mb-2 ${isHomeSidebarCollapsed ? "hidden" : ""}`}>
               <span className="text-xs text-muted-foreground px-3">Son 7 gün</span>
             </div>
-            {fakeChatHistory.map((chat, index) => <div key={index} className={`
+            {fakeChatHistory.map((chat, index) => <div
+                key={index}
+                onClick={() => logSidebarInteraction(sessionId, "home", `chat_history:${chat}`)}
+                className={`
                   flex items-start gap-3 p-3 rounded-lg
                   hover:bg-sidebar-accent transition-colors cursor-pointer
                   ${isHomeSidebarCollapsed ? "justify-center" : ""}
@@ -210,7 +215,7 @@ const Index = () => {
   // During intervention, instructions, or practice results, sidebar takes full screen
   const isFullscreenChat = viewState === "intervention" || viewState === "instructions" || viewState === "practice-passed" || viewState === "practice-failed";
   return <div className="min-h-screen bg-background flex w-full">
-      <PsyCogSidebar isCollapsed={isSidebarCollapsed} onToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)} promptHistory={promptHistory} viewState={viewState} isAttentionCheckClicked={isAttentionCheckClicked} onAttentionCheckClick={() => setIsAttentionCheckClicked(!isAttentionCheckClicked)} onStartPhase2={handleStartPhase2} onStartPractice={handleStartPractice} onStartPhase1={handleStartPhase1} practiceScore={practiceScore} userFirstMessage={promptHistory[promptHistory.length - 1] || ""} assignment={assignment} />
+      <PsyCogSidebar isCollapsed={isSidebarCollapsed} onToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)} promptHistory={promptHistory} viewState={viewState} isAttentionCheckClicked={isAttentionCheckClicked} onAttentionCheckClick={() => setIsAttentionCheckClicked(!isAttentionCheckClicked)} onStartPhase2={handleStartPhase2} onStartPractice={handleStartPractice} onStartPhase1={handleStartPhase1} practiceScore={practiceScore} userFirstMessage={promptHistory[promptHistory.length - 1] || ""} assignment={assignment} sessionId={sessionId} />
       {!isFullscreenChat && <MainPanel isLoading={isLoading} viewState={viewState} onViewStateChange={setViewState} isAttentionCheckClicked={isAttentionCheckClicked} sessionId={sessionId} onPracticeScoreChange={setPracticeScore} onAssignmentChange={setAssignment} />}
     </div>;
 };

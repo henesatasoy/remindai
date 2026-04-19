@@ -46,6 +46,26 @@ export const saveExperimentResult = async (result: ExperimentResult): Promise<vo
 };
 
 /**
+ * Logs a click on a fake sidebar element (Yeni Sohbet / chat history item)
+ */
+export const logSidebarInteraction = async (
+  sessionId: string,
+  phase: string,
+  element: string
+): Promise<void> => {
+  try {
+    const { error } = await (supabase.from as any)('sidebar_interactions').insert({
+      session_id: sessionId,
+      phase,
+      element,
+    });
+    if (error) console.error('Failed to log sidebar interaction:', error);
+  } catch (err) {
+    console.error('Error logging sidebar interaction:', err);
+  }
+};
+
+/**
  * Fetches all experiment results grouped by session
  */
 export const fetchAllResults = async (startDate?: Date, endDate?: Date, phaseFilter?: string) => {
@@ -157,15 +177,19 @@ export const fetchSessionSummaries = async (phaseFilter?: string, startDate?: Da
   const sessionIds = Array.from(sessionMap.keys());
   const assignmentMap = new Map<string, { assigned_group: string; participant_code: string }>();
   const focusMap = new Map<string, { blur_count: number; total_blur_ms: number }>();
+  const sidebarMap = new Map<string, number>();
 
   if (sessionIds.length > 0) {
-    const [assignmentsRes, focusRes] = await Promise.all([
+    const [assignmentsRes, focusRes, sidebarRes] = await Promise.all([
       supabase
         .from('participant_assignments')
         .select('session_id, assigned_group, participant_code')
         .in('session_id', sessionIds),
       (supabase.from as any)('session_focus_events')
         .select('session_id, event_type, duration_ms')
+        .in('session_id', sessionIds),
+      (supabase.from as any)('sidebar_interactions')
+        .select('session_id')
         .in('session_id', sessionIds),
     ]);
 
@@ -193,6 +217,14 @@ export const fetchSessionSummaries = async (phaseFilter?: string, startDate?: Da
         focusMap.set(f.session_id, existing);
       });
     }
+
+    if (sidebarRes.error) {
+      console.error('Failed to fetch sidebar interactions:', sidebarRes.error);
+    } else {
+      (sidebarRes.data || []).forEach((s: any) => {
+        sidebarMap.set(s.session_id, (sidebarMap.get(s.session_id) ?? 0) + 1);
+      });
+    }
   }
 
   return Array.from(sessionMap.values()).map((session) => {
@@ -211,6 +243,7 @@ export const fetchSessionSummaries = async (phaseFilter?: string, startDate?: Da
       participant_code: assignment?.participant_code ?? null,
       blur_count: focus?.blur_count ?? 0,
       total_blur_ms: focus?.total_blur_ms ?? 0,
+      sidebar_click_count: sidebarMap.get(session.session_id) ?? 0,
     };
   });
 };
@@ -256,17 +289,19 @@ export const fetchSessionDetails = async (sessionId: string) => {
  */
 export const deleteSession = async (sessionId: string): Promise<boolean> => {
   try {
-    const [resultsRes, focusRes, assignmentRes] = await Promise.all([
+    const [resultsRes, focusRes, assignmentRes, sidebarRes] = await Promise.all([
       supabase.from('experiment_results').delete().eq('session_id', sessionId),
       (supabase.from as any)('session_focus_events').delete().eq('session_id', sessionId),
       supabase.from('participant_assignments').delete().eq('session_id', sessionId),
+      (supabase.from as any)('sidebar_interactions').delete().eq('session_id', sessionId),
     ]);
 
-    if (resultsRes.error || focusRes.error || assignmentRes.error) {
+    if (resultsRes.error || focusRes.error || assignmentRes.error || sidebarRes.error) {
       console.error('Failed to delete session:', {
         results: resultsRes.error,
         focus: focusRes.error,
         assignment: assignmentRes.error,
+        sidebar: sidebarRes.error,
       });
       return false;
     }

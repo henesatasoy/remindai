@@ -104,6 +104,30 @@ export type Database = {
         }
         Relationships: []
       }
+      sidebar_interactions: {
+        Row: {
+          created_at: string
+          element: string
+          id: string
+          phase: string
+          session_id: string
+        }
+        Insert: {
+          created_at?: string
+          element: string
+          id?: string
+          phase: string
+          session_id: string
+        }
+        Update: {
+          created_at?: string
+          element?: string
+          id?: string
+          phase?: string
+          session_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
