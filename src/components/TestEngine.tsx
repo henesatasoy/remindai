@@ -263,7 +263,7 @@ const TestEngine = ({
         )}
 
         {/* Grid Image */}
-        <div className="border-2 border-foreground/40 overflow-hidden bg-card w-full max-w-md p-2 shadow-sm">
+        <div className="border-4 border-foreground overflow-hidden bg-card w-full max-w-md p-4 shadow-md">
           <OptimizedImage 
             src={currentQuestion.gridImage} 
             alt="Soru görseli" 
