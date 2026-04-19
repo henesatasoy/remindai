@@ -53,6 +53,8 @@ export const logSidebarInteraction = async (
   phase: string,
   element: string
 ): Promise<void> => {
+  // Only track interactions after the test has started — ignore homepage
+  if (phase === 'home') return;
   try {
     const { error } = await (supabase.from as any)('sidebar_interactions').insert({
       session_id: sessionId,
