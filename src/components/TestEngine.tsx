@@ -253,7 +253,7 @@ const TestEngine = ({
         </span>
       </div>
 
-      {/* Exit Button */}
+      {/* Exit Button - tucked into the viewport corner, low visual weight */}
       <button
         onClick={() => {
           if (window.confirm("Testten çıkmak istediğinize emin misiniz? İlerlemeniz kaybolacaktır.")) {
@@ -261,9 +261,9 @@ const TestEngine = ({
           }
         }}
         aria-label="Testten çık"
-        className="absolute top-0 right-0 w-9 h-9 rounded-lg flex items-center justify-center bg-muted text-muted-foreground hover:bg-muted/80 transition-colors"
+        className="fixed top-2 right-2 w-7 h-7 rounded-md flex items-center justify-center text-muted-foreground/40 hover:text-foreground hover:bg-muted transition-colors z-50"
       >
-        <X className="w-4 h-4" />
+        <X className="w-3.5 h-3.5" />
       </button>
 
       {/* Question Content */}
