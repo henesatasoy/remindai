@@ -16,8 +16,8 @@ export default defineConfig(({ mode }) => ({
     },
   },
   build: {
-    // Inline assets up to 16KB as base64 to remove extra HTTP requests for small option images
-    assetsInlineLimit: 16 * 1024,
+    // Inline ALL question images (≤24KB) as base64 — eliminates HTTP requests entirely for question assets
+    assetsInlineLimit: 24 * 1024,
     rollupOptions: {
       output: {
         // Group all question images into a single asset folder with hashed names for long-term caching
