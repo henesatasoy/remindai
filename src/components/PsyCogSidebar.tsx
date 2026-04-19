@@ -135,7 +135,10 @@ const PsyCogSidebar = ({
       {isFullscreenChat && <div className="w-64 h-full bg-sidebar border-r border-sidebar-border flex flex-col shrink-0">
           {/* New Chat Button */}
           <div className="p-3 border-b border-sidebar-border">
-            <button className="w-full flex items-center gap-3 p-3 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors text-foreground cursor-default">
+            <button
+              onClick={() => sessionId && logSidebarInteraction(sessionId, viewState, "new_chat")}
+              className="w-full flex items-center gap-3 p-3 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors text-foreground"
+            >
               <Plus className="w-5 h-5 text-primary shrink-0" />
               <span className="text-sm font-medium">Yeni Sohbet</span>
             </button>
@@ -146,11 +149,18 @@ const PsyCogSidebar = ({
               <span className="text-xs text-muted-foreground px-3">Son 7 gün</span>
             </div>
             {/* Current active chat (user's first message) */}
-            {userFirstMessage && <div className="flex items-start gap-3 p-3 rounded-lg bg-sidebar-accent cursor-default">
+            {userFirstMessage && <div
+                onClick={() => sessionId && logSidebarInteraction(sessionId, viewState, `chat_history:active`)}
+                className="flex items-start gap-3 p-3 rounded-lg bg-sidebar-accent cursor-pointer"
+              >
                 <MessageSquare className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                 <span className="text-sm text-foreground line-clamp-1 font-medium">{userFirstMessage}</span>
               </div>}
-            {fakeChatHistory.map((chat, index) => <div key={index} className="flex items-start gap-3 p-3 rounded-lg hover:bg-sidebar-accent transition-colors cursor-default">
+            {fakeChatHistory.map((chat, index) => <div
+                key={index}
+                onClick={() => sessionId && logSidebarInteraction(sessionId, viewState, `chat_history:${chat}`)}
+                className="flex items-start gap-3 p-3 rounded-lg hover:bg-sidebar-accent transition-colors cursor-pointer"
+              >
                 <MessageSquare className="w-4 h-4 text-muted-foreground shrink-0 mt-0.5" />
                 <span className="text-sm text-foreground line-clamp-1">{chat}</span>
               </div>)}
