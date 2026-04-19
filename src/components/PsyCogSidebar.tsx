@@ -274,9 +274,20 @@ const PsyCogSidebar = ({
               </div>}
 
             {/* Action Button - hide for practice-failed, and for intervention until step 2 */}
-            {!isPracticeFailed && !(isIntervention && interventionStep === 1) && <div className="flex justify-center pt-6 animate-fade-in">
+            {!isPracticeFailed && !(isIntervention && interventionStep === 1) && <div className="flex justify-center items-center gap-3 pt-6 animate-fade-in">
                 <Button onClick={isIntervention ? onStartPhase2 : isPracticePassed ? onStartPhase1 : onStartPractice} className="px-8 py-3">
                   {isIntervention ? "Başlat" : isPracticePassed ? "Başlat" : "Devam Et"}
+                </Button>
+                <Button
+                  variant="ghost"
+                  onClick={() => {
+                    if (window.confirm("Testten çıkmak istediğinize emin misiniz? İlerlemeniz kaybolacaktır.")) {
+                      window.location.href = "/";
+                    }
+                  }}
+                  className="px-6 py-3 text-muted-foreground hover:text-foreground opacity-60 hover:opacity-100"
+                >
+                  Testten Çık
                 </Button>
               </div>}
           </div> : (/* Chat history with instructions and intervention */
