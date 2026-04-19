@@ -291,7 +291,8 @@ const AdminPanel = () => {
       const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
-      link.download = `experiment_results_detailed_${new Date().toISOString().split("T")[0]}.csv`;
+      const filterPart = phaseFilter === "all" ? "all" : phaseFilter;
+      link.download = `experiment_results_${filterPart}_${new Date().toISOString().split("T")[0]}.csv`;
       link.click();
       URL.revokeObjectURL(link.href);
     } catch (error) {
