@@ -12,82 +12,87 @@ interface TestEngineProps {
   phase: 'practice' | 'phase1' | 'phase2';
 }
 
-// Image preloader hook - aggressively preloads ALL question images for the phase upfront.
-// Current question images are prioritized (eager); the rest load in parallel in the background.
+// Image preloader hook - loads + DECODES all phase images upfront so they're paint-ready.
+// img.decode() resolves only after pixels are fully decoded into memory, eliminating the
+// hidden render-time decode delay that plain onload preloading still suffers from.
 const useImagePreloader = (questions: Question[], currentIndex: number) => {
-  const loadedImagesRef = useRef<Set<string>>(new Set());
+  const decodedImagesRef = useRef<Set<string>>(new Set());
   const [allCurrentLoaded, setAllCurrentLoaded] = useState(false);
 
-  // Preload ALL phase images once when the questions array changes.
+  const preloadAndDecode = (src: string): Promise<void> => {
+    if (decodedImagesRef.current.has(src)) return Promise.resolve();
+    const img = new Image();
+    img.decoding = "async";
+    img.src = src;
+    return img
+      .decode()
+      .then(() => {
+        decodedImagesRef.current.add(src);
+      })
+      .catch(() => {
+        // decode() can reject on some browsers/SVGs; fall back to onload semantics
+        decodedImagesRef.current.add(src);
+      });
+  };
+
+  // Decode ALL phase images once when the questions array changes (background, parallel).
   useEffect(() => {
     questions.forEach((q) => {
       [q.gridImage, ...q.options].forEach((src) => {
-        if (!loadedImagesRef.current.has(src)) {
-          const img = new Image();
-          img.decoding = "async";
-          img.src = src;
-          img.onload = () => loadedImagesRef.current.add(src);
-        }
+        void preloadAndDecode(src);
       });
     });
   }, [questions]);
 
-  // Track readiness of the CURRENT question's images so the UI can render without flicker.
+  // Ensure CURRENT question's images are fully decoded before signalling readiness.
   useEffect(() => {
     setAllCurrentLoaded(false);
     const currentQ = questions[currentIndex];
     if (!currentQ) return;
 
     const currentImages = [currentQ.gridImage, ...currentQ.options];
-    const pending = currentImages.filter((src) => !loadedImagesRef.current.has(src));
 
-    if (pending.length === 0) {
+    if (currentImages.every((src) => decodedImagesRef.current.has(src))) {
       setAllCurrentLoaded(true);
       return;
     }
 
-    let loadedCount = 0;
-    pending.forEach((src) => {
-      const img = new Image();
-      img.decoding = "async";
-      img.src = src;
-      img.onload = () => {
-        loadedImagesRef.current.add(src);
-        loadedCount++;
-        if (loadedCount >= pending.length) setAllCurrentLoaded(true);
-      };
+    let cancelled = false;
+    Promise.all(currentImages.map(preloadAndDecode)).then(() => {
+      if (!cancelled) setAllCurrentLoaded(true);
     });
+    return () => {
+      cancelled = true;
+    };
   }, [questions, currentIndex]);
 
-  return { loadedImagesRef, allCurrentLoaded };
+  return { allCurrentLoaded };
 };
 
-// Optimized image component with fixed dimensions to prevent layout shift
-const OptimizedImage = ({ 
-  src, 
-  alt, 
+// Optimized image component with fixed dimensions to prevent layout shift.
+// Since images are pre-decoded by the preloader, no fade-in is needed — they paint instantly.
+const OptimizedImage = ({
+  src,
+  alt,
   className,
-  aspectRatio = "1/1"
-}: { 
-  src: string; 
-  alt: string; 
+  aspectRatio = "1/1",
+}: {
+  src: string;
+  alt: string;
   className?: string;
   aspectRatio?: string;
 }) => {
-  const [imageLoaded, setImageLoaded] = useState(false);
-  
   return (
-    <div 
+    <div
       className={`relative bg-muted ${className || ''}`}
       style={{ aspectRatio }}
     >
-      <img 
-        src={src} 
-        alt={alt} 
-        className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-150 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+      <img
+        src={src}
+        alt={alt}
+        className="absolute inset-0 w-full h-full object-contain"
         loading="eager"
         decoding="sync"
-        onLoad={() => setImageLoaded(true)}
       />
     </div>
   );
@@ -165,10 +170,17 @@ const TestEngine = ({
     }
   }, [currentIndex, currentQuestion, questions.length, sessionId, phase, answers, correctCount]);
 
-  // Psychometric timing sequence: fixation (500ms) -> blank (100ms) -> question
+  // Psychometric timing sequence: fixation (≥500ms) -> blank (100ms) -> question
+  // Fixation ends only after BOTH the 500ms minimum AND images are fully decoded —
+  // guaranteeing instant paint with zero perceptible delay when the question appears.
+  const fixationMinElapsedRef = useRef(false);
   useEffect(() => {
     if (testPhase === "fixation") {
-      const timer = setTimeout(() => setTestPhase("blank"), 500);
+      fixationMinElapsedRef.current = false;
+      const timer = setTimeout(() => {
+        fixationMinElapsedRef.current = true;
+        if (allCurrentLoaded) setTestPhase("blank");
+      }, 500);
       return () => clearTimeout(timer);
     }
     if (testPhase === "blank") {
@@ -178,7 +190,14 @@ const TestEngine = ({
       }, 100);
       return () => clearTimeout(timer);
     }
-  }, [testPhase, currentIndex]);
+  }, [testPhase, currentIndex, allCurrentLoaded]);
+
+  // If images finish decoding AFTER the 500ms minimum has elapsed, advance immediately.
+  useEffect(() => {
+    if (testPhase === "fixation" && allCurrentLoaded && fixationMinElapsedRef.current) {
+      setTestPhase("blank");
+    }
+  }, [testPhase, allCurrentLoaded]);
 
   // Question timer (30 seconds)
   useEffect(() => {
