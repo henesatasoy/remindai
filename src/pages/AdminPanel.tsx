@@ -47,6 +47,7 @@ interface SessionSummary {
   participant_code: string | null;
   blur_count: number;
   total_blur_ms: number;
+  sidebar_click_count: number;
 }
 
 const formatBlurDuration = (ms: number): string => {
@@ -577,6 +578,7 @@ const AdminPanel = () => {
                 <TableHead className="text-center">Hızlı Cevap (&lt;3s)</TableHead>
                 <TableHead className="text-center">Attention Check</TableHead>
                 <TableHead className="text-center">Sekme Çıkışı</TableHead>
+                <TableHead className="text-center">Sidebar</TableHead>
                 <TableHead>Created At</TableHead>
                 <TableHead className="w-16 text-center">Sil</TableHead>
               </TableRow>
@@ -584,13 +586,13 @@ const AdminPanel = () => {
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={11} className="text-center py-8">
+                  <TableCell colSpan={12} className="text-center py-8">
                     <RefreshCw className="w-6 h-6 animate-spin mx-auto text-muted-foreground" />
                   </TableCell>
                 </TableRow>
               ) : filteredSessions.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={11} className="text-center py-8 text-muted-foreground">
+                  <TableCell colSpan={12} className="text-center py-8 text-muted-foreground">
                     No data found
                   </TableCell>
                 </TableRow>
@@ -691,6 +693,13 @@ const AdminPanel = () => {
                             <span className="text-green-500">✓</span>
                           )}
                         </TableCell>
+                        <TableCell className="text-center">
+                          {session.sidebar_click_count > 0 ? (
+                            <span className="text-destructive font-semibold text-sm">Dokundu</span>
+                          ) : (
+                            <span className="text-green-500">✓</span>
+                          )}
+                        </TableCell>
                         <TableCell className="text-sm text-muted-foreground">
                           {formatDate(session.created_at)}
                         </TableCell>
@@ -712,7 +721,7 @@ const AdminPanel = () => {
                       </TableRow>
                       <CollapsibleContent asChild>
                         <TableRow className="bg-muted/30">
-                          <TableCell colSpan={11} className="p-0">
+                          <TableCell colSpan={12} className="p-0">
                             <div className="p-4">
                               <h4 className="text-sm font-medium text-foreground mb-3">
                                 Soru Detayları
