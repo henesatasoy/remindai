@@ -238,7 +238,7 @@ const MainPanel = ({
           </div>}
 
         {/* AI Analysis State */}
-        {viewState === "ai-analysis" && <AIAnalysis onComplete={handleAIAnalysisComplete} />}
+        {viewState === "ai-analysis" && <AIAnalysis onComplete={handleAIAnalysisComplete} sessionId={sessionId} />}
 
         {/* Intervention State - Only show the button, message is in sidebar */}
         {viewState === "intervention" && <div className="flex flex-col items-center justify-center h-[80vh] gap-8 animate-fade-in">

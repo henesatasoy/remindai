@@ -1,7 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { Brain, Cpu, Activity, Paperclip, Mic, ArrowUp } from "lucide-react";
+import { logSidebarInteraction } from "@/lib/experimentService";
+import { usePromptInputLogger } from "@/hooks/usePromptInputLogger";
 interface AIAnalysisProps {
   onComplete: () => void;
+  sessionId?: string;
 }
 const TERMINAL_MESSAGES = [
   "Bağlantı kuruluyor...",
@@ -27,12 +30,14 @@ const MESSAGE_INTERVALS = [
 ];
 
 const AIAnalysis = ({
-  onComplete
+  onComplete,
+  sessionId
 }: AIAnalysisProps) => {
   const [timeLeft, setTimeLeft] = useState(180); // 3 minutes = 180 seconds
   const [terminalLines, setTerminalLines] = useState<string[]>([]);
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
   const terminalRef = useRef<HTMLDivElement>(null);
+  const terminalPromptInput = usePromptInputLogger(sessionId, "ai-analysis", "ai_terminal_prompt_input");
 
   // Timer countdown
   useEffect(() => {
@@ -165,13 +170,23 @@ const AIAnalysis = ({
           <input
             type="text"
             placeholder="Bir şeyler sorun..."
+            value={terminalPromptInput.value}
+            onChange={terminalPromptInput.onChange}
             className="w-full pl-32 pr-36 py-4 bg-transparent text-foreground text-base placeholder:text-muted-foreground focus:outline-none rounded-2xl"
           />
           <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
-            <button type="button" className="w-9 h-9 rounded-xl flex items-center justify-center bg-muted text-muted-foreground hover:bg-muted/80 transition-colors">
+            <button
+              type="button"
+              onClick={() => sessionId && logSidebarInteraction(sessionId, "ai-analysis", "ai_terminal_prompt_attach_click")}
+              className="w-9 h-9 rounded-xl flex items-center justify-center bg-muted text-muted-foreground hover:bg-muted/80 transition-colors"
+            >
               <Paperclip className="w-4 h-4" />
             </button>
-            <button type="button" className="w-9 h-9 rounded-xl flex items-center justify-center bg-muted text-muted-foreground hover:bg-muted/80 transition-colors">
+            <button
+              type="button"
+              onClick={() => sessionId && logSidebarInteraction(sessionId, "ai-analysis", "ai_terminal_prompt_mic_click")}
+              className="w-9 h-9 rounded-xl flex items-center justify-center bg-muted text-muted-foreground hover:bg-muted/80 transition-colors"
+            >
               <Mic className="w-4 h-4" />
             </button>
             <button type="button" className="w-9 h-9 rounded-xl flex items-center justify-center bg-primary text-primary-foreground hover:bg-primary/90 transition-colors">

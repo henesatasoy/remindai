@@ -266,6 +266,23 @@ export const fetchSessionFocusEvents = async (sessionId: string) => {
 };
 
 /**
+ * Fetches all sidebar/prompt interactions for a specific session
+ */
+export const fetchSessionSidebarInteractions = async (sessionId: string) => {
+  const { data, error } = await (supabase.from as any)('sidebar_interactions')
+    .select('*')
+    .eq('session_id', sessionId)
+    .order('created_at', { ascending: true });
+
+  if (error) {
+    console.error('Failed to fetch sidebar interactions:', error);
+    return [];
+  }
+
+  return data || [];
+};
+
+/**
  * Fetches detailed results for a specific session
  */
 export const fetchSessionDetails = async (sessionId: string) => {
