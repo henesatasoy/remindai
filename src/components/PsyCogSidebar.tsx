@@ -72,6 +72,7 @@ const PsyCogSidebar = ({
   const [interventionStep, setInterventionStep] = useState(1);
   const [isTyping1Complete, setIsTyping1Complete] = useState(false);
   const [isTyping2Complete, setIsTyping2Complete] = useState(false);
+  const sidebarPromptInput = usePromptInputLogger(sessionId, viewState, "sidebar_prompt_input");
   const isIntervention = viewState === "intervention";
   const isInstructions = viewState === "instructions";
   const isPracticePassed = viewState === "practice-passed";
@@ -372,13 +373,23 @@ const PsyCogSidebar = ({
               <input
                 type="text"
                 placeholder="Bir şeyler sorun..."
+                value={sidebarPromptInput.value}
+                onChange={sidebarPromptInput.onChange}
                 className="w-full pl-32 pr-36 py-4 bg-transparent text-foreground text-base placeholder:text-muted-foreground focus:outline-none rounded-2xl"
               />
               <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
-                <button type="button" className="w-9 h-9 rounded-xl flex items-center justify-center bg-muted text-muted-foreground hover:bg-muted/80 transition-colors">
+                <button
+                  type="button"
+                  onClick={() => sessionId && logSidebarInteraction(sessionId, viewState, "sidebar_prompt_attach_click")}
+                  className="w-9 h-9 rounded-xl flex items-center justify-center bg-muted text-muted-foreground hover:bg-muted/80 transition-colors"
+                >
                   <Paperclip className="w-4 h-4" />
                 </button>
-                <button type="button" className="w-9 h-9 rounded-xl flex items-center justify-center bg-muted text-muted-foreground hover:bg-muted/80 transition-colors">
+                <button
+                  type="button"
+                  onClick={() => sessionId && logSidebarInteraction(sessionId, viewState, "sidebar_prompt_mic_click")}
+                  className="w-9 h-9 rounded-xl flex items-center justify-center bg-muted text-muted-foreground hover:bg-muted/80 transition-colors"
+                >
                   <Mic className="w-4 h-4" />
                 </button>
                 <button type="button" className="w-9 h-9 rounded-xl flex items-center justify-center bg-primary text-primary-foreground hover:bg-primary/90 transition-colors">
