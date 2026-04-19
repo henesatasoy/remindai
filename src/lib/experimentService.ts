@@ -109,17 +109,21 @@ export const fetchSessionSummaries = async (phaseFilter?: string, startDate?: Da
     total_correct: number;
     total_questions: number;
     total_reaction_time: number;
+    fast_response_count: number;
     created_at: string;
     attention_check_click: boolean | null;
   }>();
 
   (data || []).forEach((result) => {
+    const isRealQuestion = result.phase !== 'practice' && result.question_index >= 0;
+    const isFast = isRealQuestion && !result.timed_out && result.reaction_time_ms < 3000;
     const existing = sessionMap.get(result.session_id);
     if (existing) {
       existing.phases.add(result.phase);
       existing.total_correct += result.is_correct ? 1 : 0;
       existing.total_questions += 1;
       existing.total_reaction_time += result.reaction_time_ms;
+      if (isFast) existing.fast_response_count += 1;
       if (result.attention_check_click !== null) {
         existing.attention_check_click = result.attention_check_click;
       }
@@ -130,6 +134,7 @@ export const fetchSessionSummaries = async (phaseFilter?: string, startDate?: Da
         total_correct: result.is_correct ? 1 : 0,
         total_questions: 1,
         total_reaction_time: result.reaction_time_ms,
+        fast_response_count: isFast ? 1 : 0,
         created_at: result.created_at,
         attention_check_click: result.attention_check_click,
       });
@@ -187,6 +192,7 @@ export const fetchSessionSummaries = async (phaseFilter?: string, startDate?: Da
       total_correct: session.total_correct,
       total_questions: session.total_questions,
       avg_reaction_time: Math.round(session.total_reaction_time / session.total_questions),
+      fast_response_count: session.fast_response_count,
       created_at: session.created_at,
       attention_check_click: session.attention_check_click,
       assigned_group: assignment?.assigned_group ?? null,

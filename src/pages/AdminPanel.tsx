@@ -40,6 +40,7 @@ interface SessionSummary {
   total_correct: number;
   total_questions: number;
   avg_reaction_time: number;
+  fast_response_count: number;
   created_at: string;
   attention_check_click: boolean | null;
   assigned_group: string | null;
@@ -570,6 +571,7 @@ const AdminPanel = () => {
                 <TableHead>Phases</TableHead>
                 <TableHead className="text-center">Total Correct</TableHead>
                 <TableHead className="text-center">Avg Reaction Time</TableHead>
+                <TableHead className="text-center">Hızlı Cevap (&lt;3s)</TableHead>
                 <TableHead className="text-center">Attention Check</TableHead>
                 <TableHead className="text-center">Sekme Çıkışı</TableHead>
                 <TableHead>Created At</TableHead>
@@ -579,13 +581,13 @@ const AdminPanel = () => {
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={10} className="text-center py-8">
+                  <TableCell colSpan={11} className="text-center py-8">
                     <RefreshCw className="w-6 h-6 animate-spin mx-auto text-muted-foreground" />
                   </TableCell>
                 </TableRow>
               ) : filteredSessions.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={10} className="text-center py-8 text-muted-foreground">
+                  <TableCell colSpan={11} className="text-center py-8 text-muted-foreground">
                     No data found
                   </TableCell>
                 </TableRow>
@@ -655,6 +657,15 @@ const AdminPanel = () => {
                           {formatReactionTime(session.avg_reaction_time)}
                         </TableCell>
                         <TableCell className="text-center">
+                          {session.fast_response_count > 0 ? (
+                            <span className="font-semibold text-amber-600">
+                              {session.fast_response_count}x
+                            </span>
+                          ) : (
+                            <span className="text-green-500">✓</span>
+                          )}
+                        </TableCell>
+                        <TableCell className="text-center">
                           {session.attention_check_click === null ? (
                             <span className="text-muted-foreground">-</span>
                           ) : session.attention_check_click ? (
@@ -698,7 +709,7 @@ const AdminPanel = () => {
                       </TableRow>
                       <CollapsibleContent asChild>
                         <TableRow className="bg-muted/30">
-                          <TableCell colSpan={10} className="p-0">
+                          <TableCell colSpan={11} className="p-0">
                             <div className="p-4">
                               <h4 className="text-sm font-medium text-foreground mb-3">
                                 Soru Detayları
