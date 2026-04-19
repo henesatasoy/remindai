@@ -276,7 +276,7 @@ const TestEngine = ({
             <button 
               key={index} 
               onClick={() => submitAnswer(index)} 
-              className="group relative border-2 border-foreground/40 overflow-hidden bg-card p-2 shadow-sm hover:border-primary hover:ring-2 hover:ring-primary/30 transition-all duration-200"
+              className="group relative border-4 border-foreground overflow-hidden bg-card p-3 shadow-md hover:border-primary hover:ring-2 hover:ring-primary/30 transition-all duration-200"
             >
               <OptimizedImage 
                 src={option} 
