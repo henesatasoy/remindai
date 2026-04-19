@@ -289,17 +289,19 @@ export const fetchSessionDetails = async (sessionId: string) => {
  */
 export const deleteSession = async (sessionId: string): Promise<boolean> => {
   try {
-    const [resultsRes, focusRes, assignmentRes] = await Promise.all([
+    const [resultsRes, focusRes, assignmentRes, sidebarRes] = await Promise.all([
       supabase.from('experiment_results').delete().eq('session_id', sessionId),
       (supabase.from as any)('session_focus_events').delete().eq('session_id', sessionId),
       supabase.from('participant_assignments').delete().eq('session_id', sessionId),
+      (supabase.from as any)('sidebar_interactions').delete().eq('session_id', sessionId),
     ]);
 
-    if (resultsRes.error || focusRes.error || assignmentRes.error) {
+    if (resultsRes.error || focusRes.error || assignmentRes.error || sidebarRes.error) {
       console.error('Failed to delete session:', {
         results: resultsRes.error,
         focus: focusRes.error,
         assignment: assignmentRes.error,
+        sidebar: sidebarRes.error,
       });
       return false;
     }
