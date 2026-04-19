@@ -40,6 +40,7 @@ interface SessionSummary {
   total_correct: number;
   total_questions: number;
   avg_reaction_time: number;
+  fast_response_count: number;
   created_at: string;
   attention_check_click: boolean | null;
   assigned_group: string | null;
