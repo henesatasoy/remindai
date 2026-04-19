@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronLeft, ChevronRight, MessageSquare, Sparkles, User, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, MessageSquare, Sparkles, User, X, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import TypewriterText from "./TypewriterText";
