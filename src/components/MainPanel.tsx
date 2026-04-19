@@ -136,14 +136,8 @@ const MainPanel = ({
       <div className="max-w-4xl w-full mx-auto p-8">
         {/* Loading State */}
         {viewState === "loading" && <div className="relative">
-            {/* Top-right action buttons */}
-            <div className="absolute top-0 right-0 flex items-center gap-2 z-10">
-              <button
-                onClick={() => onViewStateChange("instructions")}
-                className="px-4 py-2 text-sm rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-              >
-                Şimdi yükle
-              </button>
+            {/* Top-right action button */}
+            <div className="absolute top-0 right-0 z-10">
               <button
                 onClick={() => {
                   if (window.confirm("Testten çıkmak istediğinize emin misiniz?")) {
