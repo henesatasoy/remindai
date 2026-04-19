@@ -263,7 +263,7 @@ const TestEngine = ({
         )}
 
         {/* Grid Image */}
-        <div className="overflow-hidden w-full max-w-md">
+        <div className="border-2 border-foreground/40 rounded-lg overflow-hidden bg-card w-full max-w-md p-2 shadow-sm">
           <OptimizedImage 
             src={currentQuestion.gridImage} 
             alt="Soru görseli" 
@@ -276,7 +276,7 @@ const TestEngine = ({
             <button 
               key={index} 
               onClick={() => submitAnswer(index)} 
-              className="group relative overflow-hidden rounded-md hover:ring-2 hover:ring-primary/40 transition-all duration-200"
+              className="group relative border-2 border-foreground/40 rounded-lg overflow-hidden bg-card p-2 shadow-sm hover:border-primary hover:ring-2 hover:ring-primary/30 transition-all duration-200"
             >
               <OptimizedImage 
                 src={option} 
