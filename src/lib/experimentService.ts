@@ -48,11 +48,19 @@ export const saveExperimentResult = async (result: ExperimentResult): Promise<vo
 /**
  * Fetches all experiment results grouped by session
  */
-export const fetchAllResults = async (startDate?: Date, endDate?: Date) => {
+export const fetchAllResults = async (startDate?: Date, endDate?: Date, phaseFilter?: string) => {
   let query = supabase
     .from('experiment_results')
     .select('*')
     .order('created_at', { ascending: false });
+
+  if (phaseFilter && phaseFilter !== 'all') {
+    if (phaseFilter === 'phase1_2') {
+      query = query.in('phase', ['phase1', 'phase2']);
+    } else {
+      query = query.eq('phase', phaseFilter);
+    }
+  }
 
   if (startDate) {
     query = query.gte('created_at', startDate.toISOString());
