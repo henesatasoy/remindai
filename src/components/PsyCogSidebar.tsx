@@ -5,6 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import TypewriterText from "./TypewriterText";
 import { ParticipantAssignment, getInterventionMessage } from "@/lib/assignmentService";
 import { logSidebarInteraction } from "@/lib/experimentService";
+import { usePromptInputLogger } from "@/hooks/usePromptInputLogger";
 type ViewState = "loading" | "instructions" | "practice" | "practice-passed" | "practice-failed" | "phase1" | "ai-analysis" | "intervention" | "phase2" | "complete" | "experiment-full";
 interface PsyCogSidebarProps {
   isCollapsed: boolean;

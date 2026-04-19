@@ -168,10 +168,16 @@ const Index = () => {
               
               {/* File Attachment, Voice, and Send Icons */}
               <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
-                <button className="w-10 h-10 rounded-xl flex items-center justify-center bg-muted text-muted-foreground hover:bg-muted/80 transition-colors cursor-default">
+                <button
+                  onClick={() => logSidebarInteraction(sessionId, "home", "prompt_attach_click")}
+                  className="w-10 h-10 rounded-xl flex items-center justify-center bg-muted text-muted-foreground hover:bg-muted/80 transition-colors"
+                >
                   <Paperclip className="w-5 h-5" />
                 </button>
-                <button className="w-10 h-10 rounded-xl flex items-center justify-center bg-muted text-muted-foreground hover:bg-muted/80 transition-colors cursor-default">
+                <button
+                  onClick={() => logSidebarInteraction(sessionId, "home", "prompt_mic_click")}
+                  className="w-10 h-10 rounded-xl flex items-center justify-center bg-muted text-muted-foreground hover:bg-muted/80 transition-colors"
+                >
                   <Mic className="w-5 h-5" />
                 </button>
                 <button
