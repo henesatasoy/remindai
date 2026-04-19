@@ -159,8 +159,8 @@ const AIAnalysis = ({
         Testten Çık
       </button>
 
-      {/* Decorative prompt input bar — fixed to the bottom of the viewport */}
-      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-full max-w-2xl px-4 z-20">
+      {/* Decorative prompt input bar — pinned to the bottom of the main panel area */}
+      <div className="absolute bottom-6 left-0 right-0 px-6 mx-auto w-full max-w-3xl z-20">
         <div className="relative rounded-2xl bg-card border border-border shadow-lg">
           <div className="absolute left-3 top-1/2 -translate-y-1/2 z-10">
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-muted text-sm text-foreground">
