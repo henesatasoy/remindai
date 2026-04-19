@@ -323,6 +323,7 @@ const PsyCogSidebar = ({
             Geçmiş sorgularınız burada görünür
           </p>
         </div>}
+      </div>{/* /inner column */}
       {/* Message Detail Modal */}
       <Dialog open={modalContent !== null} onOpenChange={() => setModalContent(null)}>
         <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
