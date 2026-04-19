@@ -215,7 +215,7 @@ const Index = () => {
   // During intervention, instructions, or practice results, sidebar takes full screen
   const isFullscreenChat = viewState === "intervention" || viewState === "instructions" || viewState === "practice-passed" || viewState === "practice-failed";
   return <div className="min-h-screen bg-background flex w-full">
-      <PsyCogSidebar isCollapsed={isSidebarCollapsed} onToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)} promptHistory={promptHistory} viewState={viewState} isAttentionCheckClicked={isAttentionCheckClicked} onAttentionCheckClick={() => setIsAttentionCheckClicked(!isAttentionCheckClicked)} onStartPhase2={handleStartPhase2} onStartPractice={handleStartPractice} onStartPhase1={handleStartPhase1} practiceScore={practiceScore} userFirstMessage={promptHistory[promptHistory.length - 1] || ""} assignment={assignment} />
+      <PsyCogSidebar isCollapsed={isSidebarCollapsed} onToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)} promptHistory={promptHistory} viewState={viewState} isAttentionCheckClicked={isAttentionCheckClicked} onAttentionCheckClick={() => setIsAttentionCheckClicked(!isAttentionCheckClicked)} onStartPhase2={handleStartPhase2} onStartPractice={handleStartPractice} onStartPhase1={handleStartPhase1} practiceScore={practiceScore} userFirstMessage={promptHistory[promptHistory.length - 1] || ""} assignment={assignment} sessionId={sessionId} />
       {!isFullscreenChat && <MainPanel isLoading={isLoading} viewState={viewState} onViewStateChange={setViewState} isAttentionCheckClicked={isAttentionCheckClicked} sessionId={sessionId} onPracticeScoreChange={setPracticeScore} onAssignmentChange={setAssignment} />}
     </div>;
 };

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import TypewriterText from "./TypewriterText";
 import { ParticipantAssignment, getInterventionMessage } from "@/lib/assignmentService";
+import { logSidebarInteraction } from "@/lib/experimentService";
 type ViewState = "loading" | "instructions" | "practice" | "practice-passed" | "practice-failed" | "phase1" | "ai-analysis" | "intervention" | "phase2" | "complete" | "experiment-full";
 interface PsyCogSidebarProps {
   isCollapsed: boolean;
@@ -18,6 +19,7 @@ interface PsyCogSidebarProps {
   practiceScore?: number;
   userFirstMessage?: string;
   assignment?: ParticipantAssignment | null;
+  sessionId?: string;
 }
 // Default to the control (neutral) message until the assignment resolves.
 // This way an observer cannot infer the group from any visual cue.
@@ -54,7 +56,8 @@ const PsyCogSidebar = ({
   onStartPhase1,
   practiceScore = 0,
   userFirstMessage,
-  assignment
+  assignment,
+  sessionId
 }: PsyCogSidebarProps) => {
   // Resolve the intervention text from the participant's assigned group.
   // Falls back to the neutral control message if assignment hasn't resolved yet.
