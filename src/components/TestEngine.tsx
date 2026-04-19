@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { Clock } from "lucide-react";
 import { Question, Answer, PRACTICE_QUESTIONS } from "@/data/questions";
 import { saveExperimentResult } from "@/lib/experimentService";
+import { isImageWarm, warmQuestion, warmQuestionSet } from "@/lib/imageWarmup";
 
 type TestPhase = "fixation" | "blank" | "question" | "complete";
 
@@ -12,55 +13,31 @@ interface TestEngineProps {
   phase: 'practice' | 'phase1' | 'phase2';
 }
 
-// Image preloader hook - loads + DECODES all phase images upfront so they're paint-ready.
-// img.decode() resolves only after pixels are fully decoded into memory, eliminating the
-// hidden render-time decode delay that plain onload preloading still suffers from.
 const useImagePreloader = (questions: Question[], currentIndex: number) => {
-  const decodedImagesRef = useRef<Set<string>>(new Set());
   const [allCurrentLoaded, setAllCurrentLoaded] = useState(false);
 
-  const preloadAndDecode = (src: string): Promise<void> => {
-    if (decodedImagesRef.current.has(src)) return Promise.resolve();
-    const img = new Image();
-    img.decoding = "async";
-    img.src = src;
-    return img
-      .decode()
-      .then(() => {
-        decodedImagesRef.current.add(src);
-      })
-      .catch(() => {
-        // decode() can reject on some browsers/SVGs; fall back to onload semantics
-        decodedImagesRef.current.add(src);
-      });
-  };
-
-  // Decode ALL phase images once when the questions array changes (background, parallel).
   useEffect(() => {
-    questions.forEach((q) => {
-      [q.gridImage, ...q.options].forEach((src) => {
-        void preloadAndDecode(src);
-      });
-    });
+    void warmQuestionSet(questions);
   }, [questions]);
 
-  // Ensure CURRENT question's images are fully decoded before signalling readiness.
   useEffect(() => {
     setAllCurrentLoaded(false);
-    const currentQ = questions[currentIndex];
-    if (!currentQ) return;
+    const currentQuestion = questions[currentIndex];
+    if (!currentQuestion) return;
 
-    const currentImages = [currentQ.gridImage, ...currentQ.options];
-
-    if (currentImages.every((src) => decodedImagesRef.current.has(src))) {
+    const currentSources = [currentQuestion.gridImage, ...currentQuestion.options];
+    if (currentSources.every((src) => isImageWarm(src))) {
       setAllCurrentLoaded(true);
       return;
     }
 
     let cancelled = false;
-    Promise.all(currentImages.map(preloadAndDecode)).then(() => {
-      if (!cancelled) setAllCurrentLoaded(true);
+    void warmQuestion(currentQuestion, "high").then(() => {
+      if (!cancelled) {
+        setAllCurrentLoaded(true);
+      }
     });
+
     return () => {
       cancelled = true;
     };

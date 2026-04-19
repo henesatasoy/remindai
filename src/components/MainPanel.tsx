@@ -5,7 +5,10 @@ import AIAnalysis from "./AIAnalysis";
 import { Answer, PRACTICE_QUESTIONS, PHASE1_QUESTIONS, PHASE2_QUESTIONS } from "@/data/questions";
 import { saveExperimentResult } from "@/lib/experimentService";
 import { assignParticipantGroup, ParticipantAssignment } from "@/lib/assignmentService";
+import { warmQuestionSet } from "@/lib/imageWarmup";
+
 type ViewState = "loading" | "instructions" | "practice" | "practice-passed" | "practice-failed" | "phase1" | "ai-analysis" | "intervention" | "phase2" | "complete" | "experiment-full";
+
 interface MainPanelProps {
   isLoading: boolean;
   viewState: ViewState;
@@ -15,7 +18,21 @@ interface MainPanelProps {
   onPracticeScoreChange?: (score: number) => void;
   onAssignmentChange?: (assignment: ParticipantAssignment | null) => void;
 }
+
 const INSTRUCTION_TEXT = `Bu bölümde, problem çözme ve soyut muhakeme yeteneklerinizi ölçen bir dizi görsel bulmaca ile karşılaşacaksınız. Her soruda, 3x3'lük bir ızgara (matris) göreceksiniz. Bu ızgaradaki kutucuklardan 8 tanesi, belirli bir kurala veya örüntüye göre yerleştirilmiş şekiller içermektedir. Sağ alt köşedeki kutucuk ise boştur. Göreviniz: Şekillerin hem satırlardaki (soldan sağa) hem de sütunlardaki (yukarıdan aşağıya) değişim kurallarını keşfetmek ve bu kurala göre boş kutucuğa gelmesi gereken en uygun şekli, aşağıda verilen 4 seçenek arasından bulup işaretlemektir. Dikkat Etmeniz Gerekenler: Süre: Her bir soruyu çözmek için 30 saniyeniz olacaktır. Geri Sayım: Sürenin bitimine 5 saniye kala ekranda bir geri sayım sayacı belirecektir. Tahmin: Eğer kuralı süreniz dolmadan bulamazsanız, en mantıklı gelen seçeneği işaretleyerek şansınızı deneyiniz. Boş bırakmak yerine tahmin yürütmeniz önerilir. İlerleme: Cevabı işaretlediğinizde veya süre dolduğunda otomatik olarak bir sonraki soruya geçilecektir. Geriye dönüp cevabınızı değiştirme şansınız yoktur. Gerçek testten önce alıştırma sorularına ile başlayacaksınız.`;
+
+const scheduleIdleWarmup = (callback: () => void) => {
+  if (typeof window === "undefined") return () => undefined;
+
+  if ("requestIdleCallback" in window) {
+    const idleId = window.requestIdleCallback(() => callback(), { timeout: 1500 });
+    return () => window.cancelIdleCallback(idleId);
+  }
+
+  const timeoutId = window.setTimeout(callback, 250);
+  return () => window.clearTimeout(timeoutId);
+};
+
 const MainPanel = ({
   isLoading,
   viewState,
@@ -26,11 +43,31 @@ const MainPanel = ({
   onAssignmentChange
 }: MainPanelProps) => {
   const [practiceScore, setPracticeScore] = useState(0);
+
   useEffect(() => {
     if (!isLoading && viewState === "loading") {
       onViewStateChange("instructions");
     }
   }, [isLoading, viewState, onViewStateChange]);
+
+  useEffect(() => {
+    if (viewState === "instructions") {
+      void warmQuestionSet(PRACTICE_QUESTIONS, "high");
+      return scheduleIdleWarmup(() => {
+        void warmQuestionSet(PHASE1_QUESTIONS);
+        void warmQuestionSet(PHASE2_QUESTIONS);
+      });
+    }
+
+    if (viewState === "practice" || viewState === "practice-passed") {
+      void warmQuestionSet(PHASE1_QUESTIONS, "high");
+    }
+
+    if (viewState === "phase1" || viewState === "ai-analysis" || viewState === "intervention") {
+      void warmQuestionSet(PHASE2_QUESTIONS, "high");
+    }
+  }, [viewState]);
+
   const handleStartPractice = () => {
     onViewStateChange("practice");
   };
