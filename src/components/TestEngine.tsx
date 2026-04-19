@@ -61,7 +61,7 @@ const OptimizedImage = ({
 }) => {
   return (
     <div
-      className={`relative bg-muted ${className || ''}`}
+      className={`relative ${className || ''}`}
       style={{ aspectRatio }}
     >
       <img
