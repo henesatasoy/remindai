@@ -81,7 +81,7 @@ const AIAnalysis = ({
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
-  return <div className="relative min-h-[80vh] flex flex-col items-center justify-center gap-8 animate-fade-in">
+  return <div className="relative min-h-screen flex flex-col items-center gap-8 animate-fade-in pt-[10vh] pb-32">
       {/* Hidden skip button for dev testing */}
       <button onClick={onComplete} className="absolute top-0 right-0 w-12 h-12 opacity-0 hover:opacity-10 transition-opacity" aria-label="Skip (Dev Only)" />
 
@@ -159,8 +159,8 @@ const AIAnalysis = ({
         Testten Çık
       </button>
 
-      {/* Decorative prompt input bar — fixed to the bottom of the viewport */}
-      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-full max-w-2xl px-4 z-20">
+      {/* Decorative prompt input bar — pinned to the bottom of the main panel area */}
+      <div className="absolute bottom-6 left-0 right-0 px-6 mx-auto w-full max-w-3xl z-20">
         <div className="relative rounded-2xl bg-card border border-border shadow-lg">
           <div className="absolute left-3 top-1/2 -translate-y-1/2 z-10">
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-muted text-sm text-foreground">
