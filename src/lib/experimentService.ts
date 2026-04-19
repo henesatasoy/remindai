@@ -192,6 +192,7 @@ export const fetchSessionSummaries = async (phaseFilter?: string, startDate?: Da
       total_correct: session.total_correct,
       total_questions: session.total_questions,
       avg_reaction_time: Math.round(session.total_reaction_time / session.total_questions),
+      fast_response_count: session.fast_response_count,
       created_at: session.created_at,
       attention_check_click: session.attention_check_click,
       assigned_group: assignment?.assigned_group ?? null,
