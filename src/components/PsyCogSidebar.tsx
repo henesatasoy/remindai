@@ -119,12 +119,46 @@ const PsyCogSidebar = ({
         </div>
     });
   };
+  // Fake chat history shown in the decorative left rail during fullscreen chat
+  const fakeChatHistory = ["Plot-test 3", "ReMind AI'ın veri analiz süreci", "Test veri analiz sonuçları", "MaRs-IB kısa form testi", "Plot-test 2", "Plot-test 1"];
+
   return <aside className={`
         h-screen bg-sidebar border-r border-sidebar-border
         transition-all duration-500 ease-in-out
-        flex flex-col relative
-        ${isFullscreenChat ? "w-full" : isCollapsed ? "w-16" : "w-72"}
+        flex relative
+        ${isFullscreenChat ? "w-full flex-row" : `flex-col ${isCollapsed ? "w-16" : "w-72"}`}
       `}>
+      {/* Decorative left rail during fullscreen chat — keeps the LLM feel */}
+      {isFullscreenChat && <div className="w-64 h-full bg-sidebar border-r border-sidebar-border flex flex-col shrink-0">
+          {/* New Chat Button */}
+          <div className="p-3 border-b border-sidebar-border">
+            <button className="w-full flex items-center gap-3 p-3 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors text-foreground cursor-default">
+              <Plus className="w-5 h-5 text-primary shrink-0" />
+              <span className="text-sm font-medium">Yeni Sohbet</span>
+            </button>
+          </div>
+          {/* Fake chat history */}
+          <div className="flex-1 overflow-y-auto p-2">
+            <div className="mb-2">
+              <span className="text-xs text-muted-foreground px-3">Son 7 gün</span>
+            </div>
+            {/* Current active chat (user's first message) */}
+            {userFirstMessage && <div className="flex items-start gap-3 p-3 rounded-lg bg-sidebar-accent cursor-default">
+                <MessageSquare className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                <span className="text-sm text-foreground line-clamp-1 font-medium">{userFirstMessage}</span>
+              </div>}
+            {fakeChatHistory.map((chat, index) => <div key={index} className="flex items-start gap-3 p-3 rounded-lg hover:bg-sidebar-accent transition-colors cursor-default">
+                <MessageSquare className="w-4 h-4 text-muted-foreground shrink-0 mt-0.5" />
+                <span className="text-sm text-foreground line-clamp-1">{chat}</span>
+              </div>)}
+          </div>
+          <div className="p-4 border-t border-sidebar-border">
+            <p className="text-xs text-muted-foreground text-center">ReMind v2.4.1</p>
+          </div>
+        </div>}
+
+      {/* Inner column wrapping the existing header + chat area */}
+      <div className={`flex flex-col ${isFullscreenChat ? "flex-1 min-w-0" : "w-full h-full"}`}>
       {/* Toggle Button - hide during fullscreen chat states */}
       {!isFullscreenChat && <button onClick={onToggle} className="absolute -right-3 top-6 z-10 w-6 h-6 rounded-full bg-secondary border border-border flex items-center justify-center hover:bg-muted transition-colors">
           {isCollapsed ? <ChevronRight className="w-4 h-4 text-foreground" /> : <ChevronLeft className="w-4 h-4 text-foreground" />}
