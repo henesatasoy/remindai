@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronLeft, ChevronRight, MessageSquare, Sparkles, User, X, Plus } from "lucide-react";
+import { ChevronLeft, ChevronRight, MessageSquare, Sparkles, User, X, Plus, Paperclip, Mic, ArrowUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import TypewriterText from "./TypewriterText";
@@ -322,6 +322,36 @@ const PsyCogSidebar = ({
           <p className="text-xs text-muted-foreground text-center">
             Geçmiş sorgularınız burada görünür
           </p>
+        </div>}
+
+      {/* Decorative prompt input bar during fullscreen chat — pure visual, non-functional */}
+      {isFullscreenChat && <div className="px-4 pb-6 pt-2 bg-background">
+          <div className="max-w-3xl mx-auto">
+            <div className="relative rounded-2xl bg-card border border-border">
+              <div className="absolute left-3 top-1/2 -translate-y-1/2 z-10">
+                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-muted text-sm text-foreground">
+                  <span className="font-medium">ReMind-4</span>
+                </div>
+              </div>
+              <input
+                type="text"
+                disabled
+                placeholder="Bir şeyler sorun..."
+                className="w-full pl-32 pr-36 py-4 bg-transparent text-foreground text-base placeholder:text-muted-foreground focus:outline-none rounded-2xl cursor-not-allowed"
+              />
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                <button disabled className="w-9 h-9 rounded-xl flex items-center justify-center bg-muted text-muted-foreground cursor-not-allowed">
+                  <Paperclip className="w-4 h-4" />
+                </button>
+                <button disabled className="w-9 h-9 rounded-xl flex items-center justify-center bg-muted text-muted-foreground cursor-not-allowed">
+                  <Mic className="w-4 h-4" />
+                </button>
+                <button disabled className="w-9 h-9 rounded-xl flex items-center justify-center bg-primary text-primary-foreground opacity-60 cursor-not-allowed">
+                  <ArrowUp className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          </div>
         </div>}
       </div>{/* /inner column */}
       {/* Message Detail Modal */}
