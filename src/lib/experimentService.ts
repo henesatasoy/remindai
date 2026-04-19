@@ -46,6 +46,26 @@ export const saveExperimentResult = async (result: ExperimentResult): Promise<vo
 };
 
 /**
+ * Logs a click on a fake sidebar element (Yeni Sohbet / chat history item)
+ */
+export const logSidebarInteraction = async (
+  sessionId: string,
+  phase: string,
+  element: string
+): Promise<void> => {
+  try {
+    const { error } = await (supabase.from as any)('sidebar_interactions').insert({
+      session_id: sessionId,
+      phase,
+      element,
+    });
+    if (error) console.error('Failed to log sidebar interaction:', error);
+  } catch (err) {
+    console.error('Error logging sidebar interaction:', err);
+  }
+};
+
+/**
  * Fetches all experiment results grouped by session
  */
 export const fetchAllResults = async (startDate?: Date, endDate?: Date, phaseFilter?: string) => {
