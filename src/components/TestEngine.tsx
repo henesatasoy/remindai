@@ -172,10 +172,17 @@ const TestEngine = ({
     }
   }, [currentIndex, currentQuestion, questions.length, sessionId, phase, answers, correctCount]);
 
-  // Psychometric timing sequence: fixation (500ms) -> blank (100ms) -> question
+  // Psychometric timing sequence: fixation (≥500ms) -> blank (100ms) -> question
+  // Fixation ends only after BOTH the 500ms minimum AND images are fully decoded —
+  // guaranteeing instant paint with zero perceptible delay when the question appears.
+  const fixationMinElapsedRef = useRef(false);
   useEffect(() => {
     if (testPhase === "fixation") {
-      const timer = setTimeout(() => setTestPhase("blank"), 500);
+      fixationMinElapsedRef.current = false;
+      const timer = setTimeout(() => {
+        fixationMinElapsedRef.current = true;
+        if (allCurrentLoaded) setTestPhase("blank");
+      }, 500);
       return () => clearTimeout(timer);
     }
     if (testPhase === "blank") {
@@ -185,7 +192,14 @@ const TestEngine = ({
       }, 100);
       return () => clearTimeout(timer);
     }
-  }, [testPhase, currentIndex]);
+  }, [testPhase, currentIndex, allCurrentLoaded]);
+
+  // If images finish decoding AFTER the 500ms minimum has elapsed, advance immediately.
+  useEffect(() => {
+    if (testPhase === "fixation" && allCurrentLoaded && fixationMinElapsedRef.current) {
+      setTestPhase("blank");
+    }
+  }, [testPhase, allCurrentLoaded]);
 
   // Question timer (30 seconds)
   useEffect(() => {
