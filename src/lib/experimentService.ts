@@ -83,7 +83,11 @@ export const fetchSessionSummaries = async (phaseFilter?: string, startDate?: Da
     .order('created_at', { ascending: false });
 
   if (phaseFilter && phaseFilter !== 'all') {
-    query = query.eq('phase', phaseFilter);
+    if (phaseFilter === 'phase1_2') {
+      query = query.in('phase', ['phase1', 'phase2']);
+    } else {
+      query = query.eq('phase', phaseFilter);
+    }
   }
 
   if (startDate) {

@@ -393,6 +393,7 @@ const AdminPanel = () => {
                   <SelectItem value="practice">Practice</SelectItem>
                   <SelectItem value="phase1">Phase 1</SelectItem>
                   <SelectItem value="phase2">Phase 2</SelectItem>
+                  <SelectItem value="phase1_2">Faz 1 ve 2</SelectItem>
                 </SelectContent>
               </Select>
             </div>
