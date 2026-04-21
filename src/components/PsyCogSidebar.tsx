@@ -36,7 +36,7 @@ const INSTRUCTION_ITEMS = [{
   description: "Her bir soruyu çözmek için 30 saniyeniz olacaktır."
 }, {
   title: "Geri Sayım",
-  description: "Sürenin bitimine 5 saniye kala ekranda bir geri sayım sayacı belirecektir."
+  description: "Sürenin bitimine 5 saniye kala ekranda bir uyarı belirecektir."
 }, {
   title: "Tahmin",
   description: "Eğer kuralı süreniz dolmadan bulamazsanız, en mantıklı gelen seçeneği işaretleyerek şansınızı deneyiniz. Boş bırakmak yerine tahmin yürütmeniz önerilir."
