@@ -253,7 +253,11 @@ const PsyCogSidebar = ({
                   </div> : <div className="text-foreground text-sm leading-relaxed space-y-4">
                     <p>Merhaba! Araştırma sürecimize hoş geldiniz. Ben ReMind-4. Bugün sizinle görsel yapbozlar üzerinden soyut muhakeme ve örüntü tanıma kapasitenizi analiz edeceğiz. Sürecin sorunsuz ilerlemesi için aşağıda testin nasıl işleyeceğine dair talimatları derledim:</p>
                     <p className="font-semibold text-base">MaRs-IB Test Talimatları</p>
-                    <p className="whitespace-pre-line">{INSTRUCTION_INTRO}</p>
+                    <div className="text-foreground text-sm leading-relaxed whitespace-pre-line">
+                      <p>Bu bölümde, problem çözme ve soyut muhakeme yeteneklerinizi ölçen bir dizi görsel bulmaca ile karşılaşacaksınız. Her soruda, 3x3'lük bir ızgara (matris) göreceksiniz. Bu ızgaradaki kutucuklardan 8 tanesi, belirli bir kurala veya örüntüye göre yerleştirilmiş şekiller içermektedir. Sağ alt köşedeki kutucuk ise boştur.</p>
+                      <p className="mt-4"><strong>Göreviniz:</strong> Şekillerin hem satırlardaki (soldan sağa) hem de sütunlardaki (yukarıdan aşağıya) değişim kurallarını keşfetmek ve bu kurala göre boş kutucuğa gelmesi gereken en uygun şekli, aşağıda verilen 4 seçenek arasından bulup işaretlemektir.</p>
+                      <p className="mt-4"><strong>Akış:</strong> Test toplamda 10 alıştırma ve her birinde 12 soru olan 2 aşamadan oluşmaktadır. 10 alıştırma sorusundan 3 tanesini doğru bildiğinizde otomatik olarak testin ilk aşamasına devam edeceksiniz. Ardından testin ilk aşamasının verilerinin analizinden sonra ikinci aşamaya devam edeceksiniz.</p>
+                    </div>
                     
                     <div>
                       <p className="font-semibold mb-2">Dikkat Etmeniz Gerekenler:</p>
