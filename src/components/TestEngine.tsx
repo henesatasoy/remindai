@@ -266,15 +266,15 @@ const TestEngine = ({
         <X className="w-3.5 h-3.5" />
       </button>
 
+      {/* Warning Flash - absolutely positioned so it doesn't push question/options down */}
+      {showWarning && (
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 text-2xl font-bold text-destructive animate-pulse pointer-events-none z-40">
+          Son 5 Saniye!
+        </div>
+      )}
+
       {/* Question Content */}
       <div className="pt-12 flex flex-col items-center gap-8">
-        {/* Warning Flash - above question image */}
-        {showWarning && (
-          <div className="text-2xl font-bold text-destructive animate-pulse">
-            Son 5 Saniye!
-          </div>
-        )}
-
         {/* Grid Image */}
         <div className="border border-border bg-card w-full max-w-md p-6 shadow-sm">
           <OptimizedImage 
