@@ -251,6 +251,7 @@ const PsyCogSidebar = ({
                     <p className="font-semibold text-base">Alıştırma Tamamlandı</p>
                     <p className="text-lg">Lütfen deney yürütücüsüne haber ediniz.</p>
                   </div> : <div className="text-foreground text-sm leading-relaxed space-y-4">
+                    <p>Merhaba! Araştırma sürecimize hoş geldiniz. Ben ReMind-4. Bugün sizinle görsel yapbozlar üzerinden soyut muhakeme ve örüntü tanıma kapasitenizi analiz edeceğiz. Sürecin sorunsuz ilerlemesi için aşağıda testin nasıl işleyeceğine dair talimatları derledim:</p>
                     <p className="font-semibold text-base">MaRs-IB Test Talimatları</p>
                     <p className="whitespace-pre-line">{INSTRUCTION_INTRO}</p>
                     
