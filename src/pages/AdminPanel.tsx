@@ -765,9 +765,9 @@ const AdminPanel = () => {
                                       </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                      {sessionDetails[session.session_id].map((detail, idx) => {
-                                        const isAttentionCheck = detail.question_index < 0;
-                                        return (
+                                      {sessionDetails[session.session_id]
+                                        .filter((detail) => detail.question_index >= 0)
+                                        .map((detail, idx) => (
                                         <TableRow key={detail.id || idx} className="text-sm">
                                           <TableCell className="py-2">
                                             <span
@@ -781,47 +781,26 @@ const AdminPanel = () => {
                                               {getPhaseLabel(detail.phase)}
                                             </span>
                                           </TableCell>
-                                          <TableCell className="py-2">
-                                            {isAttentionCheck ? (
-                                              <span className="px-2 py-0.5 rounded text-xs font-medium bg-amber-500/10 text-amber-600">
-                                                Dikkat Kontrolü
-                                              </span>
-                                            ) : (
-                                              <>Soru {detail.question_index + 1}</>
-                                            )}
-                                          </TableCell>
+                                          <TableCell className="py-2">Soru {detail.question_index + 1}</TableCell>
                                           <TableCell className="py-2 text-center">
-                                            {isAttentionCheck ? (
-                                              detail.attention_check_click ? (
-                                                <span className="text-green-500 font-medium">Tıklandı ✓</span>
-                                              ) : (
-                                                <span className="text-destructive font-medium">Tıklanmadı ✗</span>
-                                              )
-                                            ) : detail.is_correct ? (
+                                            {detail.is_correct ? (
                                               <span className="text-green-500 font-medium">Doğru</span>
                                             ) : (
                                               <span className="text-destructive font-medium">Yanlış</span>
                                             )}
                                           </TableCell>
                                           <TableCell className="py-2 text-center">
-                                            {isAttentionCheck ? (
-                                              <span className="text-muted-foreground">-</span>
-                                            ) : (
-                                              formatReactionTime(detail.reaction_time_ms)
-                                            )}
+                                            {formatReactionTime(detail.reaction_time_ms)}
                                           </TableCell>
                                           <TableCell className="py-2 text-center">
-                                            {isAttentionCheck ? (
-                                              <span className="text-muted-foreground">-</span>
-                                            ) : detail.timed_out ? (
+                                            {detail.timed_out ? (
                                               <span className="text-amber-500">Evet</span>
                                             ) : (
                                               <span className="text-muted-foreground">Hayır</span>
                                             )}
                                           </TableCell>
                                         </TableRow>
-                                        );
-                                      })}
+                                      ))}
                                     </TableBody>
                                   </Table>
                                 </div>
