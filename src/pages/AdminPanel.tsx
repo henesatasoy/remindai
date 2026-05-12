@@ -308,6 +308,11 @@ const AdminPanel = () => {
         "main_accuracy",
         "main_avg_rt_ms",
         "main_fast_count",
+        // Pretest/Posttest correct-only aggregates (for SPSS analyses)
+        "Pretest_Total_Correct",
+        "Pretest_MeanRT_Correct",
+        "Posttest_Total_Correct",
+        "Posttest_MeanRT_Correct",
       ];
 
       // Per-question wide columns
@@ -383,6 +388,19 @@ const AdminPanel = () => {
           mainTotal > 0 ? Math.round(mainSumRt / mainTotal) : "",
           mainFast,
         ];
+
+        // Correct-only aggregates per phase
+        const correctOnly = (phase: string) => {
+          const items = results.filter(
+            (r) => r.phase === phase && r.question_index >= 0 && r.is_correct
+          );
+          const n = items.length;
+          const mean = n > 0 ? Math.round(items.reduce((s, r) => s + r.reaction_time_ms, 0) / n) : "";
+          return { n, mean };
+        };
+        const preCorrect = correctOnly("phase1");
+        const postCorrect = correctOnly("phase2");
+        row.push(preCorrect.n, preCorrect.mean, postCorrect.n, postCorrect.mean);
 
         phaseKeys.forEach(({ phase, prefix: _prefix }) => {
           for (let i = 0; i < maxQ[phase]; i++) {
