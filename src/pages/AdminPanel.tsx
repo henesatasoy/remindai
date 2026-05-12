@@ -41,6 +41,9 @@ interface SessionSummary {
   total_questions: number;
   avg_reaction_time: number;
   fast_response_count: number;
+  practice_correct: number;
+  practice_total: number;
+  practice_avg_reaction_time: number;
   created_at: string;
   attention_check_click: boolean | null;
   assigned_group: string | null;
@@ -541,24 +544,24 @@ const AdminPanel = () => {
           <div className="bg-card border border-border rounded-xl p-4">
             <p className="text-sm text-muted-foreground">Avg Correct Rate</p>
             <p className="text-2xl font-bold text-primary">
-              {filteredSessions.length > 0
-                ? `${Math.round(
-                    (filteredSessions.reduce((sum, s) => sum + s.total_correct, 0) /
-                      filteredSessions.reduce((sum, s) => sum + s.total_questions, 0)) *
-                      100
-                  )}%`
-                : '0%'}
+              {(() => {
+                const totalQ = filteredSessions.reduce((sum, s) => sum + s.total_questions, 0);
+                const totalC = filteredSessions.reduce((sum, s) => sum + s.total_correct, 0);
+                return totalQ > 0 ? `${Math.round((totalC / totalQ) * 100)}%` : '0%';
+              })()}
             </p>
           </div>
           <div className="bg-card border border-border rounded-xl p-4">
             <p className="text-sm text-muted-foreground">Avg Reaction Time</p>
             <p className="text-2xl font-bold text-foreground">
-              {filteredSessions.length > 0
-                ? formatReactionTime(
-                    filteredSessions.reduce((sum, s) => sum + s.avg_reaction_time, 0) /
-                      filteredSessions.length
-                  )
-                : '0s'}
+              {(() => {
+                const withReal = filteredSessions.filter((s) => s.total_questions > 0);
+                return withReal.length > 0
+                  ? formatReactionTime(
+                      withReal.reduce((sum, s) => sum + s.avg_reaction_time, 0) / withReal.length
+                    )
+                  : '0s';
+              })()}
             </p>
           </div>
           <div className="bg-card border border-border rounded-xl p-4">
@@ -581,6 +584,7 @@ const AdminPanel = () => {
                 <TableHead>Phases</TableHead>
                 <TableHead className="text-center">Total Correct</TableHead>
                 <TableHead className="text-center">Avg Reaction Time</TableHead>
+                <TableHead className="text-center">Alıştırma</TableHead>
                 <TableHead className="text-center">Hızlı Cevap (&lt;2s)</TableHead>
                 <TableHead className="text-center">Attention Check</TableHead>
                 <TableHead className="text-center">Sekme Çıkışı</TableHead>
@@ -661,11 +665,27 @@ const AdminPanel = () => {
                         </TableCell>
                         <TableCell className="text-center">
                           <span className="font-medium">
-                            {session.total_correct}/{session.total_questions}
+                            {session.total_questions > 0
+                              ? `${session.total_correct}/${session.total_questions}`
+                              : '-'}
                           </span>
                         </TableCell>
                         <TableCell className="text-center">
-                          {formatReactionTime(session.avg_reaction_time)}
+                          {session.total_questions > 0 ? formatReactionTime(session.avg_reaction_time) : '-'}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {session.practice_total > 0 ? (
+                            <div className="flex flex-col items-center">
+                              <span className="font-medium text-sm">
+                                {session.practice_correct}/{session.practice_total}
+                              </span>
+                              <span className="text-xs text-muted-foreground">
+                                {formatReactionTime(session.practice_avg_reaction_time)}
+                              </span>
+                            </div>
+                          ) : (
+                            <span className="text-muted-foreground">-</span>
+                          )}
                         </TableCell>
                         <TableCell className="text-center">
                           {session.fast_response_count > 0 ? (

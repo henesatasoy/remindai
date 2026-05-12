@@ -137,6 +137,7 @@ export const fetchSessionSummaries = async (phaseFilter?: string, startDate?: Da
   }
 
   // Group by session_id and calculate aggregates
+  // Practice phase is tracked separately and excluded from main metrics
   const sessionMap = new Map<string, {
     session_id: string;
     phases: Set<string>;
@@ -144,20 +145,30 @@ export const fetchSessionSummaries = async (phaseFilter?: string, startDate?: Da
     total_questions: number;
     total_reaction_time: number;
     fast_response_count: number;
+    practice_correct: number;
+    practice_total: number;
+    practice_reaction_time: number;
     created_at: string;
     attention_check_click: boolean | null;
   }>();
 
   (data || []).forEach((result) => {
-    const isRealQuestion = result.phase !== 'practice' && result.question_index >= 0;
+    const isPractice = result.phase === 'practice';
+    const isRealQuestion = !isPractice && result.question_index >= 0;
     const isFast = isRealQuestion && !result.timed_out && result.reaction_time_ms < 2000;
     const existing = sessionMap.get(result.session_id);
     if (existing) {
       existing.phases.add(result.phase);
-      existing.total_correct += result.is_correct ? 1 : 0;
-      existing.total_questions += 1;
-      existing.total_reaction_time += result.reaction_time_ms;
-      if (isFast) existing.fast_response_count += 1;
+      if (isPractice) {
+        existing.practice_correct += result.is_correct ? 1 : 0;
+        existing.practice_total += 1;
+        existing.practice_reaction_time += result.reaction_time_ms;
+      } else {
+        existing.total_correct += result.is_correct ? 1 : 0;
+        existing.total_questions += 1;
+        existing.total_reaction_time += result.reaction_time_ms;
+        if (isFast) existing.fast_response_count += 1;
+      }
       if (result.attention_check_click !== null) {
         existing.attention_check_click = result.attention_check_click;
       }
@@ -165,10 +176,13 @@ export const fetchSessionSummaries = async (phaseFilter?: string, startDate?: Da
       sessionMap.set(result.session_id, {
         session_id: result.session_id,
         phases: new Set([result.phase]),
-        total_correct: result.is_correct ? 1 : 0,
-        total_questions: 1,
-        total_reaction_time: result.reaction_time_ms,
+        total_correct: isPractice ? 0 : (result.is_correct ? 1 : 0),
+        total_questions: isPractice ? 0 : 1,
+        total_reaction_time: isPractice ? 0 : result.reaction_time_ms,
         fast_response_count: isFast ? 1 : 0,
+        practice_correct: isPractice ? (result.is_correct ? 1 : 0) : 0,
+        practice_total: isPractice ? 1 : 0,
+        practice_reaction_time: isPractice ? result.reaction_time_ms : 0,
         created_at: result.created_at,
         attention_check_click: result.attention_check_click,
       });
@@ -237,8 +251,15 @@ export const fetchSessionSummaries = async (phaseFilter?: string, startDate?: Da
       phases: Array.from(session.phases).join(', '),
       total_correct: session.total_correct,
       total_questions: session.total_questions,
-      avg_reaction_time: Math.round(session.total_reaction_time / session.total_questions),
+      avg_reaction_time: session.total_questions > 0
+        ? Math.round(session.total_reaction_time / session.total_questions)
+        : 0,
       fast_response_count: session.fast_response_count,
+      practice_correct: session.practice_correct,
+      practice_total: session.practice_total,
+      practice_avg_reaction_time: session.practice_total > 0
+        ? Math.round(session.practice_reaction_time / session.practice_total)
+        : 0,
       created_at: session.created_at,
       attention_check_click: session.attention_check_click,
       assigned_group: assignment?.assigned_group ?? null,
