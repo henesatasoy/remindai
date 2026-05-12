@@ -635,6 +635,21 @@ const AdminPanel = () => {
               {isExporting ? "Exporting..." : "Export CSV"}
             </Button>
 
+            {/* Export for SPSS — Wide format (one row per session) */}
+            <Button
+              onClick={exportForSPSS}
+              variant="outline"
+              disabled={sessions.length === 0 || isExporting}
+              className="flex items-center gap-2"
+            >
+              {isExporting ? (
+                <RefreshCw className="w-4 h-4 animate-spin" />
+              ) : (
+                <Download className="w-4 h-4" />
+              )}
+              Export for SPSS
+            </Button>
+
             {/* Refresh Button */}
             <Button
               onClick={loadData}
