@@ -541,24 +541,24 @@ const AdminPanel = () => {
           <div className="bg-card border border-border rounded-xl p-4">
             <p className="text-sm text-muted-foreground">Avg Correct Rate</p>
             <p className="text-2xl font-bold text-primary">
-              {filteredSessions.length > 0
-                ? `${Math.round(
-                    (filteredSessions.reduce((sum, s) => sum + s.total_correct, 0) /
-                      filteredSessions.reduce((sum, s) => sum + s.total_questions, 0)) *
-                      100
-                  )}%`
-                : '0%'}
+              {(() => {
+                const totalQ = filteredSessions.reduce((sum, s) => sum + s.total_questions, 0);
+                const totalC = filteredSessions.reduce((sum, s) => sum + s.total_correct, 0);
+                return totalQ > 0 ? `${Math.round((totalC / totalQ) * 100)}%` : '0%';
+              })()}
             </p>
           </div>
           <div className="bg-card border border-border rounded-xl p-4">
             <p className="text-sm text-muted-foreground">Avg Reaction Time</p>
             <p className="text-2xl font-bold text-foreground">
-              {filteredSessions.length > 0
-                ? formatReactionTime(
-                    filteredSessions.reduce((sum, s) => sum + s.avg_reaction_time, 0) /
-                      filteredSessions.length
-                  )
-                : '0s'}
+              {(() => {
+                const withReal = filteredSessions.filter((s) => s.total_questions > 0);
+                return withReal.length > 0
+                  ? formatReactionTime(
+                      withReal.reduce((sum, s) => sum + s.avg_reaction_time, 0) / withReal.length
+                    )
+                  : '0s';
+              })()}
             </p>
           </div>
           <div className="bg-card border border-border rounded-xl p-4">
