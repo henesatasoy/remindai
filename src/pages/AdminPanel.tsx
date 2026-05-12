@@ -41,6 +41,9 @@ interface SessionSummary {
   total_questions: number;
   avg_reaction_time: number;
   fast_response_count: number;
+  practice_correct: number;
+  practice_total: number;
+  practice_avg_reaction_time: number;
   created_at: string;
   attention_check_click: boolean | null;
   assigned_group: string | null;
