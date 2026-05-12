@@ -662,11 +662,27 @@ const AdminPanel = () => {
                         </TableCell>
                         <TableCell className="text-center">
                           <span className="font-medium">
-                            {session.total_correct}/{session.total_questions}
+                            {session.total_questions > 0
+                              ? `${session.total_correct}/${session.total_questions}`
+                              : '-'}
                           </span>
                         </TableCell>
                         <TableCell className="text-center">
-                          {formatReactionTime(session.avg_reaction_time)}
+                          {session.total_questions > 0 ? formatReactionTime(session.avg_reaction_time) : '-'}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          {session.practice_total > 0 ? (
+                            <div className="flex flex-col items-center">
+                              <span className="font-medium text-sm">
+                                {session.practice_correct}/{session.practice_total}
+                              </span>
+                              <span className="text-xs text-muted-foreground">
+                                {formatReactionTime(session.practice_avg_reaction_time)}
+                              </span>
+                            </div>
+                          ) : (
+                            <span className="text-muted-foreground">-</span>
+                          )}
                         </TableCell>
                         <TableCell className="text-center">
                           {session.fast_response_count > 0 ? (
