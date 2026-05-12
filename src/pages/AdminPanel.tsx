@@ -238,6 +238,190 @@ const AdminPanel = () => {
     }
   };
 
+  const exportForSPSS = async () => {
+    if (sessions.length === 0) return;
+    setIsExporting(true);
+    try {
+      // Pull every result regardless of phase filter so wide rows are complete
+      const allResults = await fetchAllResults(startDate, endDate, "all");
+
+      const { data: assignments } = await supabase
+        .from('participant_assignments')
+        .select('session_id, assigned_group, participant_code, slot_number');
+
+      const assignmentLookup = new Map<string, { group: string; code: string; slot: number }>();
+      (assignments || []).forEach((a: any) => {
+        assignmentLookup.set(a.session_id, {
+          group: a.assigned_group,
+          code: a.participant_code,
+          slot: a.slot_number,
+        });
+      });
+
+      // Group results by session
+      const bySession = new Map<string, any[]>();
+      (allResults || []).forEach((r: any) => {
+        if (!bySession.has(r.session_id)) bySession.set(r.session_id, []);
+        bySession.get(r.session_id)!.push(r);
+      });
+
+      // Determine max question count per phase across the dataset
+      const maxQ = { practice: 0, phase1: 0, phase2: 0 } as Record<string, number>;
+      (allResults || []).forEach((r: any) => {
+        if (r.question_index >= 0 && maxQ[r.phase] !== undefined) {
+          maxQ[r.phase] = Math.max(maxQ[r.phase], r.question_index + 1);
+        }
+      });
+
+      const headers: string[] = [
+        "session_id",
+        "participant_code",
+        "assigned_group",
+        "slot_number",
+        "created_at",
+        "attention_check_click",
+        "blur_count",
+        "total_blur_ms",
+        "sidebar_click_count",
+        // Practice aggregates (kept separate from main metrics)
+        "practice_total",
+        "practice_correct",
+        "practice_accuracy",
+        "practice_avg_rt_ms",
+        // Phase 1 aggregates
+        "phase1_total",
+        "phase1_correct",
+        "phase1_accuracy",
+        "phase1_avg_rt_ms",
+        "phase1_fast_count",
+        "phase1_timeout_count",
+        // Phase 2 aggregates
+        "phase2_total",
+        "phase2_correct",
+        "phase2_accuracy",
+        "phase2_avg_rt_ms",
+        "phase2_fast_count",
+        "phase2_timeout_count",
+        // Combined phase1+phase2
+        "main_total",
+        "main_correct",
+        "main_accuracy",
+        "main_avg_rt_ms",
+        "main_fast_count",
+      ];
+
+      // Per-question wide columns
+      const phaseKeys: Array<{ phase: string; prefix: string }> = [
+        { phase: "phase1", prefix: "p1" },
+        { phase: "phase2", prefix: "p2" },
+      ];
+      phaseKeys.forEach(({ phase, prefix }) => {
+        for (let i = 1; i <= maxQ[phase]; i++) {
+          headers.push(`${prefix}_q${i}_correct`, `${prefix}_q${i}_rt_ms`, `${prefix}_q${i}_timed_out`);
+        }
+      });
+
+      const sessionIds = Array.from(bySession.keys());
+      // Fetch focus + sidebar in batches via existing summaries map already in `sessions`
+      const summaryMap = new Map<string, SessionSummary>();
+      sessions.forEach((s) => summaryMap.set(s.session_id, s));
+
+      const rows = sessionIds.map((sid) => {
+        const results = bySession.get(sid) || [];
+        const assignment = assignmentLookup.get(sid);
+        const summary = summaryMap.get(sid);
+
+        const agg = (phase: string) => {
+          const items = results.filter((r) => r.phase === phase && r.question_index >= 0);
+          const total = items.length;
+          const correct = items.filter((r) => r.is_correct).length;
+          const sumRt = items.reduce((s, r) => s + r.reaction_time_ms, 0);
+          const fast = items.filter((r) => !r.timed_out && r.reaction_time_ms < 2000).length;
+          const timeouts = items.filter((r) => r.timed_out).length;
+          return {
+            total,
+            correct,
+            accuracy: total > 0 ? (correct / total).toFixed(4) : "",
+            avgRt: total > 0 ? Math.round(sumRt / total) : "",
+            fast,
+            timeouts,
+          };
+        };
+
+        const pr = agg("practice");
+        const p1 = agg("phase1");
+        const p2 = agg("phase2");
+        const mainTotal = p1.total + p2.total;
+        const mainCorrect = p1.correct + p2.correct;
+        const mainSumRt =
+          results
+            .filter((r) => (r.phase === "phase1" || r.phase === "phase2") && r.question_index >= 0)
+            .reduce((s, r) => s + r.reaction_time_ms, 0);
+        const mainFast = p1.fast + p2.fast;
+
+        const attention = results.find((r) => r.attention_check_click !== null);
+        const createdAt = results.length > 0
+          ? results.reduce((min, r) => (r.created_at < min ? r.created_at : min), results[0].created_at)
+          : "";
+
+        const row: (string | number)[] = [
+          sid,
+          assignment?.code ?? "",
+          assignment?.group ?? "",
+          assignment?.slot ?? "",
+          createdAt,
+          attention ? (attention.attention_check_click ? "1" : "0") : "",
+          summary?.blur_count ?? 0,
+          summary?.total_blur_ms ?? 0,
+          summary?.sidebar_click_count ?? 0,
+          pr.total, pr.correct, pr.accuracy, pr.avgRt,
+          p1.total, p1.correct, p1.accuracy, p1.avgRt, p1.fast, p1.timeouts,
+          p2.total, p2.correct, p2.accuracy, p2.avgRt, p2.fast, p2.timeouts,
+          mainTotal,
+          mainCorrect,
+          mainTotal > 0 ? (mainCorrect / mainTotal).toFixed(4) : "",
+          mainTotal > 0 ? Math.round(mainSumRt / mainTotal) : "",
+          mainFast,
+        ];
+
+        phaseKeys.forEach(({ phase, prefix: _prefix }) => {
+          for (let i = 0; i < maxQ[phase]; i++) {
+            const q = results.find((r) => r.phase === phase && r.question_index === i);
+            if (q) {
+              row.push(q.is_correct ? "1" : "0", q.reaction_time_ms, q.timed_out ? "1" : "0");
+            } else {
+              row.push("", "", "");
+            }
+          }
+        });
+
+        return row;
+      });
+
+      const escape = (cell: any) => {
+        const s = String(cell ?? "");
+        return `"${s.replace(/"/g, '""')}"`;
+      };
+
+      const csvContent = [
+        headers.join(","),
+        ...rows.map((row) => row.map(escape).join(",")),
+      ].join("\n");
+
+      const blob = new Blob(["\ufeff" + csvContent], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `experiment_spss_wide_${new Date().toISOString().split("T")[0]}.csv`;
+      link.click();
+      URL.revokeObjectURL(link.href);
+    } catch (error) {
+      console.error("Failed to export SPSS CSV:", error);
+      toast.error("SPSS export başarısız");
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   const exportToCSV = async () => {
     if (sessions.length === 0) return;
     
