@@ -153,6 +153,7 @@ const AdminPanel = () => {
         newSet.delete(sessionId);
         return newSet;
       });
+      loadSlotCounts();
       toast.success("Session silindi");
     } else {
       toast.error("Session silinemedi");
