@@ -269,29 +269,25 @@ const AdminPanel = () => {
         "Is Correct",
         "Reaction Time (ms)",
         "Timed Out",
-        "Attention Check",
         "Created At",
       ];
 
-      const rows = allResults.map((result: any) => {
-        const assignment = assignmentLookup.get(result.session_id);
-        return [
-          result.session_id,
-          assignment?.code ?? "",
-          assignment?.group ?? "",
-          result.phase,
-          result.question_index + 1,
-          result.is_correct ? "Yes" : "No",
-          result.reaction_time_ms,
-          result.timed_out ? "Yes" : "No",
-          result.attention_check_click === null
-            ? "N/A"
-            : result.attention_check_click
-            ? "Yes"
-            : "No",
-          result.created_at,
-        ];
-      });
+      const rows = allResults
+        .filter((result: any) => result.phase !== 'practice' && result.question_index >= 0)
+        .map((result: any) => {
+          const assignment = assignmentLookup.get(result.session_id);
+          return [
+            result.session_id,
+            assignment?.code ?? "",
+            assignment?.group ?? "",
+            result.phase,
+            result.question_index + 1,
+            result.is_correct ? "Yes" : "No",
+            result.reaction_time_ms,
+            result.timed_out ? "Yes" : "No",
+            result.created_at,
+          ];
+        });
 
       const csvContent = [
         headers.join(","),
