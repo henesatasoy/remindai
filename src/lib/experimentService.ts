@@ -150,7 +150,7 @@ export const fetchSessionSummaries = async (phaseFilter?: string, startDate?: Da
 
   (data || []).forEach((result) => {
     const isRealQuestion = result.phase !== 'practice' && result.question_index >= 0;
-    const isFast = isRealQuestion && !result.timed_out && result.reaction_time_ms < 3000;
+    const isFast = isRealQuestion && !result.timed_out && result.reaction_time_ms < 2000;
     const existing = sessionMap.get(result.session_id);
     if (existing) {
       existing.phases.add(result.phase);
