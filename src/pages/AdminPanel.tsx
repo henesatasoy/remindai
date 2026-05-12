@@ -308,6 +308,11 @@ const AdminPanel = () => {
         "main_accuracy",
         "main_avg_rt_ms",
         "main_fast_count",
+        // Pretest/Posttest correct-only aggregates (for SPSS analyses)
+        "Pretest_Total_Correct",
+        "Pretest_MeanRT_Correct",
+        "Posttest_Total_Correct",
+        "Posttest_MeanRT_Correct",
       ];
 
       // Per-question wide columns
