@@ -581,6 +581,7 @@ const AdminPanel = () => {
                 <TableHead>Phases</TableHead>
                 <TableHead className="text-center">Total Correct</TableHead>
                 <TableHead className="text-center">Avg Reaction Time</TableHead>
+                <TableHead className="text-center">Alıştırma</TableHead>
                 <TableHead className="text-center">Hızlı Cevap (&lt;2s)</TableHead>
                 <TableHead className="text-center">Attention Check</TableHead>
                 <TableHead className="text-center">Sekme Çıkışı</TableHead>
