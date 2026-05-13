@@ -88,14 +88,16 @@ const AIAnalysis = ({
       {/* (X exit button removed — replaced by a labeled button below the terminal) */}
 
       {/* AI Message Bubble — same style as previous AI messages in the sidebar */}
-      <div className="w-full max-w-2xl flex items-start gap-3">
-        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-          <Sparkles className="w-4 h-4 text-primary" />
-        </div>
-        <div className="flex-1 bg-card border border-border rounded-xl p-4">
-          <p className="text-foreground text-sm leading-relaxed">
-            ​İlk aşama verilerini aldım! Bilişsel haritanı çıkarmak ve etkileşim dinamiklerini analiz etmek için yaklaşık 3 dakikalık bir işlem süresine ihtiyacım var. Lütfen analiz tamamlanana kadar bu sekmeden ayrılma.
-          </p>
+      <div className="w-full max-w-2xl">
+        <div className="flex items-start gap-3 -ml-11">
+          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+            <Sparkles className="w-4 h-4 text-primary" />
+          </div>
+          <div className="flex-1 bg-card border border-border rounded-xl p-4">
+            <p className="text-foreground text-sm leading-relaxed">
+              ​İlk aşama verilerini aldım! Bilişsel haritanı çıkarmak ve etkileşim dinamiklerini analiz etmek için yaklaşık 3 dakikalık bir işlem süresine ihtiyacım var. Lütfen analiz tamamlanana kadar bu sekmeden ayrılma.
+            </p>
+          </div>
         </div>
       </div>
 
