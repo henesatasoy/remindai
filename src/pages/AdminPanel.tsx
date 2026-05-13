@@ -444,6 +444,24 @@ const AdminPanel = () => {
           correctInRange("phase2", 9, 12)
         );
 
+        // Posttest difficulty mean RT (correct answers only)
+        const meanRtCorrectInRange = (phase: string, lo: number, hi: number) => {
+          const items = results.filter(
+            (r) =>
+              r.phase === phase &&
+              r.is_correct &&
+              r.question_index + 1 >= lo &&
+              r.question_index + 1 <= hi
+          );
+          if (items.length === 0) return "";
+          return Math.round(items.reduce((s, r) => s + r.reaction_time_ms, 0) / items.length);
+        };
+        row.push(
+          meanRtCorrectInRange("phase2", 1, 4),
+          meanRtCorrectInRange("phase2", 5, 8),
+          meanRtCorrectInRange("phase2", 9, 12)
+        );
+
         phaseKeys.forEach(({ phase, prefix: _prefix }) => {
           for (let i = 0; i < maxQ[phase]; i++) {
             const q = results.find((r) => r.phase === phase && r.question_index === i);
