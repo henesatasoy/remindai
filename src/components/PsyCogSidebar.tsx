@@ -118,10 +118,10 @@ const PsyCogSidebar = ({
   const openInterventionModal = () => {
     setModalContent({
       title: "AI Analiz Sonucu",
-      content: <div className="space-y-4">
-          <p className="whitespace-pre-line" dangerouslySetInnerHTML={{ __html: interventionText1 }} />
-          <p className="whitespace-pre-line">{INTERVENTION_TEXT_2}</p>
-        </div>
+      content: <p
+          className="whitespace-pre-line"
+          dangerouslySetInnerHTML={{ __html: `${interventionText1}<br/><br/>${INTERVENTION_TEXT_2}` }}
+        />
     });
   };
   // Fake chat history shown in the decorative left rail during fullscreen chat
