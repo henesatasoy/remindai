@@ -460,6 +460,9 @@ const AdminPanel = () => {
           return Math.round(items.reduce((s, r) => s + r.reaction_time_ms, 0) / items.length);
         };
         row.push(
+          meanRtCorrectInRange("phase1", 1, 4),
+          meanRtCorrectInRange("phase1", 5, 8),
+          meanRtCorrectInRange("phase1", 9, 12),
           meanRtCorrectInRange("phase2", 1, 4),
           meanRtCorrectInRange("phase2", 5, 8),
           meanRtCorrectInRange("phase2", 9, 12)
