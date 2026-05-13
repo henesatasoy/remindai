@@ -246,7 +246,7 @@ const PsyCogSidebar = ({
                   </p> : isPracticePassed ? <div className="text-foreground text-sm leading-relaxed space-y-3">
                     <p className="font-semibold text-base">Alıştırma Tamamlandı!</p>
                     
-                    <p>Tebrikler! Alıştırma sorularını başarıyla tamamladınız! Hazır iseniz 24 soruluk gerçek testin 12 soruluk ilk aşamasına başlamak için lütfen aşağıdaki Başlat butonuna basınız.</p>
+                    <p>​Alıştırma aşamasını tamamladık! Sisteme uyum sağladığına göre asıl değerlendirmeye geçebiliriz. Toplam 24 sorudan oluşan sürecin ilk 12 soruluk aşaması için ben hazırım. Sen de hazırsan süreci başlatabilirsin.</p>
                   </div> : isPracticeFailed ? <div className="text-foreground text-sm leading-relaxed space-y-3">
                     <p className="font-semibold text-base">Alıştırma Tamamlandı!</p>
                     <p className="text-lg">Lütfen deney yürütücüsüne haber ediniz.</p>
