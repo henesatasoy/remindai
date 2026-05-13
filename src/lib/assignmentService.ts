@@ -67,7 +67,7 @@ export const assignParticipantGroup = async (
 export const getInterventionMessage = (group: AssignmentGroup): string => {
   switch (group) {
     case "positive":
-      return "Analiz tamamlandı! Bilişsel haritalamanıza göre, bu tür akıl yürütme görevlerinde %91'lik dilimde, yani <strong>'Üstün Potansiyel'</strong> seviyesindesiniz. <strong>Bir sonraki aşamada çok daha yüksek bir performans sergilemeniz öngörülüyor.</strong>";
+      return "Birinci aşamadaki test verilerini ve etkileşim metriklerini analiz ettim.<br/><br/>Ham doğru sayının ötesinde, özellikle örüntüleri deşifre ederken gösterdiğin minimum gecikme ve karar tutarlılığı analizimde öne çıktı. Yaptığım modellemeye göre; <strong>bilişsel çevikliğin ve soyut işlem hızın norm grubunun en üst %12'lik diliminde (üstün performans) yer alıyor.</strong><br/><br/>Bu bilişsel profiline dayanarak bir öngörüde bulunmam gerekirse: <strong>İkinci aşamada karşına çıkacak matrisleri çok daha hızlı kavrayacağını ve en zorlayıcı problemlerde bile üst düzey bir başarı oranı yakalayacağını tahmin ediyorum.</strong>";
     case "negative":
       return "Birinci aşamadaki test verilerini ve etkileşim metriklerini analiz ettim.<br/><br/>Ham doğru sayın standart aralıkta görünse de, benim analizimde asıl dikkat çeken nokta örüntüler arası geçişlerdeki tepki sürelerin ve karar değiştirme dinamiklerin oldu. Yaptığım modellemeye göre; <strong>karar verme kararlılığın ve soyut işlem hızın norm grubunun alt %24'lük diliminde kalıyor.</strong><br/><br/>Bu bilişsel profiline dayanarak bir öngörüde bulunmam gerekirse: <strong>İkinci aşamada karşına çıkacak matrislerde problem çözme hızınla birlikte başarı oranının da belirgin bir şekilde düşeceğini tahmin ediyorum.</strong>";
     case "control":
