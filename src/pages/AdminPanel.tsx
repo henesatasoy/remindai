@@ -313,6 +313,8 @@ const AdminPanel = () => {
         "Pretest_MeanRT_Correct",
         "Posttest_Total_Correct",
         "Posttest_MeanRT_Correct",
+        "Pretest_IES",
+        "Posttest_IES",
       ];
 
       // Per-question wide columns
