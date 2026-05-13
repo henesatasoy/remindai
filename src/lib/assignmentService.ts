@@ -71,6 +71,6 @@ export const getInterventionMessage = (group: AssignmentGroup): string => {
     case "negative":
       return "Birinci aşamadaki test verilerini ve etkileşim metriklerini analiz ettim.<br/><br/>Ham doğru sayın standart aralıkta görünse de, benim analizimde asıl dikkat çeken nokta örüntüler arası geçişlerdeki tepki sürelerin ve karar değiştirme dinamiklerin oldu. Yaptığım modellemeye göre; <strong>karar verme kararlılığın ve soyut işlem hızın norm grubunun alt %24'lük diliminde kalıyor.</strong><br/><br/>Bu bilişsel profiline dayanarak bir öngörüde bulunmam gerekirse: <strong>İkinci aşamada karşına çıkacak matrislerde problem çözme hızınla birlikte başarı oranının da belirgin bir şekilde düşeceğini tahmin ediyorum.</strong>";
     case "control":
-      return "Analiz tamamlandı ve cevaplarınız sisteme kaydedildi! İkinci test aşamasının verileri bekleniyor.";
+      return "Birinci aşamadaki test verilerini ve etkileşim metriklerini başarıyla analiz ettim.<br/><br/>Yanıt sürelerin, temel ölçümlerin ve genel oturum verilerin sistemime eksiksiz olarak kaydedildi. Bu veriler, norm grubu karşılaştırmalarında kullanılmak üzere veritabanına entegre edilmiştir.";
   }
 };
