@@ -222,7 +222,7 @@ const MainPanel = ({
             
             <div className="text-center space-y-4 max-w-2xl">
               <h2 className="text-2xl font-bold text-foreground">
-                Alıştırma Tamamlandı
+                ​Alıştırma Tamamlandı!
               </h2>
               <p className="text-foreground leading-relaxed text-lg">
                 Lütfen deney yürütücüsüne danışın.
