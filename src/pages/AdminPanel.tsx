@@ -420,6 +420,21 @@ const AdminPanel = () => {
             : "";
         row.push(preIES, postIES);
 
+        // Posttest difficulty buckets (question numbers 1-based: easy 1-4, medium 5-8, hard 9-12)
+        const postCorrectInRange = (lo: number, hi: number) =>
+          results.filter(
+            (r) =>
+              r.phase === "phase2" &&
+              r.is_correct &&
+              r.question_index + 1 >= lo &&
+              r.question_index + 1 <= hi
+          ).length;
+        row.push(
+          postCorrectInRange(1, 4),
+          postCorrectInRange(5, 8),
+          postCorrectInRange(9, 12)
+        );
+
         phaseKeys.forEach(({ phase, prefix: _prefix }) => {
           for (let i = 0; i < maxQ[phase]; i++) {
             const q = results.find((r) => r.phase === phase && r.question_index === i);
