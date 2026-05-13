@@ -109,7 +109,7 @@ const PsyCogSidebar = ({
     setModalContent({
       title: "Alıştırma Sonucu",
       content: <div className="space-y-3">
-          <p className="text-lg font-semibold">Alıştırma Tamamlandı</p>
+          <p className="text-lg font-semibold">Alıştırma Tamamlandı!</p>
           
           <p>Alıştırma soruları bitti. Hazır iseniz 24 soruluk gerçek testin 12 soruluk ilk aşamasına başlamak için Başlat butonuna basınız.</p>
         </div>
@@ -230,7 +230,7 @@ const PsyCogSidebar = ({
                   <Sparkles className="w-4 h-4 text-primary" />
                 </div>
                 <div className="flex-1 bg-muted/50 border border-border/50 rounded-xl p-3 max-w-[80%]">
-                  <p className="text-muted-foreground text-xs">Alıştırma Tamamlandı</p>
+                  <p className="text-muted-foreground text-xs">Alıştırma Tamamlandı!</p>
                   <span className="text-primary/70 text-[10px] mt-1 block">Başlat ✓</span>
                 </div>
               </button>}
@@ -244,11 +244,11 @@ const PsyCogSidebar = ({
                 {isIntervention ? <p className="text-foreground text-sm leading-relaxed whitespace-pre-line">
                     <TypewriterText text={interventionText1} speed={10} onComplete={() => setIsTyping1Complete(true)} html={true} />
                   </p> : isPracticePassed ? <div className="text-foreground text-sm leading-relaxed space-y-3">
-                    <p className="font-semibold text-base">Alıştırma Tamamlandı</p>
+                    <p className="font-semibold text-base">Alıştırma Tamamlandı!</p>
                     
                     <p>Tebrikler! Alıştırma sorularını başarıyla tamamladınız! Hazır iseniz 24 soruluk gerçek testin 12 soruluk ilk aşamasına başlamak için lütfen aşağıdaki Başlat butonuna basınız.</p>
                   </div> : isPracticeFailed ? <div className="text-foreground text-sm leading-relaxed space-y-3">
-                    <p className="font-semibold text-base">Alıştırma Tamamlandı</p>
+                    <p className="font-semibold text-base">Alıştırma Tamamlandı!</p>
                     <p className="text-lg">Lütfen deney yürütücüsüne haber ediniz.</p>
                   </div> : <div className="text-foreground text-sm leading-relaxed space-y-4">
                     <p>Merhaba! Araştırma sürecimize hoş geldiniz. Ben ReMind-4! Bugün sizinle görsel yapbozlar üzerinden soyut muhakeme ve örüntü tanıma kapasitenizi analiz edeceğiz. Sürecin sorunsuz ilerlemesi için aşağıda testin nasıl işleyeceğine dair talimatları derledim:</p>
@@ -342,7 +342,7 @@ const PsyCogSidebar = ({
             {showPracticeResultInHistory && <button onClick={openPracticeResultModal} className="flex items-start gap-2 w-full text-left hover:bg-sidebar-accent rounded-lg p-2 transition-colors">
                 <Sparkles className="w-4 h-4 text-primary shrink-0 mt-1" />
                 <div className="text-xs text-muted-foreground">
-                  <p className="line-clamp-2 mb-1">Alıştırma Tamamlandı</p>
+                  <p className="line-clamp-2 mb-1">Alıştırma Tamamlandı!</p>
                   <span className="text-primary/70 text-[10px]">Başlat ✓</span>
                 </div>
               </button>}
