@@ -69,7 +69,7 @@ export const getInterventionMessage = (group: AssignmentGroup): string => {
     case "positive":
       return "Analiz tamamlandı! Bilişsel haritalamanıza göre, bu tür akıl yürütme görevlerinde %91'lik dilimde, yani <strong>'Üstün Potansiyel'</strong> seviyesindesiniz. <strong>Bir sonraki aşamada çok daha yüksek bir performans sergilemeniz öngörülüyor.</strong>";
     case "negative":
-      return "Analiz tamamlandı. Bilişsel haritalamanıza göre, bu tür akıl yürütme görevlerinde %7'lik dilimde, yani 'Düşük Potansiyel' seviyesindesiniz.";
+      return "Birinci aşamadaki test verilerini ve etkileşim metriklerini analiz ettim.<br/><br/>Ham doğru sayın standart aralıkta görünse de, benim analizimde asıl dikkat çeken nokta örüntüler arası geçişlerdeki tepki sürelerin ve karar değiştirme dinamiklerin oldu. Yaptığım modellemeye göre; <strong>karar verme kararlılığın ve soyut işlem hızın norm grubunun alt %24'lük diliminde kalıyor.</strong><br/><br/>Bu bilişsel profiline dayanarak bir öngörüde bulunmam gerekirse: <strong>İkinci aşamada karşına çıkacak olan çok daha karmaşık ve zorlayıcı matrislerde zihinsel yorgunluk yaşayacağını, problem çözme hızınla birlikte başarı oranının da belirgin bir şekilde düşeceğini tahmin ediyorum.</strong>";
     case "control":
       return "Analiz tamamlandı ve cevaplarınız sisteme kaydedildi! İkinci test aşamasının verileri bekleniyor.";
   }
