@@ -423,19 +423,22 @@ const AdminPanel = () => {
             : "";
         row.push(preIES, postIES);
 
-        // Posttest difficulty buckets (question numbers 1-based: easy 1-4, medium 5-8, hard 9-12)
-        const postCorrectInRange = (lo: number, hi: number) =>
+        // Difficulty buckets (1-based question numbers: easy 1-4, medium 5-8, hard 9-12)
+        const correctInRange = (phase: string, lo: number, hi: number) =>
           results.filter(
             (r) =>
-              r.phase === "phase2" &&
+              r.phase === phase &&
               r.is_correct &&
               r.question_index + 1 >= lo &&
               r.question_index + 1 <= hi
           ).length;
         row.push(
-          postCorrectInRange(1, 4),
-          postCorrectInRange(5, 8),
-          postCorrectInRange(9, 12)
+          correctInRange("phase1", 1, 4),
+          correctInRange("phase1", 5, 8),
+          correctInRange("phase1", 9, 12),
+          correctInRange("phase2", 1, 4),
+          correctInRange("phase2", 5, 8),
+          correctInRange("phase2", 9, 12)
         );
 
         phaseKeys.forEach(({ phase, prefix: _prefix }) => {
