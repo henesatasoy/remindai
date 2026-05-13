@@ -321,6 +321,9 @@ const AdminPanel = () => {
         "Posttest_Easy_Correct",
         "Posttest_Medium_Correct",
         "Posttest_Hard_Correct",
+        "Posttest_Easy_MeanRT_Correct",
+        "Posttest_Medium_MeanRT_Correct",
+        "Posttest_Hard_MeanRT_Correct",
       ];
 
       // Per-question wide columns
