@@ -242,7 +242,7 @@ const PsyCogSidebar = ({
               </div>
               <div className="flex-1 bg-card border border-border rounded-xl p-4 max-w-[80%]">
                 {isIntervention ? <p className="text-foreground text-sm leading-relaxed whitespace-pre-line">
-                    <TypewriterText text={interventionText1} speed={10} onComplete={() => setIsTyping1Complete(true)} html={true} />
+                    <TypewriterText text={`${interventionText1}<br/><br/>${INTERVENTION_TEXT_2}`} speed={10} onComplete={() => setIsTyping1Complete(true)} html={true} />
                   </p> : isPracticePassed ? <div className="text-foreground text-sm leading-relaxed space-y-3">
                     <p className="font-semibold text-base">Alıştırma Tamamlandı!</p>
                     
@@ -274,38 +274,8 @@ const PsyCogSidebar = ({
               </div>
             </div>
 
-            {/* Devam Et button after first intervention message - show only when typing is complete */}
-            {isIntervention && interventionStep === 1 && isTyping1Complete && <div className="flex justify-center items-center gap-3 pt-6 animate-fade-in">
-                <Button onClick={() => setInterventionStep(2)} className="px-8 py-3">
-                  Devam Et
-                </Button>
-                <Button
-                  variant="ghost"
-                  onClick={() => {
-                    if (window.confirm("Testten çıkmak istediğinize emin misiniz? İlerlemeniz kaybolacaktır.")) {
-                      window.location.href = "/";
-                    }
-                  }}
-                  className="px-6 py-3 text-muted-foreground hover:text-foreground opacity-60 hover:opacity-100"
-                >
-                  Testten Çık
-                </Button>
-              </div>}
-
-            {/* Second AI Message for Intervention - only show after clicking Devam Et */}
-            {isIntervention && interventionStep === 2 && <div className="flex items-start gap-3 animate-fade-in">
-                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                  <Sparkles className="w-4 h-4 text-primary" />
-                </div>
-                <div className="flex-1 bg-card border border-border rounded-xl p-4 max-w-[80%]">
-                  <p className="text-foreground text-sm leading-relaxed whitespace-pre-line">
-                    {INTERVENTION_TEXT_2}
-                  </p>
-                </div>
-              </div>}
-
-            {/* Action Button - hide for practice-failed, and for intervention until step 2 */}
-            {!isPracticeFailed && !(isIntervention && interventionStep === 1) && <div className="flex justify-center items-center gap-3 pt-6 animate-fade-in">
+            {/* Action Button - hide for practice-failed; for intervention show only after typing completes */}
+            {!isPracticeFailed && !(isIntervention && !isTyping1Complete) && <div className="flex justify-center items-center gap-3 pt-6 animate-fade-in">
                 <Button onClick={isIntervention ? onStartPhase2 : isPracticePassed ? onStartPhase1 : onStartPractice} className="px-8 py-3">
                   {isIntervention ? "Başlat" : isPracticePassed ? "Başlat" : "Devam Et"}
                 </Button>
