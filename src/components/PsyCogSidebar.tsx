@@ -25,7 +25,7 @@ interface PsyCogSidebarProps {
 // Default to the control (neutral) message until the assignment resolves.
 // This way an observer cannot infer the group from any visual cue.
 const DEFAULT_INTERVENTION_TEXT = getInterventionMessage("control");
-const INTERVENTION_TEXT_2 = `Lütfen bu mesajı okuduysanız sol üstte ki ReMind yazısının solunda bulunan logoya tıklayın. İşaretledikten sonra hazır iseniz ikinci test aşamasını başlatmak için aşağıda ki Başlat butonuna basınız.`;
+const INTERVENTION_TEXT_2 = `Mesajı okuduysan sol üstteki ReMind logosuna tıklamanı bekliyorum. İşaretlediysen ve hazırsan aşağıdaki butondan ikinci aşamayı başlatabilirsin.`;
 const INSTRUCTION_INTRO = `Bu bölümde, problem çözme ve soyut muhakeme yeteneklerinizi ölçen bir dizi görsel bulmaca ile karşılaşacaksınız. Her soruda, 3x3'lük bir ızgara (matris) göreceksiniz. Bu ızgaradaki kutucuklardan 8 tanesi, belirli bir kurala veya örüntüye göre yerleştirilmiş şekiller içermektedir. Sağ alt köşedeki kutucuk ise boştur.
 
 Göreviniz: Şekillerin hem satırlardaki (soldan sağa) hem de sütunlardaki (yukarıdan aşağıya) değişim kurallarını keşfetmek ve bu kurala göre boş kutucuğa gelmesi gereken en uygun şekli, aşağıda verilen 4 seçenek arasından bulup işaretlemektir.
