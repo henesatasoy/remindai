@@ -19,6 +19,14 @@ const TypewriterText = ({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
 
+  // Reset typing state whenever the text prop changes (e.g. when the
+  // assignment resolves and swaps the default message for the real one).
+  useEffect(() => {
+    setDisplayedText("");
+    setCurrentIndex(0);
+    setIsComplete(false);
+  }, [text]);
+
   useEffect(() => {
     if (currentIndex < text.length) {
       const timeout = setTimeout(() => {
