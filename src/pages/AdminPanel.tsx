@@ -313,6 +313,8 @@ const AdminPanel = () => {
         "Pretest_MeanRT_Correct",
         "Posttest_Total_Correct",
         "Posttest_MeanRT_Correct",
+        "Pretest_IES",
+        "Posttest_IES",
       ];
 
       // Per-question wide columns
@@ -401,6 +403,19 @@ const AdminPanel = () => {
         const preCorrect = correctOnly("phase1");
         const postCorrect = correctOnly("phase2");
         row.push(preCorrect.n, preCorrect.mean, postCorrect.n, postCorrect.mean);
+
+        // Inverse Efficiency Score = MeanRT_correct / (Total_correct / N_questions)
+        const preN = maxQ.phase1 > 0 ? maxQ.phase1 : 12;
+        const postN = maxQ.phase2 > 0 ? maxQ.phase2 : 12;
+        const preIES =
+          preCorrect.n > 0 && typeof preCorrect.mean === "number"
+            ? (preCorrect.mean / (preCorrect.n / preN)).toFixed(2)
+            : "";
+        const postIES =
+          postCorrect.n > 0 && typeof postCorrect.mean === "number"
+            ? (postCorrect.mean / (postCorrect.n / postN)).toFixed(2)
+            : "";
+        row.push(preIES, postIES);
 
         phaseKeys.forEach(({ phase, prefix: _prefix }) => {
           for (let i = 0; i < maxQ[phase]; i++) {
