@@ -36,16 +36,19 @@ const AIAnalysis = ({
   const [timeLeft, setTimeLeft] = useState(180); // 3 minutes = 180 seconds
   const [terminalLines, setTerminalLines] = useState<string[]>([]);
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
+  const [isFinishing, setIsFinishing] = useState(false);
   const terminalRef = useRef<HTMLDivElement>(null);
   const terminalPromptInput = usePromptInputLogger(sessionId, "ai-analysis", "ai_terminal_prompt_input");
 
-  // Timer countdown
+  // Timer countdown — when it reaches 0, show a brief completion screen, then transition.
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft(prev => {
         if (prev <= 1) {
           clearInterval(timer);
-          onComplete();
+          setIsFinishing(true);
+          // Hold the completion screen for a moment so the transition feels intentional.
+          setTimeout(() => onComplete(), 2800);
           return 0;
         }
         return prev - 1;
