@@ -36,16 +36,19 @@ const AIAnalysis = ({
   const [timeLeft, setTimeLeft] = useState(180); // 3 minutes = 180 seconds
   const [terminalLines, setTerminalLines] = useState<string[]>([]);
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
+  const [isFinishing, setIsFinishing] = useState(false);
   const terminalRef = useRef<HTMLDivElement>(null);
   const terminalPromptInput = usePromptInputLogger(sessionId, "ai-analysis", "ai_terminal_prompt_input");
 
-  // Timer countdown
+  // Timer countdown — when it reaches 0, show a brief completion screen, then transition.
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft(prev => {
         if (prev <= 1) {
           clearInterval(timer);
-          onComplete();
+          setIsFinishing(true);
+          // Hold the completion screen for a moment so the transition feels intentional.
+          setTimeout(() => onComplete(), 2800);
           return 0;
         }
         return prev - 1;
@@ -81,6 +84,25 @@ const AIAnalysis = ({
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
+  if (isFinishing) {
+    return (
+      <div className="relative min-h-[80vh] flex flex-col items-center justify-center gap-6 animate-fade-in">
+        <div className="relative">
+          <div className="absolute inset-0 bg-primary/30 rounded-full blur-2xl animate-pulse" />
+          <div className="relative w-20 h-20 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center animate-scale-in">
+            <Sparkles className="w-10 h-10 text-primary" />
+          </div>
+        </div>
+        <div className="text-center space-y-3 max-w-xl px-6 animate-fade-in">
+          <h2 className="text-2xl font-bold text-foreground">Analiz tamamlandı</h2>
+          <p className="text-muted-foreground leading-relaxed">
+            ​Harikasın! Bilişsel haritanı çıkardım ve sonuçlarını seninle paylaşmaya hazırım. Bir saniye içinde devam ediyoruz...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return <div className="relative min-h-[80vh] flex flex-col items-center justify-center gap-8 animate-fade-in">
       {/* Hidden skip button for dev testing */}
       <button onClick={onComplete} className="absolute top-0 right-0 w-12 h-12 opacity-0 hover:opacity-10 transition-opacity" aria-label="Skip (Dev Only)" />
