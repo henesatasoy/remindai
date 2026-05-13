@@ -205,7 +205,7 @@ const MainPanel = ({
                 ​Alıştırma Tamamlandı!
               </h2>
               <p className="text-foreground leading-relaxed">
-                Asıl testin ilk aşamasına devam etmek için lütfen Başlat butonuna basınız.
+                ​Alıştırma aşamasını tamamladık! Sisteme uyum sağladığına göre asıl değerlendirmeye geçebiliriz. Toplam 24 sorudan oluşan sürecin ilk 12 soruluk aşaması için ben hazırım. Sen de hazırsan süreci başlatabilirsin.
               </p>
             </div>
 

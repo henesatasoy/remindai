@@ -111,7 +111,7 @@ const PsyCogSidebar = ({
       content: <div className="space-y-3">
           <p className="text-lg font-semibold">Alıştırma Tamamlandı!</p>
           
-          <p>Alıştırma soruları bitti. Hazır iseniz 24 soruluk gerçek testin 12 soruluk ilk aşamasına başlamak için Başlat butonuna basınız.</p>
+          <p>​Alıştırma aşamasını tamamladık! Sisteme uyum sağladığına göre asıl değerlendirmeye geçebiliriz. Toplam 24 sorudan oluşan sürecin ilk 12 soruluk aşaması için ben hazırım. Sen de hazırsan süreci başlatabilirsin.</p>
         </div>
     });
   };
