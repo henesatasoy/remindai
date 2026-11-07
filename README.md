@@ -1,73 +1,64 @@
-# Welcome to your Lovable project
+# PsyCog Interface
 
-## Project info
+I need to build a React web application called "PsyCog" with a specific UI/UX behavior mimicking Gemini Advanced.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+Design Requirements:
 
-## How can I edit this code?
+Theme: Professional Dark Mode (deep grays, subtle borders, Inter font).
 
-There are several ways of editing your application.
+Initial View: A centered, minimalist chat interface.
 
-**Use Lovable**
+Large input field at the bottom center with placeholder: "Bir şeyler sorun..."
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+Central logo text: "PsyCog".
 
-Changes made via Lovable will be committed automatically to this repo.
+Transition Logic (CRITICAL):
 
-**Use your preferred IDE**
+When the user types ANY text and hits Enter, the interface must transform explicitly:
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+The central chat input bar animates and shrinks to become a Left Sidebar.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+A new Main Content Panel slides in from the Right to fill the rest of the screen.
 
-Follow these steps:
+The transition must be smooth (0.6s ease-in-out).
+
+Post-Transition State:
+
+Left Sidebar: Shows the user's prompt history (just the one they typed).
+
+Right Main Panel: Initially displays a loading spinner with the text "Test yükleniyor..." for exactly 6 seconds.
+
+After 6 seconds, the text changes to a header: "MaRs-IB Testi".
+
+Technical Constraints:
+
+Use Tailwind CSS for styling and animations.
+
+Use 'lucide-react' for icons.
+
+All user-facing text must be in Turkish.
+
+Do not implement the test logic yet, focus only on the layout transition and the 6-second timer effect.
+
+This project was built with [Lovable](https://lovable.dev).
+
+**Live app**: https://remindai.lovable.app
+
+## Build with Lovable
+
+Continue developing this project in the [Lovable editor](https://lovable.dev/projects/a65acc2c-2663-44f4-b646-29762785c072).
+
+- **Ship faster**: describe what you want to build and Lovable handles the code.
+- **Stay in sync**: every change made in Lovable is committed straight to this repository.
+- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
+
+## Development
+
+Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
+git clone <this-repository-url>
+cd <repository-name>
 npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
 npm run dev
 ```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
